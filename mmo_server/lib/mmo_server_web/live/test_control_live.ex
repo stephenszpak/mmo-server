@@ -5,7 +5,10 @@ defmodule MmoServerWeb.TestControlLive do
 
   @impl true
   def mount(_params, _session, socket) do
+    if connected?(socket), do: :timer.send_interval(1000, :refresh)
+
     players = Horde.Registry.select(PlayerRegistry, [{{:"$1", :_, :_}, [], [:"$1"]}])
+
     {:ok,
      assign(socket,
        players: players,
@@ -39,6 +42,32 @@ defmodule MmoServerWeb.TestControlLive do
   def handle_event("respawn", _params, socket) do
     Player.respawn(socket.assigns.selected_player)
     {:noreply, socket}
+  end
+
+  @impl true
+  def handle_info(:refresh, socket) do
+    players = Horde.Registry.select(PlayerRegistry, [{{:"$1", :_, :_}, [], [:"$1"]}])
+
+    selected =
+      if socket.assigns.selected_player in players do
+        socket.assigns.selected_player
+      else
+        List.first(players)
+      end
+
+    target =
+      if socket.assigns.target_player in players do
+        socket.assigns.target_player
+      else
+        List.first(players)
+      end
+
+    {:noreply,
+     assign(socket,
+       players: players,
+       selected_player: selected,
+       target_player: target
+     )}
   end
 
   # Rendered via "test_control_live.html.heex"

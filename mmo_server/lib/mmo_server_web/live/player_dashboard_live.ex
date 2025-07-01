@@ -26,6 +26,7 @@ defmodule MmoServerWeb.PlayerDashboardLive do
   def handle_info(:refresh, socket) do
     players =
       Horde.Registry.select(PlayerRegistry, [{{:"$1", :_, :_}, [], [:"$1"]}])
+      |> Enum.filter(&is_binary/1)
       |> Enum.map(fn id ->
         {x, y, z} = GenServer.call({:via, Horde.Registry, {PlayerRegistry, id}}, :get_position)
         {id, {x, y, z, DateTime.utc_now()}}

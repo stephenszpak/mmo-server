@@ -7,7 +7,9 @@ defmodule MmoServerWeb.TestControlLive do
   def mount(_params, _session, socket) do
     if connected?(socket), do: :timer.send_interval(1000, :refresh)
 
-    players = Horde.Registry.select(PlayerRegistry, [{{:"$1", :_, :_}, [], [:"$1"]}])
+    players =
+      Horde.Registry.select(PlayerRegistry, [{{:"$1", :_, :_}, [], [:"$1"]}])
+      |> Enum.filter(&is_binary/1)
 
     {:ok,
      assign(socket,
@@ -46,7 +48,9 @@ defmodule MmoServerWeb.TestControlLive do
 
   @impl true
   def handle_info(:refresh, socket) do
-    players = Horde.Registry.select(PlayerRegistry, [{{:"$1", :_, :_}, [], [:"$1"]}])
+    players =
+      Horde.Registry.select(PlayerRegistry, [{{:"$1", :_, :_}, [], [:"$1"]}])
+      |> Enum.filter(&is_binary/1)
 
     selected =
       if socket.assigns.selected_player in players do

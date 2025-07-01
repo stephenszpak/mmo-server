@@ -9,6 +9,7 @@ defmodule MmoServer.CLI.LivePlayerTracker do
   def print_all_positions do
     players =
       Horde.Registry.select(PlayerRegistry, [{{:"$1", :_, :_}, [], [:"$1"]}])
+      |> Enum.filter(&is_binary/1)
 
     IO.puts("player_id | x | y | z")
 

@@ -1,6 +1,7 @@
 defmodule MmoServerWeb.ZoneChannel do
   use Phoenix.Channel
   alias MmoServerWeb.Presence
+  alias Ecto.UUID
 
   def join("zone:" <> _id = topic, _params, socket) do
     send(self(), :after_join)
@@ -8,7 +9,7 @@ defmodule MmoServerWeb.ZoneChannel do
   end
 
   def handle_info(:after_join, socket) do
-    Presence.track(socket, UUID.uuid4(), %{})
+    Presence.track(socket, UUID.generate(), %{})
     push(socket, "presence_state", Presence.list(socket))
     {:noreply, socket}
   end

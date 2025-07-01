@@ -22,7 +22,6 @@ defmodule MmoServer.Zone do
     GenServer.call(via(zone_id), {:get_position, player_id})
   end
 
-  # fetch all known positions for a zone
   def get_position(zone_id) do
     GenServer.call(via(zone_id), :get_position)
   end
@@ -62,6 +61,7 @@ defmodule MmoServer.Zone do
 
     {:reply, reply, state}
   end
+
 
   # return all known positions when no player_id is provided
   # allows callers like the dashboard to fetch the complete table

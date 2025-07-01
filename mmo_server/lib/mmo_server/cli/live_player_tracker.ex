@@ -7,7 +7,8 @@ defmodule MmoServer.CLI.LivePlayerTracker do
   Queries all currently active players and prints their positions.
   """
   def print_all_positions do
-    players = Horde.Registry.select(PlayerRegistry, [{{{:"$1", :_, :_}, [], ["$1"]}}])
+    players =
+      Horde.Registry.select(PlayerRegistry, [{{:"$1", :_, :_}, [], [:"$1"]}])
 
     IO.puts("player_id | x | y | z")
 

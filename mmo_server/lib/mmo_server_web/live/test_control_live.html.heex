@@ -35,5 +35,11 @@
         <li><%= entry %></li>
       <% end %>
     </ul>
+    <script defer type="text/javascript" src="/js/phoenix.min.js"></script>
+    <script defer type="text/javascript" src="/js/phoenix_live_view.min.js"></script>
+    <script>
+      const liveSocket = new Phoenix.LiveSocket("/live", Phoenix.Socket);
+      liveSocket.connect();
+    </script>
   </body>
 </html>

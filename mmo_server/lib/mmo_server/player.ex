@@ -21,6 +21,16 @@ defmodule MmoServer.Player do
     GenServer.cast({:via, Horde.Registry, {PlayerRegistry, player_id}}, {:move, delta})
   end
 
+  @spec damage(term(), non_neg_integer()) :: :ok
+  def damage(player_id, amount) do
+    GenServer.cast({:via, Horde.Registry, {PlayerRegistry, player_id}}, {:damage, amount})
+  end
+
+  @spec respawn(term()) :: :ok
+  def respawn(player_id) do
+    GenServer.cast({:via, Horde.Registry, {PlayerRegistry, player_id}}, :respawn)
+  end
+
   @spec get_status(term()) :: :alive | :dead | term()
   def get_status(player_id) do
     GenServer.call({:via, Horde.Registry, {PlayerRegistry, player_id}}, :get_status)
@@ -66,6 +76,11 @@ defmodule MmoServer.Player do
     else
       {:noreply, state}
     end
+  end
+
+  @impl true
+  def handle_cast(:respawn, state) do
+    handle_info(:respawn, state)
   end
 
   @impl true

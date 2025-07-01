@@ -1,0 +1,34 @@
+<html>
+  <head>
+    <title>Test Control</title>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <form phx-change="update">
+      <label>Selected Player</label>
+      <select name="selected_player">
+        <%= for id <- @players do %>
+          <option value={id} selected={id == @selected_player}><%= id %></option>
+        <% end %>
+      </select>
+      <label>Target Player</label>
+      <select name="target_player">
+        <%= for id <- @players do %>
+          <option value={id} selected={id == @target_player}><%= id %></option>
+        <% end %>
+      </select>
+    </form>
+
+    <div>
+      <button phx-click="move" phx-value-dx="1" phx-value-dy="0" phx-value-dz="0">Move +X</button>
+      <button phx-click="move" phx-value-dx="-1" phx-value-dy="0" phx-value-dz="0">Move -X</button>
+      <button phx-click="move" phx-value-dx="0" phx-value-dy="1" phx-value-dz="0">Move +Y</button>
+      <button phx-click="move" phx-value-dx="0" phx-value-dy="-1" phx-value-dz="0">Move -Y</button>
+    </div>
+    <div>
+      <button phx-click="start_combat">Start Combat</button>
+      <button phx-click="damage">Apply 100 Damage</button>
+      <button phx-click="respawn">Force Respawn</button>
+    </div>
+  </body>
+</html>

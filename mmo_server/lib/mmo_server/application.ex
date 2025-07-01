@@ -11,6 +11,7 @@ defmodule MmoServer.Application do
       MmoServerWeb.Endpoint,
       MmoServerWeb.Presence,
       MmoServer.Protocol.UdpServer,
+      MmoServer.CombatEngine,
       {Horde.Registry, [name: PlayerRegistry, keys: :unique]},
       {MmoServer.PlayerSupervisor, []},
       {MmoServer.ZoneSupervisor, []}

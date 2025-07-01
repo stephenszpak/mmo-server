@@ -13,8 +13,12 @@ defmodule MmoServer.Zone do
     GenServer.cast(via(zone_id), {:leave, player_id})
   end
 
-  def update_pos(zone_id, player_id, pos) do
-    GenServer.cast(via(zone_id), {:update_pos, player_id, pos})
+  def player_moved(zone_id, player_id, pos) do
+    GenServer.cast(via(zone_id), {:player_moved, player_id, pos})
+  end
+
+  def player_respawned(zone_id, player_id) do
+    GenServer.cast(via(zone_id), {:player_respawned, player_id})
   end
 
   # synchronous API to read a player's current position from the zone
@@ -29,10 +33,8 @@ defmodule MmoServer.Zone do
   defp via(zone_id), do: {:via, Horde.Registry, {PlayerRegistry, {:zone, zone_id}}}
 
   def init(zone_id) do
-    table = table_name(zone_id)
-    :ets.new(table, [:named_table, :public, :set])
     schedule_tick()
-    {:ok, %{id: zone_id, table: table}}
+    {:ok, %{id: zone_id, positions: %{}}}
   end
 
   def handle_cast({:join, player_id}, state) do
@@ -42,36 +44,35 @@ defmodule MmoServer.Zone do
 
   def handle_cast({:leave, player_id}, state) do
     Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{state.id}", {:leave, player_id})
-    :ets.delete(state.table, player_id)
-    {:noreply, state}
+    positions = Map.delete(state.positions, player_id)
+    {:noreply, %{state | positions: positions}}
   end
 
-  def handle_cast({:update_pos, player_id, pos}, state) do
-    :ets.insert(state.table, {player_id, pos})
+  def handle_cast({:player_moved, player_id, pos}, state) do
+    positions = Map.put(state.positions, player_id, pos)
+    Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{state.id}", {:player_moved, player_id, pos})
+    {:noreply, %{state | positions: positions}}
+  end
+
+  def handle_cast({:player_respawned, player_id}, state) do
+    Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{state.id}", {:player_respawned, player_id})
     {:noreply, state}
   end
 
   # handle synchronous position fetches
   def handle_call({:get_position, player_id}, _from, state) do
-    reply =
-      case :ets.lookup(state.table, player_id) do
-        [{^player_id, pos}] -> pos
-        [] -> {:error, :not_found}
-      end
-
-    {:reply, reply, state}
+    {:reply, Map.get(state.positions, player_id, {:error, :not_found}), state}
   end
 
 
   # return all known positions when no player_id is provided
   # allows callers like the dashboard to fetch the complete table
   def handle_call(:get_position, _from, state) do
-    {:reply, :ets.tab2list(state.table), state}
+    {:reply, state.positions, state}
   end
 
   def handle_info(:tick, state) do
-    positions = :ets.tab2list(state.table)
-    Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{state.id}", {:positions, positions})
+    Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{state.id}", {:positions, state.positions})
     schedule_tick()
     {:noreply, state}
   end
@@ -79,6 +80,4 @@ defmodule MmoServer.Zone do
   defp schedule_tick do
     Process.send_after(self(), :tick, 100)
   end
-
-  def table_name(zone_id), do: String.to_atom("zone_pos_" <> to_string(zone_id))
 end

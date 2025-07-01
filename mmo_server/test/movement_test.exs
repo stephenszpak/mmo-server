@@ -3,7 +3,6 @@ defmodule MmoServer.MovementTest do
 
   test "udp movement updates position" do
     {:ok, _zone} = MmoServer.Zone.start_link("zone1")
-    {:ok, _udp} = MmoServer.Protocol.UdpServer.start_link([])
     {:ok, _p} = MmoServer.Player.start_link(%{player_id: 1, zone_id: "zone1"})
 
     {:ok, sock} = :gen_udp.open(0, [:binary])

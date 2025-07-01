@@ -33,15 +33,14 @@ defmodule MmoServer.MixProject do
       {:postgrex, ">= 0.17.0"},
       {:libcluster, "~> 3.3"},
       {:horde, "~> 0.8"},
-      {:delta_crdt_ex, "~> 0.6.6"},
+      {:delta_crdt, "~> 0.6"},
       {:broadway, "~> 1.0"},
-      {:nimble_postgres, "~> 1.0"},
+      {:nimble_pool, "~> 1.1"},
       {:absinthe, "~> 1.7"},
       {:absinthe_phoenix, "~> 2.0"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev], runtime: false},
-      {:prom_ex, "~> 1.9"},
-      {:observer_live, "~> 0.3", only: [:dev]}
+      {:prom_ex, "~> 1.9"}
     ]
   end
 

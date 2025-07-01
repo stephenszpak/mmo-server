@@ -1,5 +1,6 @@
 defmodule MmoServer.Player do
   use GenServer
+  require Logger
 
   defstruct [:id, :zone_id, :pos, :hp, :mana, :conn_pid]
 
@@ -38,6 +39,7 @@ defmodule MmoServer.Player do
     {x, y, z} = state.pos
     new_pos = {x + dx, y + dy, z + dz}
     MmoServer.Zone.update_pos(state.zone_id, state.id, new_pos)
+    Logger.info("Player #{state.id} moved to #{inspect(new_pos)}")
     {:noreply, %{state | pos: new_pos}}
   end
 

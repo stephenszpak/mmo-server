@@ -32,34 +32,40 @@ defmodule MmoServer.Zone do
 
   defp via(zone_id), do: {:via, Horde.Registry, {PlayerRegistry, {:zone, zone_id}}}
 
+  @impl true
   def init(zone_id) do
     schedule_tick()
     {:ok, %{id: zone_id, positions: %{}}}
   end
 
+  @impl true
   def handle_cast({:join, player_id}, state) do
     Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{state.id}", {:join, player_id})
     {:noreply, state}
   end
 
+  @impl true
   def handle_cast({:leave, player_id}, state) do
     Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{state.id}", {:leave, player_id})
     positions = Map.delete(state.positions, player_id)
     {:noreply, %{state | positions: positions}}
   end
 
+  @impl true
   def handle_cast({:player_moved, player_id, pos}, state) do
     positions = Map.put(state.positions, player_id, pos)
     Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{state.id}", {:player_moved, player_id, pos})
     {:noreply, %{state | positions: positions}}
   end
 
+  @impl true
   def handle_cast({:player_respawned, player_id}, state) do
     Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{state.id}", {:player_respawned, player_id})
     {:noreply, state}
   end
 
   # handle synchronous position fetches
+  @impl true
   def handle_call({:get_position, player_id}, _from, state) do
     {:reply, Map.get(state.positions, player_id, {:error, :not_found}), state}
   end
@@ -67,10 +73,12 @@ defmodule MmoServer.Zone do
 
   # return all known positions when no player_id is provided
   # allows callers like the dashboard to fetch the complete table
+  @impl true
   def handle_call(:get_position, _from, state) do
     {:reply, state.positions, state}
   end
 
+  @impl true
   def handle_info(:tick, state) do
     Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{state.id}", {:positions, state.positions})
     schedule_tick()

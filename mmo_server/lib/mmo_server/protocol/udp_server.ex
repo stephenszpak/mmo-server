@@ -7,11 +7,13 @@ defmodule MmoServer.Protocol.UdpServer do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
+  @impl true
   def init(_) do
     {:ok, socket} = :gen_udp.open(@port, [:binary, active: true])
     {:ok, %{socket: socket}}
   end
 
+  @impl true
   def handle_info({:udp, _socket, _ip, _port, <<pid::32, opcode::16, dx::float, dy::float, dz::float>>}, state) do
     case opcode do
       1 ->
@@ -27,6 +29,7 @@ defmodule MmoServer.Protocol.UdpServer do
     {:noreply, state}
   end
 
+  @impl true
   def handle_info(_msg, state), do: {:noreply, state}
 
   defp clamp(v) when v > 5, do: 5.0

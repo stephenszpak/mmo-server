@@ -31,6 +31,7 @@ defmodule MmoServer.Player do
     GenServer.call({:via, Horde.Registry, {PlayerRegistry, player_id}}, :get_position)
   end
 
+  @impl true
   def init({player_id, zone_id}) do
     state = %__MODULE__{
       id: player_id,
@@ -44,6 +45,7 @@ defmodule MmoServer.Player do
     {:ok, state}
   end
 
+  @impl true
   def handle_cast({:move, {dx, dy, dz}}, state) do
     {x, y, z} = state.pos
     new_pos = {x + dx, y + dy, z + dz}
@@ -52,6 +54,7 @@ defmodule MmoServer.Player do
     {:noreply, %{state | pos: new_pos}}
   end
 
+  @impl true
   def handle_cast({:damage, amount}, state) do
     new_hp = max(state.hp - amount, 0)
     state = %{state | hp: new_hp}
@@ -74,10 +77,12 @@ defmodule MmoServer.Player do
     {:noreply, new_state}
   end
 
+  @impl true
   def handle_call(:get_position, _from, state) do
     {:reply, state.pos, state}
   end
 
+  @impl true
   def handle_call(:get_status, _from, state) do
     {:reply, state.status, state}
   end

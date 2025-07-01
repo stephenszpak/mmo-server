@@ -27,6 +27,7 @@ defmodule MmoServer.MixProject do
   defp deps do
     [
       {:phoenix, "~> 1.7"},
+      {:phoenix_view, "~> 2.0"},
       {:phoenix_pubsub, "~> 2.1"},
       {:phoenix_live_dashboard, "~> 0.8"},
       {:ecto_sql, "~> 3.11"},

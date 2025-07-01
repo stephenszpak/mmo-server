@@ -41,8 +41,6 @@ defmodule MmoServerWeb.TestControlLive do
     {:noreply, socket}
   end
 
-  @impl true
-  def render(assigns) do
-    Phoenix.View.render(__MODULE__, "test_control_live.html", assigns)
-  end
+  # Rendered via "test_control_live.html.heex"
+  # No custom rendering logic required here
 end

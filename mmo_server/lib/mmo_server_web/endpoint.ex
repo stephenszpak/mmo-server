@@ -1,7 +1,9 @@
 defmodule MmoServerWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :mmo_server
 
-  socket "/socket", Phoenix.LiveView.Socket
+  socket "/socket", MmoServerWeb.UserSocket,
+    websocket: true,
+    longpoll: false
 
   plug Plug.RequestId
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]

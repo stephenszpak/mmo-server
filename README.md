@@ -49,3 +49,28 @@ mix test
 ## Production Configuration
 
 The production config expects `DATABASE_URL`, `POOL_SIZE` and `SECRET_KEY_BASE` environment variables. See `config/runtime.exs` for details.
+
+## Exit Criteria Demo
+
+To verify the phase 1 functionality, open two terminal windows and run two UDP clients.
+Each client sends move packets and you should see both players' movements in the
+server logs.
+
+1. Start the server:
+
+   ```bash
+   cd mmo_server
+   mix deps.get
+   mix phx.server
+   ```
+
+2. In another terminal send a move packet. Example using the Erlang shell:
+
+   ```erlang
+   {ok, S} = gen_udp:open(0, []),
+   Packet = <<1:32, 1:16, 1.0:32/float, 0.0:32/float, 0.0:32/float>>,
+   gen_udp:send(S, {127,0,0,1}, 4000, Packet).
+   ```
+
+3. Repeat with a different `player_id` from a second terminal. The log output
+   will display position updates for both players.

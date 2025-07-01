@@ -1,0 +1,11 @@
+# Elixir build artifacts
+/_build/
+/deps/
+/erl_crash.dump
+/.elixir_ls/
+/cover/
+
+# Editor files
+*.swp
+*~
+.DS_Store

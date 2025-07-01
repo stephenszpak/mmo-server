@@ -8,6 +8,8 @@ defmodule MmoServer.Application do
       MmoServerWeb.Telemetry,
       {Phoenix.PubSub, name: MmoServer.PubSub},
       MmoServerWeb.Endpoint,
+      MmoServerWeb.Presence,
+      MmoServer.Protocol.UdpServer,
       {Horde.Registry, [name: PlayerRegistry, keys: :unique]},
       {Horde.DynamicSupervisor, [name: PlayerSupervisor, strategy: :one_for_one]},
       {Horde.DynamicSupervisor, [name: ZoneSupervisor, strategy: :one_for_one]}

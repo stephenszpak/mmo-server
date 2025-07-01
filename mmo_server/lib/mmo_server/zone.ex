@@ -22,6 +22,11 @@ defmodule MmoServer.Zone do
     GenServer.call(via(zone_id), {:get_position, player_id})
   end
 
+  # fetch all known positions for a zone
+  def get_position(zone_id) do
+    GenServer.call(via(zone_id), :get_position)
+  end
+
   defp via(zone_id), do: {:via, Horde.Registry, {PlayerRegistry, {:zone, zone_id}}}
 
   def init(zone_id) do

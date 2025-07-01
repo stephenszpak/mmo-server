@@ -3,7 +3,13 @@ defmodule MmoServer.Player do
 
   defstruct [:id, :zone_id, :pos, :hp, :mana, :conn_pid]
 
-  def start_link(player_id, zone_id) do
+  @doc """
+  Starts a player process registered via `Horde.Registry`.
+
+  Accepts a map containing the `player_id` and `zone_id` so that the
+  child can be started with a single argument by `DynamicSupervisor`.
+  """
+  def start_link(%{player_id: player_id, zone_id: zone_id}) do
     name = {:via, Horde.Registry, {PlayerRegistry, player_id}}
     GenServer.start_link(__MODULE__, {player_id, zone_id}, name: name)
   end

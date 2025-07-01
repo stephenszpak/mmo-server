@@ -105,7 +105,7 @@ iex -S mix phx.server
 
 {:ok, _player} =
   DynamicSupervisor.start_child(MmoServer.PlayerSupervisor,
-    {MmoServer.Player, ["player1", "zone1"]})
+    {MmoServer.Player, %{player_id: "player1", zone_id: "zone1"}})
 ```
 
 These commands must be executed from the `mmo_server` directory after the server has started.

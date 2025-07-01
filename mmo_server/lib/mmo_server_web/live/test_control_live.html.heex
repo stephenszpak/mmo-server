@@ -30,5 +30,10 @@
       <button phx-click="damage">Apply 100 Damage</button>
       <button phx-click="respawn">Force Respawn</button>
     </div>
+    <ul id="event-log">
+      <%= for entry <- @log do %>
+        <li><%= entry %></li>
+      <% end %>
+    </ul>
   </body>
 </html>

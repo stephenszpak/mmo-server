@@ -5,7 +5,10 @@ defmodule MmoServerWeb.TestControlLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    if connected?(socket), do: :timer.send_interval(1000, :refresh)
+    if connected?(socket) do
+      :timer.send_interval(1000, :refresh)
+      Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:zone1")
+    end
 
     players =
       Horde.Registry.select(PlayerRegistry, [{{:"$1", :_, :_}, [], [:"$1"]}])
@@ -15,7 +18,8 @@ defmodule MmoServerWeb.TestControlLive do
      assign(socket,
        players: players,
        selected_player: List.first(players),
-       target_player: List.first(players)
+       target_player: List.first(players),
+       log: []
      )}
   end
 
@@ -71,7 +75,27 @@ defmodule MmoServerWeb.TestControlLive do
        players: players,
        selected_player: selected,
        target_player: target
-     )}
+      )}
+  end
+
+  def handle_info({:player_moved, id, pos}, socket) do
+    log = update_log(socket.assigns.log, "Player #{id} moved to #{inspect(pos)}")
+    {:noreply, assign(socket, log: log)}
+  end
+
+  def handle_info({:death, id}, socket) do
+    log = update_log(socket.assigns.log, "Player #{id} died")
+    {:noreply, assign(socket, log: log)}
+  end
+
+  def handle_info({:player_respawned, id}, socket) do
+    log = update_log(socket.assigns.log, "Player #{id} respawned")
+    {:noreply, assign(socket, log: log)}
+  end
+
+  defp update_log(log, msg) do
+    [msg | log]
+    |> Enum.take(20)
   end
 
   # Rendered via "test_control_live.html.heex"

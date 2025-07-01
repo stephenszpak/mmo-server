@@ -40,4 +40,9 @@ defmodule MmoServerWeb.TestControlLive do
     Player.respawn(socket.assigns.selected_player)
     {:noreply, socket}
   end
+
+  @impl true
+  def render(assigns) do
+    Phoenix.View.render(__MODULE__, "test_control_live.html", assigns)
+  end
 end

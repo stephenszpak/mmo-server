@@ -38,6 +38,7 @@ defmodule MmoServer.MixProject do
       {:nimble_pool, "~> 1.1"},
       {:absinthe, "~> 1.7"},
       {:absinthe_phoenix, "~> 2.0"},
+      {:plug_cowboy, "~> 2.6"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev], runtime: false},
       {:prom_ex, "~> 1.9"}

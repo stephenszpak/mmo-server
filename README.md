@@ -91,3 +91,21 @@ From `iex -S mix` you can print all positions using:
 ```elixir
 MmoServer.CLI.LivePlayerTracker.print_all_positions()
 ```
+
+## Starting Zones and Players from IEx
+
+After launching the Phoenix server from the `mmo_server` directory, you can manually create zones and players in an interactive shell. Start `iex` alongside the server and then run:
+
+```elixir
+iex -S mix phx.server
+
+{:ok, _zone} =
+  DynamicSupervisor.start_child(MmoServer.ZoneSupervisor,
+    {MmoServer.Zone, "zone1"})
+
+{:ok, _player} =
+  DynamicSupervisor.start_child(MmoServer.PlayerSupervisor,
+    {MmoServer.Player, ["player1", "zone1"]})
+```
+
+These commands must be executed from the `mmo_server` directory after the server has started.

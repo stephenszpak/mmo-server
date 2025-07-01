@@ -74,3 +74,20 @@ server logs.
 
 3. Repeat with a different `player_id` from a second terminal. The log output
    will display position updates for both players.
+
+## How to run the live dashboard
+
+Start the Phoenix server:
+
+```bash
+cd mmo_server
+mix phx.server
+```
+
+Visit `http://localhost:4000/players` to view live player positions.
+
+From `iex -S mix` you can print all positions using:
+
+```elixir
+MmoServer.CLI.LivePlayerTracker.print_all_positions()
+```

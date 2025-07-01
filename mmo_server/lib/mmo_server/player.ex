@@ -12,6 +12,10 @@ defmodule MmoServer.Player do
     GenServer.cast({:via, Horde.Registry, {PlayerRegistry, player_id}}, {:move, delta})
   end
 
+  def get_position(player_id) do
+    GenServer.call({:via, Horde.Registry, {PlayerRegistry, player_id}}, :get_position)
+  end
+
   def init({player_id, zone_id}) do
     state = %__MODULE__{
       id: player_id,
@@ -33,5 +37,9 @@ defmodule MmoServer.Player do
 
   def handle_cast({:damage, amount}, state) do
     {:noreply, %{state | hp: max(state.hp - amount, 0)}}
+  end
+
+  def handle_call(:get_position, _from, state) do
+    {:reply, state.pos, state}
   end
 end

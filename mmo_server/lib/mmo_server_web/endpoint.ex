@@ -5,6 +5,13 @@ defmodule MmoServerWeb.Endpoint do
     websocket: true,
     longpoll: false
 
+  # Serve static files from priv/static, needed for LiveView assets
+  plug Plug.Static,
+    at: "/",
+    from: :mmo_server,
+    gzip: false,
+    only: ~w(js)
+
   plug Plug.RequestId
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
   plug Plug.Parsers, parsers: [:urlencoded, :multipart, :json], json_decoder: Phoenix.json_library()

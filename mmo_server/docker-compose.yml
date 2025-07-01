@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5432:5432'
+  app:
+    build: .
+    command: iex -S mix phx.server
+    ports:
+      - '4000:4000'
+    depends_on:
+      - db

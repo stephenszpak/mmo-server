@@ -1,0 +1,12 @@
+defmodule MmoServer.PlayerTest do
+  use ExUnit.Case, async: true
+
+  test "player moves and takes damage" do
+    {:ok, pid} = MmoServer.Player.start_link("player1", "zone1")
+    GenServer.cast(pid, {:move, {1, 2, 3}})
+    GenServer.cast(pid, {:damage, 10})
+    state = :sys.get_state(pid)
+    assert state.position == {1, 2, 3}
+    assert state.hp == 90
+  end
+end

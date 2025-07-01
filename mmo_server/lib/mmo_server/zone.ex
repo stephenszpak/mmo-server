@@ -17,6 +17,11 @@ defmodule MmoServer.Zone do
     GenServer.cast(via(zone_id), {:update_pos, player_id, pos})
   end
 
+  # synchronous API to read a player's current position from the zone
+  def get_position(zone_id, player_id) do
+    GenServer.call(via(zone_id), {:get_position, player_id})
+  end
+
   defp via(zone_id), do: {:via, Horde.Registry, {PlayerRegistry, {:zone, zone_id}}}
 
   def init(zone_id) do
@@ -40,6 +45,17 @@ defmodule MmoServer.Zone do
   def handle_cast({:update_pos, player_id, pos}, state) do
     :ets.insert(state.table, {player_id, pos})
     {:noreply, state}
+  end
+
+  # handle synchronous position fetches
+  def handle_call({:get_position, player_id}, _from, state) do
+    reply =
+      case :ets.lookup(state.table, player_id) do
+        [{^player_id, pos}] -> pos
+        [] -> {:error, :not_found}
+      end
+
+    {:reply, reply, state}
   end
 
   def handle_info(:tick, state) do

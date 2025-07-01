@@ -66,6 +66,7 @@ defmodule MmoServer.Player do
 
   @impl true
   def handle_cast({:damage, amount}, state) do
+    Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{state.zone_id}", {:damage, state.id, amount})
     new_hp = max(state.hp - amount, 0)
     state = %{state | hp: new_hp}
 

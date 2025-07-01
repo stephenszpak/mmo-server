@@ -63,8 +63,8 @@ defmodule MmoServer.CombatEngine do
   end
 
   defp deal_damage(a, b) do
-    GenServer.cast(via_player(a), {:damage, @damage})
-    GenServer.cast(via_player(b), {:damage, @damage})
+    MmoServer.Player.damage(a, @damage)
+    MmoServer.Player.damage(b, @damage)
   end
 
   defp via_player(id), do: {:via, Horde.Registry, {PlayerRegistry, id}}

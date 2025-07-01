@@ -58,6 +58,12 @@ defmodule MmoServer.Zone do
     {:reply, reply, state}
   end
 
+  # return all known positions when no player_id is provided
+  # allows callers like the dashboard to fetch the complete table
+  def handle_call(:get_position, _from, state) do
+    {:reply, :ets.tab2list(state.table), state}
+  end
+
   def handle_info(:tick, state) do
     positions = :ets.tab2list(state.table)
     Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{state.id}", {:positions, positions})

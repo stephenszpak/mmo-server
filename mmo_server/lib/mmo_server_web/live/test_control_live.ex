@@ -88,6 +88,11 @@ defmodule MmoServerWeb.TestControlLive do
     {:noreply, assign(socket, log: log)}
   end
 
+  def handle_info({:damage, id, amount}, socket) do
+    log = update_log(socket.assigns.log, "Player #{id} took #{amount} damage")
+    {:noreply, assign(socket, log: log)}
+  end
+
   def handle_info({:player_respawned, id}, socket) do
     log = update_log(socket.assigns.log, "Player #{id} respawned")
     {:noreply, assign(socket, log: log)}

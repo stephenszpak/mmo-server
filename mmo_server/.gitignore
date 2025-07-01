@@ -1,7 +1,0 @@
-/_build/
-/deps/
-/cover/
-.DS_Store
-*.ez
-.env*
-*.swp

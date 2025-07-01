@@ -24,10 +24,12 @@ This repository contains a minimal Phoenix application used for experimenting wi
    mix deps.get
    ```
 
-3. Create the development database (if it does not already exist):
+3. Create the development database (if it does not already exist) and seed initial players:
 
    ```bash
    mix ecto.create
+   mix ecto.migrate
+   mix run priv/repo/seeds.exs
    ```
 
 4. Run the application:

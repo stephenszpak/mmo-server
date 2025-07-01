@@ -5,6 +5,7 @@ defmodule MmoServer.Application do
 
   def start(_type, _args) do
     children = [
+      MmoServer.Repo,
       MmoServerWeb.Telemetry,
       {Phoenix.PubSub, name: MmoServer.PubSub},
       MmoServerWeb.Endpoint,

@@ -8,7 +8,7 @@ defmodule MmoServer.Player.PersistenceBroadway do
   def start_link(_opts \\ []) do
     Broadway.start_link(__MODULE__,
       name: __MODULE__,
-      producer: [module: {Producer, []}, concurrency: 1],
+      producer: [module: {__MODULE__.Producer, []}, concurrency: 1],
       processors: [default: [concurrency: 1]],
       batchers: [default: [batch_size: 50, batch_timeout: 1_000]]
     )

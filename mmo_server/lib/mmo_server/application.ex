@@ -17,7 +17,8 @@ defmodule MmoServer.Application do
       MmoServer.Player.PersistenceBroadway,
       {Horde.Registry, [name: PlayerRegistry, keys: :unique]},
       {MmoServer.PlayerSupervisor, []},
-      {MmoServer.ZoneSupervisor, []}
+      {MmoServer.ZoneSupervisor, []},
+      MmoServer.Bootstrap
     ]
 
     opts = [strategy: :one_for_one, name: MmoServer.Supervisor]

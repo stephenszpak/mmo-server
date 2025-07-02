@@ -40,6 +40,7 @@ defmodule MmoServer.MixProject do
       {:absinthe, "~> 1.7"},
       {:absinthe_phoenix, "~> 2.0"},
       {:plug_cowboy, "~> 2.6"},
+      {:phoenix_html_helpers, "~> 1.0"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev], runtime: false},
       {:prom_ex, "~> 1.9"}

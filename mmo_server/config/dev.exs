@@ -4,6 +4,7 @@ config :mmo_server, MmoServer.Repo,
   username: "postgres",
   password: "postgres",
   hostname: "localhost",
+  port: 5433,
   database: "mmo_server_dev",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10

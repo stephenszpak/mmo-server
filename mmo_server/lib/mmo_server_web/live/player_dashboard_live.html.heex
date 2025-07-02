@@ -2,6 +2,7 @@
   <head>
     <title>Player Dashboard</title>
     <meta charset="utf-8" />
+    <%= csrf_meta_tag() %>
   </head>
   <body>
     <table>
@@ -29,7 +30,12 @@
     <script type="text/javascript" src="/js/phoenix.min.js"></script>
     <script type="text/javascript" src="/js/phoenix_live_view.min.js"></script>
     <script>
-      const liveSocket = new LiveView.LiveSocket("/live", Phoenix.Socket);
+      const csrfToken = document
+        .querySelector("meta[name='csrf-token']")
+        .getAttribute("content");
+      const liveSocket = new LiveView.LiveSocket("/live", Phoenix.Socket, {
+        params: { _csrf_token: csrfToken }
+      });
       liveSocket.connect();
     </script>
   </body>

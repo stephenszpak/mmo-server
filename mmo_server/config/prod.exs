@@ -6,5 +6,5 @@ config :mmo_server, MmoServer.Repo,
 
 config :mmo_server, MmoServerWeb.Endpoint,
   url: [host: "example.com", port: 80],
-  secret_key_base: """#{String.duplicate("b", 64)}""",
+  secret_key_base: String.duplicate("b", 64),
   cache_static_manifest: "priv/static/cache_manifest.json"

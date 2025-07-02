@@ -13,6 +13,8 @@ defmodule MmoServer.Application do
       MmoServerWeb.Presence,
       MmoServer.Protocol.UdpServer,
       MmoServer.CombatEngine,
+      MmoServer.Player.PersistenceQueue,
+      MmoServer.Player.PersistenceBroadway,
       {Horde.Registry, [name: PlayerRegistry, keys: :unique]},
       {MmoServer.PlayerSupervisor, []},
       {MmoServer.ZoneSupervisor, []}

@@ -42,16 +42,35 @@ defmodule MmoServer.Player do
   end
 
   @impl true
+  alias MmoServer.{Repo, PlayerPersistence}
+
   def init({player_id, zone_id}) do
-    state = %__MODULE__{
-      id: player_id,
-      zone_id: zone_id,
-      pos: {0, 0, 0},
-      hp: 100,
-      mana: 100,
-      status: :alive,
-      conn_pid: nil
-    }
+    persisted = Repo.get(PlayerPersistence, player_id)
+
+    state =
+      if persisted do
+        %__MODULE__{
+          id: persisted.id,
+          zone_id: persisted.zone_id,
+          pos: {persisted.x, persisted.y, persisted.z},
+          hp: persisted.hp,
+          mana: 100,
+          status: String.to_atom(persisted.status),
+          conn_pid: nil
+        }
+      else
+        %__MODULE__{
+          id: player_id,
+          zone_id: zone_id,
+          pos: {0, 0, 0},
+          hp: 100,
+          mana: 100,
+          status: :alive,
+          conn_pid: nil
+        }
+      end
+
+    MmoServer.Player.PersistenceQueue.enqueue(self())
     {:ok, state}
   end
 
@@ -61,7 +80,9 @@ defmodule MmoServer.Player do
     new_pos = {x + dx, y + dy, z + dz}
     MmoServer.Zone.player_moved(state.zone_id, state.id, new_pos)
     Logger.info("Player #{state.id} moved to #{inspect(new_pos)}")
-    {:noreply, %{state | pos: new_pos}}
+    new_state = %{state | pos: new_pos}
+    MmoServer.Player.PersistenceQueue.enqueue(self())
+    {:noreply, new_state}
   end
 
   @impl true
@@ -73,8 +94,11 @@ defmodule MmoServer.Player do
     if new_hp <= 0 and state.status == :alive do
       Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{state.zone_id}", {:death, state.id})
       Process.send_after(self(), :respawn, 10_000)
-      {:noreply, %{state | status: :dead}}
+      new_state = %{state | status: :dead}
+      MmoServer.Player.PersistenceQueue.enqueue(self())
+      {:noreply, new_state}
     else
+      MmoServer.Player.PersistenceQueue.enqueue(self())
       {:noreply, state}
     end
   end
@@ -89,7 +113,14 @@ defmodule MmoServer.Player do
     new_state = %{state | hp: 100, status: :alive, pos: {0, 0, 0}}
     MmoServer.Zone.player_respawned(state.zone_id, state.id)
     MmoServer.Zone.player_moved(state.zone_id, state.id, new_state.pos)
-    Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{state.zone_id}", {:player_respawned, state.id})
+
+    Phoenix.PubSub.broadcast(
+      MmoServer.PubSub,
+      "zone:#{state.zone_id}",
+      {:player_respawned, state.id}
+    )
+
+    MmoServer.Player.PersistenceQueue.enqueue(self())
     {:noreply, new_state}
   end
 

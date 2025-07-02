@@ -14,7 +14,7 @@ defmodule MmoServer.Player.PersistenceBroadway do
     )
   end
 
-  defmodule Producer do
+  defmodule __MODULE__.Producer do
     use GenStage
 
     def start_link(_opts) do

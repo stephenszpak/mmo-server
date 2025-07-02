@@ -99,6 +99,11 @@ defmodule MmoServerWeb.TestControlLive do
     {:noreply, assign(socket, log: log)}
   end
 
+  # ignore periodic zone position updates
+  def handle_info({:positions, _positions}, socket) do
+    {:noreply, socket}
+  end
+
   defp update_log(log, msg) do
     [msg | log]
     |> Enum.take(20)

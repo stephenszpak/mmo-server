@@ -35,6 +35,7 @@ defmodule MmoServer.Player.PersistenceBroadway do
     {x, y, z} = state.pos
 
     %Broadway.Message{
+      acknowledger: Broadway.NoopAcknowledger.init(),
       data: %{
         id: state.id,
         zone_id: state.zone_id,

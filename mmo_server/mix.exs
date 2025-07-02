@@ -37,6 +37,7 @@ defmodule MmoServer.MixProject do
       {:delta_crdt, "~> 0.6"},
       {:broadway, "~> 1.0"},
       {:nimble_pool, "~> 1.1"},
+      {:nimble_postgres, "~> 0.1"},
       {:absinthe, "~> 1.7"},
       {:absinthe_phoenix, "~> 2.0"},
       {:plug_cowboy, "~> 2.6"},

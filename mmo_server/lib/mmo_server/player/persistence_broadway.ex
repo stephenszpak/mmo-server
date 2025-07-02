@@ -21,7 +21,9 @@ defmodule MmoServer.Player.PersistenceBroadway do
       GenStage.start_link(__MODULE__, :ok)
     end
 
-    def init(:ok), do: {:producer, :ok}
+    # Broadway injects configuration into the options passed to the producer.
+    # Accept any argument here to avoid a function clause error during startup.
+    def init(_opts), do: {:producer, :ok}
 
     def handle_demand(demand, state) when demand > 0 do
       events = PersistenceQueue.dequeue_batch(demand)

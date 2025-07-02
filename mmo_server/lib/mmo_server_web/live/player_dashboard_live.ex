@@ -1,6 +1,6 @@
 defmodule MmoServerWeb.PlayerDashboardLive do
   use Phoenix.LiveView, layout: false
-  import Phoenix.HTML.Tag
+  import PhoenixHTMLHelpers.Tag
   require Logger
 
   @impl true

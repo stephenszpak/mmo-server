@@ -1,6 +1,6 @@
 defmodule MmoServerWeb.TestControlLive do
   use Phoenix.LiveView, layout: false
-  import Phoenix.HTML.Tag
+  import PhoenixHTMLHelpers.Tag
 
   alias MmoServer.{Player, CombatEngine}
 

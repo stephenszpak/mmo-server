@@ -11,9 +11,11 @@ defmodule MmoServer.Player.PersistenceBroadway do
       producer: [module: {__MODULE__.Producer, []}, concurrency: 1],
       processors: [default: [concurrency: 1]],
       # Persist updates quickly so interactive sessions see changes almost
-      # immediately. The previous timeout of 1 second caused noticeable delays
-      # before player state was written to the database.
-      batchers: [default: [batch_size: 50, batch_timeout: 100]]
+      # immediately. The previous timeout of 100ms occasionally caused race
+      # conditions in tests where the updated player state had not yet been
+      # flushed to the database. Reducing this timeout speeds up persistence
+      # without impacting functionality.
+      batchers: [default: [batch_size: 50, batch_timeout: 20]]
     )
   end
 

@@ -3,7 +3,7 @@ defmodule MmoServer.PlayerTest do
 
   import MmoServer.TestHelpers
 
-  setup tags do
+  setup _tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(MmoServer.Repo)
     Ecto.Adapters.SQL.Sandbox.mode(MmoServer.Repo, {:shared, self()})
     :ok

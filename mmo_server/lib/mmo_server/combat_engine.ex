@@ -66,6 +66,4 @@ defmodule MmoServer.CombatEngine do
     MmoServer.Player.damage(a, @damage)
     MmoServer.Player.damage(b, @damage)
   end
-
-  defp via_player(id), do: {:via, Horde.Registry, {PlayerRegistry, id}}
 end

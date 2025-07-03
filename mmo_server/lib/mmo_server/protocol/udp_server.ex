@@ -22,7 +22,8 @@ defmodule MmoServer.Protocol.UdpServer do
           clamp(dy),
           clamp(dz)
         }
-        MmoServer.Player.move(pid, delta)
+        player_id = Integer.to_string(pid)
+        MmoServer.Player.move(player_id, delta)
       _ ->
         :ok
     end

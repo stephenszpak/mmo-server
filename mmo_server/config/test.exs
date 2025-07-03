@@ -17,4 +17,4 @@ config :mmo_server, MmoServerWeb.Endpoint,
   http: [ip: {127,0,0,1}, port: 4002],
   server: false
 
-config :logger, level: :warn
+config :logger, level: :warning

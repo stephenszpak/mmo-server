@@ -5,12 +5,12 @@ defmodule MmoServer.PersistenceTest do
 
   import MmoServer.TestHelpers
 
-  setup tags do
+  setup _tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Repo)
     Ecto.Adapters.SQL.Sandbox.mode(Repo, {:shared, self()})
-    {:ok, q} = start_supervised_once(MmoServer.Player.PersistenceQueue)
+    {:ok, q} = start_supervised(MmoServer.Player.PersistenceQueue)
     Ecto.Adapters.SQL.Sandbox.allow(Repo, self(), q)
-    {:ok, b} = start_supervised_once(MmoServer.Player.PersistenceBroadway)
+    {:ok, b} = start_supervised(MmoServer.Player.PersistenceBroadway)
     Ecto.Adapters.SQL.Sandbox.allow(Repo, self(), b)
     start_shared(MmoServer.Zone, "elwynn")
     :ok

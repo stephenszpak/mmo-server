@@ -7,7 +7,6 @@ defmodule MmoServer.Bootstrap do
 
   alias MmoServer.{Repo, PlayerPersistence}
 
-  @impl true
   def start_link(_arg) do
     Task.start_link(__MODULE__, :run, [])
   end

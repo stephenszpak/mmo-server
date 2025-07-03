@@ -43,6 +43,7 @@ defmodule MmoServer.Player do
 
   @impl true
   alias MmoServer.{Repo, PlayerPersistence}
+  alias MmoServer.Player.PersistenceBroadway
 
   def init({player_id, zone_id}) do
     persisted = Repo.get(PlayerPersistence, player_id)
@@ -70,7 +71,7 @@ defmodule MmoServer.Player do
         }
       end
 
-    MmoServer.Player.PersistenceQueue.enqueue(self())
+    persist(state)
     {:ok, state}
   end
 
@@ -81,7 +82,7 @@ defmodule MmoServer.Player do
     MmoServer.Zone.player_moved(state.zone_id, state.id, new_pos)
     Logger.info("Player #{state.id} moved to #{inspect(new_pos)}")
     new_state = %{state | pos: new_pos}
-    MmoServer.Player.PersistenceQueue.enqueue(self())
+    persist(new_state)
     {:noreply, new_state}
   end
 
@@ -95,10 +96,10 @@ defmodule MmoServer.Player do
       Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{state.zone_id}", {:death, state.id})
       Process.send_after(self(), :respawn, 10_000)
       new_state = %{state | status: :dead}
-      MmoServer.Player.PersistenceQueue.enqueue(self())
+      persist(new_state)
       {:noreply, new_state}
     else
-      MmoServer.Player.PersistenceQueue.enqueue(self())
+      persist(state)
       {:noreply, state}
     end
   end
@@ -120,7 +121,7 @@ defmodule MmoServer.Player do
       {:player_respawned, state.id}
     )
 
-    MmoServer.Player.PersistenceQueue.enqueue(self())
+    persist(new_state)
     {:noreply, new_state}
   end
 
@@ -132,5 +133,21 @@ defmodule MmoServer.Player do
   @impl true
   def handle_call(:get_status, _from, state) do
     {:reply, state.status, state}
+  end
+
+  defp persist(state) do
+    {x, y, z} = state.pos
+
+    attrs = %{
+      id: state.id,
+      zone_id: state.zone_id,
+      x: x,
+      y: y,
+      z: z,
+      hp: state.hp,
+      status: Atom.to_string(state.status)
+    }
+
+    PersistenceBroadway.push(attrs)
   end
 end

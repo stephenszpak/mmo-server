@@ -1,6 +1,6 @@
 # Elixir build artifacts
-/_build/
-/deps/
+mmo_server/_build/
+mmo_server/deps/
 /erl_crash.dump
 /.elixir_ls/
 /cover/

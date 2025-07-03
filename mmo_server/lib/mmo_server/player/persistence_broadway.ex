@@ -18,7 +18,7 @@ defmodule MmoServer.Player.PersistenceBroadway do
 
   def push(event), do: Broadway.test_message(__MODULE__, event)
 
-  def transform(event, _opts), do: %Broadway.Message{data: event}
+  def transform(event, _opts), do: Broadway.Message.new(event)
 
   @impl true
   def handle_batch(:db, messages, _batch_info, _context) do

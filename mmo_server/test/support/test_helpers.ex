@@ -11,6 +11,11 @@ defmodule MmoServer.TestHelpers do
 
     child_spec = Supervisor.child_spec({process_mod, args}, id: {process_mod, make_ref()})
     {:ok, pid} = start_supervised(child_spec)
+
+    ExUnit.Callbacks.on_exit(fn ->
+      if Process.alive?(pid), do: Process.exit(pid, :normal)
+    end)
+
     pid
   end
 

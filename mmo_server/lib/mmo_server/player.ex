@@ -126,6 +126,19 @@ defmodule MmoServer.Player do
   end
 
   @impl true
+  def handle_info({:ack, _ref, _successful, failed}, state) do
+    Enum.each(failed, fn
+      %Broadway.Message{status: {:error, reason}} ->
+        Logger.error("Failed to persist player #{state.id}: #{inspect(reason)}")
+
+      _ ->
+        :ok
+    end)
+
+    {:noreply, state}
+  end
+
+  @impl true
   def handle_call(:get_position, _from, state) do
     {:reply, state.pos, state}
   end

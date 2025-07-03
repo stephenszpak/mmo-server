@@ -16,6 +16,9 @@ defmodule MmoServer.Player.PersistenceBroadway do
     )
   end
 
+  @impl true
+  def handle_message(_, message, _context), do: message
+
   def push(event), do: Broadway.test_message(__MODULE__, event)
 
   def transform(event, _opts), do: Broadway.Message.new(event)

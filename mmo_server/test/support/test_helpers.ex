@@ -7,5 +7,23 @@ defmodule MmoServer.TestHelpers do
     Ecto.Adapters.SQL.Sandbox.allow(MmoServer.Repo, self(), pid)
     pid
   end
+
+  def allow_tree(repo, owner, pid) do
+    Ecto.Adapters.SQL.Sandbox.allow(repo, owner, pid)
+
+    children =
+      try do
+        Supervisor.which_children(pid)
+      catch
+        :exit, _ -> []
+      end
+
+    Enum.each(children, fn
+      {_, child_pid, _, _} when is_pid(child_pid) ->
+        allow_tree(repo, owner, child_pid)
+      _ ->
+        :ok
+    end)
+  end
 end
 

@@ -107,7 +107,7 @@ iex -S mix phx.server
 
 {:ok, _player} =
   DynamicSupervisor.start_child(MmoServer.PlayerSupervisor,
-    {MmoServer.Player, %{player_id: "player1", zone_id: "zone1"}})
+    {MmoServer.Player, %{player_id: "player3", zone_id: "zone1"}})
 ```
 Check player positions with:
 
@@ -122,9 +122,6 @@ MmoServer.Player.move("player1", {1.0, 2.0, 3.0})
 
 get full zone state:
 
-```elixir
-MmoServer.Zone.get_position("zone1")
-# Should return: [{"player1", {1.0, 2.0, 3.0}}]
-```
+```elixi
 
 These commands must be executed from the `mmo_server` directory after the server has started.

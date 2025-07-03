@@ -55,7 +55,10 @@ defmodule MmoServer.Player.PersistenceBroadway do
 
   @impl true
   def handle_batch(:default, messages, _batch_info, state) do
-    now = DateTime.utc_now() |> DateTime.truncate(:second)
+    # Store timestamps using NaiveDateTime so they match the `timestamps/0`
+    # columns defined in the migrations. Using DateTime would cause a type
+    # mismatch and silently prevent writes from succeeding.
+    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
 
     entries =
       Enum.map(messages, fn %Broadway.Message{data: attrs} ->

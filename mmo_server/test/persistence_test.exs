@@ -10,7 +10,7 @@ defmodule MmoServer.PersistenceTest do
     Ecto.Adapters.SQL.Sandbox.mode(Repo, {:shared, self()})
     q = Process.whereis(MmoServer.Player.PersistenceQueue)
     b = Process.whereis(MmoServer.Player.PersistenceBroadway)
-    allow_tree(Repo, self(), q)
+    Ecto.Adapters.SQL.Sandbox.allow(Repo, self(), q)
     allow_tree(Repo, self(), b)
     start_shared(MmoServer.Zone, "elwynn")
     :ok

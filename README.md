@@ -42,7 +42,8 @@ This repository contains a minimal Phoenix application used for experimenting wi
 
 ## Running Tests
 
-Execute the test suite with:
+The sandbox runs in manual mode so each case checks out a shared
+connection before spawning processes. Tests therefore run serially.
 
 ```bash
 mix test

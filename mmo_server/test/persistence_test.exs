@@ -3,16 +3,21 @@ defmodule MmoServer.PersistenceTest do
 
   alias MmoServer.{PlayerPersistence, Repo}
 
-  setup do
+  import MmoServer.TestHelpers
+
+  setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Repo)
-    {:ok, _} = start_supervised(MmoServer.Player.PersistenceQueue)
-    {:ok, _} = start_supervised(MmoServer.Player.PersistenceBroadway)
-    {:ok, _zone} = MmoServer.Zone.start_link("elwynn")
+    Ecto.Adapters.SQL.Sandbox.mode(Repo, {:shared, self()})
+    {:ok, q} = start_supervised_once(MmoServer.Player.PersistenceQueue)
+    Ecto.Adapters.SQL.Sandbox.allow(Repo, self(), q)
+    {:ok, b} = start_supervised_once(MmoServer.Player.PersistenceBroadway)
+    Ecto.Adapters.SQL.Sandbox.allow(Repo, self(), b)
+    start_shared(MmoServer.Zone, "elwynn")
     :ok
   end
 
   test "player state persisted and loaded" do
-    {:ok, pid} = MmoServer.Player.start_link(%{player_id: "thrall", zone_id: "elwynn"})
+    pid = start_shared(MmoServer.Player, %{player_id: "thrall", zone_id: "elwynn"})
     MmoServer.Player.damage("thrall", 30)
     :timer.sleep(200)
 
@@ -20,7 +25,7 @@ defmodule MmoServer.PersistenceTest do
     assert persisted.hp == 70
 
     Process.exit(pid, :kill)
-    {:ok, pid2} = MmoServer.Player.start_link(%{player_id: "thrall", zone_id: "elwynn"})
+    pid2 = start_shared(MmoServer.Player, %{player_id: "thrall", zone_id: "elwynn"})
     state = :sys.get_state(pid2)
     assert state.hp == 70
   end

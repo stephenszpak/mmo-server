@@ -1,14 +1,18 @@
 defmodule MmoServer.CombatEngineTest do
   use ExUnit.Case, async: false
 
-  setup do
+  import MmoServer.TestHelpers
+
+  setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(MmoServer.Repo)
+    Ecto.Adapters.SQL.Sandbox.mode(MmoServer.Repo, {:shared, self()})
+    :ok
   end
 
   test "player dies and respawns" do
-    {:ok, _zone} = MmoServer.Zone.start_link("zone1")
-    {:ok, _a} = MmoServer.Player.start_link(%{player_id: "a", zone_id: "zone1"})
-    {:ok, _b} = MmoServer.Player.start_link(%{player_id: "b", zone_id: "zone1"})
+    start_shared(MmoServer.Zone, "zone1")
+    start_shared(MmoServer.Player, %{player_id: "a", zone_id: "zone1"})
+    start_shared(MmoServer.Player, %{player_id: "b", zone_id: "zone1"})
 
     Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:zone1")
 

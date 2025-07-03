@@ -10,7 +10,10 @@ defmodule MmoServer.Player.PersistenceBroadway do
       name: __MODULE__,
       producer: [module: {__MODULE__.Producer, []}, concurrency: 1],
       processors: [default: [concurrency: 1]],
-      batchers: [default: [batch_size: 50, batch_timeout: 1_000]]
+      # Persist updates quickly so interactive sessions see changes almost
+      # immediately. The previous timeout of 1 second caused noticeable delays
+      # before player state was written to the database.
+      batchers: [default: [batch_size: 50, batch_timeout: 100]]
     )
   end
 

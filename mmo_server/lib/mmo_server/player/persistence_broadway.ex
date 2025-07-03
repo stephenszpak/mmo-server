@@ -3,7 +3,7 @@ defmodule MmoServer.Player.PersistenceBroadway do
 
   alias MmoServer.Player.PersistenceQueue
   alias MmoServer.PlayerPersistence
-  alias MmoServer.PostgresPool
+  alias MmoServer.Repo
 
   def start_link(_opts \\ []) do
     Broadway.start_link(__MODULE__,
@@ -67,33 +67,12 @@ defmodule MmoServer.Player.PersistenceBroadway do
       end)
 
     if entries != [] do
-      values_sql =
-        Enum.with_index(entries, 1)
-        |> Enum.map(fn {_, idx} ->
-          placeholders = Enum.map_join(0..8, ",", fn i -> "$#{idx * 9 - 9 + i + 1}" end)
-          "(" <> placeholders <> ")"
-        end)
-        |> Enum.join(",")
-
-      params =
-        Enum.flat_map(entries, fn e ->
-          [e.id, e.zone_id, e.x, e.y, e.z, e.hp, e.status, e.inserted_at, e.updated_at]
-        end)
-
-      sql = """
-      INSERT INTO players (id, zone_id, x, y, z, hp, status, inserted_at, updated_at)
-      VALUES #{values_sql}
-      ON CONFLICT (id) DO UPDATE SET
-        zone_id = EXCLUDED.zone_id,
-        x = EXCLUDED.x,
-        y = EXCLUDED.y,
-        z = EXCLUDED.z,
-        hp = EXCLUDED.hp,
-        status = EXCLUDED.status,
-        updated_at = EXCLUDED.updated_at
-      """
-
-      MmoServer.PostgresPool.query(sql, params)
+      Repo.insert_all(
+        PlayerPersistence,
+        entries,
+        on_conflict: {:replace, [:zone_id, :x, :y, :z, :hp, :status, :updated_at]},
+        conflict_target: [:id]
+      )
     end
 
     {:noreply, messages, state}

@@ -1,6 +1,10 @@
 defmodule MmoServer.MovementTest do
   use ExUnit.Case, async: false
 
+  setup do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(MmoServer.Repo)
+  end
+
   test "udp movement updates position" do
     {:ok, _zone} = MmoServer.Zone.start_link("zone1")
     {:ok, _p} = MmoServer.Player.start_link(%{player_id: 1, zone_id: "zone1"})

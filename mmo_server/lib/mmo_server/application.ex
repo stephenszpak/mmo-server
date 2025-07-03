@@ -17,9 +17,8 @@ defmodule MmoServer.Application do
       MmoServer.Player.PersistenceBroadway,
       {Horde.Registry, [name: PlayerRegistry, keys: :unique]},
       {MmoServer.PlayerSupervisor, []},
-      {MmoServer.ZoneSupervisor, []},
-      MmoServer.Bootstrap
-    ]
+      {MmoServer.ZoneSupervisor, []}
+    ] ++ maybe_bootstrap()
 
     opts = [strategy: :one_for_one, name: MmoServer.Supervisor]
     Supervisor.start_link(children, opts)
@@ -29,5 +28,13 @@ defmodule MmoServer.Application do
   def config_change(changed, _new, removed) do
     MmoServerWeb.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  defp maybe_bootstrap do
+    if Mix.env() == :test do
+      []
+    else
+      [MmoServer.Bootstrap]
+    end
   end
 end

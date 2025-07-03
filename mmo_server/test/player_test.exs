@@ -1,6 +1,10 @@
 defmodule MmoServer.PlayerTest do
   use ExUnit.Case, async: true
 
+  setup do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(MmoServer.Repo)
+  end
+
   test "player moves and takes damage" do
     {:ok, pid} = MmoServer.Player.start_link(%{player_id: "player1", zone_id: "zone1"})
     GenServer.cast(pid, {:move, {1, 2, 3}})

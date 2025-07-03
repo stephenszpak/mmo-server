@@ -5,7 +5,7 @@ config :mmo_server, MmoServer.Repo,
   password: "postgres",
   hostname: "localhost",
   port: 5433,
-  database: "mmo_server_test",
+  database: "mmo_server_dev",
   pool: Ecto.Adapters.SQL.Sandbox
 
 config :mmo_server, MmoServer.PostgresPool,
@@ -13,7 +13,7 @@ config :mmo_server, MmoServer.PostgresPool,
   password: "postgres",
   hostname: "localhost",
   port: 5433,
-  database: "mmo_server_test"
+  database: "mmo_server_dev"
 
 config :mmo_server, MmoServerWeb.Endpoint,
   http: [ip: {127,0,0,1}, port: 4002],

@@ -43,7 +43,6 @@ defmodule MmoServer.Player do
 
   @impl true
   alias MmoServer.{Repo, PlayerPersistence}
-  alias MmoServer.Player.PersistenceBroadway
 
   def init({player_id, zone_id}) do
     persisted = Repo.get(PlayerPersistence, player_id)
@@ -71,7 +70,7 @@ defmodule MmoServer.Player do
         }
       end
 
-    persist(state)
+    persist_state(state)
     {:ok, state}
   end
 
@@ -82,7 +81,7 @@ defmodule MmoServer.Player do
     MmoServer.Zone.player_moved(state.zone_id, state.id, new_pos)
     Logger.info("Player #{state.id} moved to #{inspect(new_pos)}")
     new_state = %{state | pos: new_pos}
-    persist(new_state)
+    persist_state(new_state)
     {:noreply, new_state}
   end
 
@@ -96,10 +95,10 @@ defmodule MmoServer.Player do
       Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{state.zone_id}", {:death, state.id})
       Process.send_after(self(), :respawn, 10_000)
       new_state = %{state | status: :dead}
-      persist(new_state)
+      persist_state(new_state)
       {:noreply, new_state}
     else
-      persist(state)
+      persist_state(state)
       {:noreply, state}
     end
   end
@@ -121,21 +120,8 @@ defmodule MmoServer.Player do
       {:player_respawned, state.id}
     )
 
-    persist(new_state)
+    persist_state(new_state)
     {:noreply, new_state}
-  end
-
-  @impl true
-  def handle_info({:ack, _ref, _successful, failed}, state) do
-    Enum.each(failed, fn
-      %Broadway.Message{status: {:error, reason}} ->
-        Logger.error("Failed to persist player #{state.id}: #{inspect(reason)}")
-
-      _ ->
-        :ok
-    end)
-
-    {:noreply, state}
   end
 
   @impl true
@@ -148,7 +134,7 @@ defmodule MmoServer.Player do
     {:reply, state.status, state}
   end
 
-  defp persist(state) do
+  defp persist_state(state) do
     {x, y, z} = state.pos
 
     attrs = %{
@@ -161,6 +147,12 @@ defmodule MmoServer.Player do
       status: Atom.to_string(state.status)
     }
 
-    PersistenceBroadway.push(attrs)
+    Task.start(fn ->
+      %PlayerPersistence{}
+      |> PlayerPersistence.changeset(attrs)
+      |> Repo.insert(on_conflict: :replace_all, conflict_target: :id)
+    end)
+
+    :ok
   end
 end

@@ -1,82 +1,45 @@
 defmodule MmoServer.Player.PersistenceBroadway do
   use Broadway
 
-  alias MmoServer.Player.PersistenceQueue
-  alias MmoServer.PlayerPersistence
-  alias MmoServer.Repo
+  alias MmoServer.{Repo, PlayerPersistence}
+  require Logger
 
-  def start_link(_opts \\ []) do
+  def start_link(opts \\ []) do
     Broadway.start_link(__MODULE__,
       name: __MODULE__,
-      producer: [module: {__MODULE__.Producer, []}, concurrency: 1],
-      processors: [default: [concurrency: 1]],
-      # Persist updates quickly so interactive sessions see changes almost
-      # immediately. The previous timeout of 100ms occasionally caused race
-      # conditions in tests where the updated player state had not yet been
-      # flushed to the database. Reducing this timeout speeds up persistence
-      # without impacting functionality.
-      batchers: [default: [batch_size: 50, batch_timeout: 20]]
+      producer: [
+        module: {Broadway.DummyProducer, []},
+        transformer: {__MODULE__, :transform, []}
+      ],
+      processors: [default: [concurrency: 4]],
+      batchers: [db: [batch_size: 100, batch_timeout: 1_000]]
     )
   end
 
-  defmodule __MODULE__.Producer do
-    use GenStage
+  def push(event), do: Broadway.test_message(__MODULE__, event)
 
-    def start_link(_opts) do
-      GenStage.start_link(__MODULE__, :ok)
-    end
-
-    # Broadway injects configuration into the options passed to the producer.
-    # Accept any argument here to avoid a function clause error during startup.
-    def init(_opts), do: {:producer, :ok}
-
-    def handle_demand(demand, state) when demand > 0 do
-      events = PersistenceQueue.dequeue_batch(demand)
-      {:noreply, events, state}
-    end
-  end
+  def transform(event, _opts), do: %Broadway.Message{data: event}
 
   @impl true
-  def handle_message(_, pid, _) do
-    state = :sys.get_state(pid)
-    {x, y, z} = state.pos
-
-    %Broadway.Message{
-      acknowledger: Broadway.NoopAcknowledger.init(),
-      data: %{
-        id: state.id,
-        zone_id: state.zone_id,
-        x: x,
-        y: y,
-        z: z,
-        hp: state.hp,
-        status: Atom.to_string(state.status)
-      }
-    }
-  end
-
-  @impl true
-  def handle_batch(:default, messages, _batch_info, state) do
-    # Store timestamps using NaiveDateTime so they match the `timestamps/0`
-    # columns defined in the migrations. Using DateTime would cause a type
-    # mismatch and silently prevent writes from succeeding.
-    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
-
-    entries =
+  def handle_batch(:db, messages, _batch_info, _context) do
+    rows =
       Enum.map(messages, fn %Broadway.Message{data: attrs} ->
-        Map.put(attrs, :inserted_at, now)
-        |> Map.put(:updated_at, now)
+        Map.put(attrs, :updated_at, DateTime.utc_now(:second))
       end)
 
-    if entries != [] do
-      Repo.insert_all(
-        PlayerPersistence,
-        entries,
-        on_conflict: {:replace, [:zone_id, :x, :y, :z, :hp, :status, :updated_at]},
-        conflict_target: [:id]
-      )
-    end
+    Repo.insert_all(
+      PlayerPersistence,
+      rows,
+      on_conflict: {:replace_all_except, [:id, :inserted_at]},
+      conflict_target: :id
+    )
 
-    {:noreply, messages, state}
+    messages
+  end
+
+  @impl true
+  def handle_failed(messages, reason, _context) do
+    Logger.error("Failed to persist player data: #{inspect(reason)}")
+    messages
   end
 end

@@ -25,5 +25,21 @@ defmodule MmoServer.TestHelpers do
         :ok
     end)
   end
+
+  def eventually(fun, attempts \\ 10, interval \\ 50)
+  def eventually(fun, 0, _interval), do: fun.()
+  def eventually(fun, attempts, interval) do
+    try do
+      fun.()
+    rescue
+      _ ->
+        Process.sleep(interval)
+        eventually(fun, attempts - 1, interval)
+    catch
+      _kind, _reason ->
+        Process.sleep(interval)
+        eventually(fun, attempts - 1, interval)
+    end
+  end
 end
 

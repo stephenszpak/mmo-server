@@ -11,9 +11,10 @@ defmodule MmoServer.Player do
   child can be started with a single argument by `DynamicSupervisor`.
   """
   @spec start_link(map()) :: GenServer.on_start()
-  def start_link(%{player_id: player_id, zone_id: zone_id}) do
+  def start_link(%{player_id: player_id, zone_id: zone_id} = args) do
+    owner = Map.get(args, :sandbox_owner)
     name = {:via, Horde.Registry, {PlayerRegistry, player_id}}
-    GenServer.start_link(__MODULE__, {player_id, zone_id}, name: name)
+    GenServer.start_link(__MODULE__, {player_id, zone_id, owner}, name: name)
   end
 
   @spec move(term(), {number(), number(), number()}) :: :ok
@@ -44,7 +45,11 @@ defmodule MmoServer.Player do
   @impl true
   alias MmoServer.{Repo, PlayerPersistence}
 
-  def init({player_id, zone_id}) do
+  def init({player_id, zone_id, owner_pid}) do
+    if owner_pid do
+      Ecto.Adapters.SQL.Sandbox.allow(Repo, owner_pid, self())
+    end
+
     persisted = Repo.get(PlayerPersistence, player_id)
 
     state =

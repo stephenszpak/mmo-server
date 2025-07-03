@@ -10,6 +10,7 @@ defmodule MmoServer.PlayerPersistence do
     field :z, :float
     field :hp, :integer
     field :status, :string
+    timestamps()
   end
 
   def changeset(struct, attrs) do

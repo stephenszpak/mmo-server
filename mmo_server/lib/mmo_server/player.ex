@@ -147,11 +147,9 @@ defmodule MmoServer.Player do
       status: Atom.to_string(state.status)
     }
 
-    Task.start(fn ->
-      %PlayerPersistence{}
-      |> PlayerPersistence.changeset(attrs)
-      |> Repo.insert(on_conflict: :replace_all, conflict_target: :id)
-    end)
+    %PlayerPersistence{}
+    |> PlayerPersistence.changeset(attrs)
+    |> Repo.insert(on_conflict: :replace_all, conflict_target: :id)
 
     :ok
   end

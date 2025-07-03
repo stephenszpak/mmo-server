@@ -1,6 +1,10 @@
 defmodule MmoServer.CombatEngineTest do
   use ExUnit.Case, async: false
 
+  setup do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(MmoServer.Repo)
+  end
+
   test "player dies and respawns" do
     {:ok, _zone} = MmoServer.Zone.start_link("zone1")
     {:ok, _a} = MmoServer.Player.start_link(%{player_id: "a", zone_id: "zone1"})

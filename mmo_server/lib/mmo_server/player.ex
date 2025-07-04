@@ -2,7 +2,17 @@ defmodule MmoServer.Player do
   use GenServer
   require Logger
 
-  defstruct [:id, :zone_id, :pos, :hp, :mana, :status, :conn_pid, :sandbox_owner]
+  defstruct [
+    :id,
+    :zone_id,
+    :pos,
+    :hp,
+    :mana,
+    :status,
+    :conn_pid,
+    :sandbox_owner,
+    :sandbox_ref
+  ]
 
   @doc """
   Starts a player process registered via `Horde.Registry`.
@@ -66,6 +76,8 @@ defmodule MmoServer.Player do
       Ecto.Adapters.SQL.Sandbox.allow(Repo, owner_pid, self())
     end
 
+    ref = if owner_pid, do: Process.monitor(owner_pid)
+
     persisted =
       Repo.get(PlayerPersistence, player_id)
 
@@ -79,7 +91,8 @@ defmodule MmoServer.Player do
           mana: 100,
           status: String.to_atom(persisted.status),
           conn_pid: nil,
-          sandbox_owner: owner_pid
+          sandbox_owner: owner_pid,
+          sandbox_ref: ref
         }
       else
         %__MODULE__{
@@ -90,7 +103,8 @@ defmodule MmoServer.Player do
           mana: 100,
           status: :alive,
           conn_pid: nil,
-          sandbox_owner: owner_pid
+          sandbox_owner: owner_pid,
+          sandbox_ref: ref
         }
       end
 
@@ -165,6 +179,11 @@ defmodule MmoServer.Player do
 
     persist_state(new_state)
     {:noreply, new_state}
+  end
+
+  @impl true
+  def handle_info({:DOWN, ref, :process, _pid, _reason}, %{sandbox_ref: ref} = state) do
+    {:noreply, %{state | sandbox_owner: nil, sandbox_ref: nil}}
   end
 
   @impl true

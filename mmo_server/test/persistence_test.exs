@@ -7,6 +7,7 @@ defmodule MmoServer.PersistenceTest do
   setup _tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Repo)
     Ecto.Adapters.SQL.Sandbox.mode(Repo, {:shared, self()})
+    Repo.delete_all(PlayerPersistence)
     start_shared(MmoServer.Zone, "elwynn")
     :ok
   end

@@ -6,7 +6,7 @@ defmodule MmoServer.Zone do
     %{
       id: {:zone, zone_id},
       start: {__MODULE__, :start_link, [zone_id]},
-      restart: :permanent,
+      restart: :temporary,
       type: :worker
     }
   end

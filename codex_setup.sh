@@ -1,36 +1,43 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "🚀 Starting Codex environment setup for MmoServer"
+echo "🔧 Installing system dependencies..."
+apt-get update
+apt-get install -y curl git unzip build-essential libssl-dev autoconf ncurses-dev \
+                   inotify-tools
 
-# Set environment for test
+echo "📦 Installing ASDF for Elixir & Erlang..."
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
+. ~/.asdf/asdf.sh
+
+echo "➕ Adding plugins..."
+asdf plugin add erlang || true
+asdf plugin add elixir || true
+
+# These versions match your mix.exs (Elixir 1.14, OTP 26)
+ERLANG_VERSION="26.2.2"
+ELIXIR_VERSION="1.14.5-otp-26"
+
+asdf install erlang "$ERLANG_VERSION"
+asdf install elixir "$ELIXIR_VERSION"
+asdf global elixir "$ELIXIR_VERSION"
+
+. ~/.asdf/asdf.sh
+
 export MIX_ENV=test
+export PORT=4002
 
-# Install hex and rebar (Elixir build tools)
-echo "📦 Installing Hex & Rebar..."
-mix local.hex --force || true
-mix local.rebar --force || true
-
-# Force a clean install of dependencies (fixes corrupt cache issues)
-echo "📥 Fetching dependencies..."
+echo "📦 Installing Elixir deps..."
+mix local.hex --force
+mix local.rebar --force
 mix deps.get --only test
-
-# Optional: Force compile deps (catches some hidden hex issues early)
 mix deps.compile
+mix compile --warnings-as-errors
 
-# Prepare the database
-echo "🗃️  Setting up test database..."
+echo "🗃️  Preparing DB..."
 mix ecto.create --quiet || true
 mix ecto.migrate --quiet || true
 
-# Set PORT in case Phoenix/LiveView run a server
-export PORT=4002
-
-# Compile with strict checks
-echo "🔧 Compiling code with warnings as errors..."
-mix compile --warnings-as-errors
-
-# Run the test suite
 echo "🧪 Running tests..."
 mix test
 

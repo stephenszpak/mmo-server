@@ -40,7 +40,7 @@ asdf shell elixir "$ELIXIR_VERSION"
 source ~/.asdf/asdf.sh
 
 echo "⬇️  Downloading Hex archive..."
-curl -sSL https://github.com/hexpm/hex/releases/latest/download/hex.ez -o hex.ez
+curl -sSL https://github.com/hexpm/hex/releases/download/v2.0.6/hex-2.0.6.ez -o hex.ez
 
 echo "📦 Installing Hex manually..."
 mix archive.install ./hex.ez --force

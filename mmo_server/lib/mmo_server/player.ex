@@ -150,6 +150,30 @@ defmodule MmoServer.Player do
   end
 
   @impl true
+  def handle_info({:join, _player_id}, state), do: {:noreply, state}
+
+  @impl true
+  def handle_info({:leave, _player_id}, state), do: {:noreply, state}
+
+  @impl true
+  def handle_info({:player_moved, _player_id, _pos}, state), do: {:noreply, state}
+
+  @impl true
+  def handle_info({:player_respawned, _player_id}, state), do: {:noreply, state}
+
+  @impl true
+  def handle_info({:death, _player_id}, state), do: {:noreply, state}
+
+  @impl true
+  def handle_info({:damage, _player_id, _amount}, state), do: {:noreply, state}
+
+  @impl true
+  def handle_info({:positions, _positions}, state), do: {:noreply, state}
+
+  @impl true
+  def handle_info(_msg, state), do: {:noreply, state}
+
+  @impl true
   def handle_call(:get_position, _from, state) do
     {:reply, state.pos, state}
   end

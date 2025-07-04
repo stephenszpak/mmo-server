@@ -88,7 +88,7 @@ defmodule MmoServer.Player do
     new_zone = ZoneManager.get_zone_for_position({elem(new_pos, 0), elem(new_pos, 1)}) || state.zone_id
 
     if new_zone != state.zone_id do
-      Zone.leave(state.zone_id, state.id)
+      MmoServer.Zone.leave(state.zone_id, state.id)
       Phoenix.PubSub.unsubscribe(MmoServer.PubSub, "zone:#{state.zone_id}")
       new_state = %{state | pos: new_pos, zone_id: new_zone}
       persist_state(new_state)
@@ -161,7 +161,7 @@ defmodule MmoServer.Player do
 
   @impl true
   def terminate(_reason, state) do
-    Zone.leave(state.zone_id, state.id)
+    MmoServer.Zone.leave(state.zone_id, state.id)
     Phoenix.PubSub.unsubscribe(MmoServer.PubSub, "zone:#{state.zone_id}")
     :ok
   end

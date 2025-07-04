@@ -13,6 +13,9 @@ defmodule MmoServer.Bootstrap do
 
   @doc false
   def run do
+    Horde.DynamicSupervisor.wait_for_quorum(MmoServer.PlayerSupervisor)
+    Horde.DynamicSupervisor.wait_for_quorum(MmoServer.ZoneSupervisor)
+
     players = Repo.all(PlayerPersistence)
 
     players

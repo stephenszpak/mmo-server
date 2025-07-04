@@ -1,6 +1,16 @@
 defmodule MmoServer.Zone do
   use GenServer
 
+  @impl true
+  def child_spec(zone_id) do
+    %{
+      id: {:zone, zone_id},
+      start: {__MODULE__, :start_link, [zone_id]},
+      restart: :permanent,
+      type: :worker
+    }
+  end
+
   def start_link(zone_id) do
     GenServer.start_link(__MODULE__, zone_id, name: via(zone_id))
   end

@@ -56,16 +56,24 @@ defmodule MmoServer.CombatEngine do
   end
 
   defp alive?(id) when is_binary(id) do
-    case MmoServer.Player.get_status(id) do
-      :alive -> true
-      _ -> false
+    try do
+      case MmoServer.Player.get_status(id) do
+        :alive -> true
+        _ -> false
+      end
+    catch
+      :exit, _ -> false
     end
   end
 
   defp alive?({:npc, id}) do
-    case MmoServer.NPC.get_status(id) do
-      :alive -> true
-      _ -> false
+    try do
+      case MmoServer.NPC.get_status(id) do
+        :alive -> true
+        _ -> false
+      end
+    catch
+      :exit, _ -> false
     end
   end
 

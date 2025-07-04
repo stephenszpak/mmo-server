@@ -2,7 +2,7 @@ defmodule MmoServer.Player do
   use GenServer
   require Logger
 
-  defstruct [:id, :zone_id, :pos, :hp, :mana, :status, :conn_pid]
+  defstruct [:id, :zone_id, :pos, :hp, :mana, :status, :conn_pid, :sandbox_owner]
 
   @doc """
   Starts a player process registered via `Horde.Registry`.
@@ -61,7 +61,8 @@ defmodule MmoServer.Player do
           hp: persisted.hp,
           mana: 100,
           status: String.to_atom(persisted.status),
-          conn_pid: nil
+          conn_pid: nil,
+          sandbox_owner: owner_pid
         }
       else
         %__MODULE__{
@@ -71,7 +72,8 @@ defmodule MmoServer.Player do
           hp: 100,
           mana: 100,
           status: :alive,
-          conn_pid: nil
+          conn_pid: nil,
+          sandbox_owner: owner_pid
         }
       end
 
@@ -96,7 +98,8 @@ defmodule MmoServer.Player do
       Task.start(fn ->
         Horde.DynamicSupervisor.start_child(
           MmoServer.PlayerSupervisor,
-          {MmoServer.Player, %{player_id: state.id, zone_id: new_zone}}
+          {MmoServer.Player,
+           %{player_id: state.id, zone_id: new_zone, sandbox_owner: state.sandbox_owner}}
         )
       end)
 

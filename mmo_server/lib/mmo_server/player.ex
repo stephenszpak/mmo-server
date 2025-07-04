@@ -2,7 +2,7 @@ defmodule MmoServer.Player do
   use GenServer
   require Logger
 
-  defstruct [:id, :zone_id, :pos, :hp, :mana, :status, :conn_pid]
+  defstruct [:id, :zone_id, :pos, :hp, :mana, :status, :conn_pid, :sandbox_owner]
 
   @doc """
   Starts a player process registered via `Horde.Registry`.
@@ -30,6 +30,22 @@ defmodule MmoServer.Player do
   @spec respawn(term()) :: :ok
   def respawn(player_id) do
     GenServer.cast({:via, Horde.Registry, {PlayerRegistry, player_id}}, :respawn)
+  end
+
+  @doc """
+  Stops the player process identified by `player_id` if it is running.
+  Useful in tests to ensure any replacement processes spawned during zone
+  handoff are terminated.
+  """
+  @spec stop(term()) :: :ok
+  def stop(player_id) do
+    case Horde.Registry.lookup(PlayerRegistry, player_id) do
+      [{pid, _}] ->
+        GenServer.stop(pid, :normal)
+        :ok
+      [] ->
+        :ok
+    end
   end
 
   @spec get_status(term()) :: :alive | :dead | term()
@@ -61,7 +77,8 @@ defmodule MmoServer.Player do
           hp: persisted.hp,
           mana: 100,
           status: String.to_atom(persisted.status),
-          conn_pid: nil
+          conn_pid: nil,
+          sandbox_owner: owner_pid
         }
       else
         %__MODULE__{
@@ -71,7 +88,8 @@ defmodule MmoServer.Player do
           hp: 100,
           mana: 100,
           status: :alive,
-          conn_pid: nil
+          conn_pid: nil,
+          sandbox_owner: owner_pid
         }
       end
 
@@ -96,7 +114,8 @@ defmodule MmoServer.Player do
       Task.start(fn ->
         Horde.DynamicSupervisor.start_child(
           MmoServer.PlayerSupervisor,
-          {MmoServer.Player, %{player_id: state.id, zone_id: new_zone}}
+          {MmoServer.Player,
+           %{player_id: state.id, zone_id: new_zone, sandbox_owner: state.sandbox_owner}}
         )
       end)
 

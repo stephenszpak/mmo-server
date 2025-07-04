@@ -13,6 +13,10 @@ defmodule MmoServer.TestHelpers do
     {:ok, pid} = start_supervised(child_spec)
 
     ExUnit.Callbacks.on_exit(fn ->
+      if is_map(args) and process_mod == MmoServer.Player and Map.has_key?(args, :player_id) do
+        MmoServer.Player.stop(args.player_id)
+      end
+
       if Process.alive?(pid), do: Process.exit(pid, :normal)
     end)
 

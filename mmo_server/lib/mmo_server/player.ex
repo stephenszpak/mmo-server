@@ -66,7 +66,10 @@ defmodule MmoServer.Player do
       Ecto.Adapters.SQL.Sandbox.allow(Repo, owner_pid, self())
     end
 
-    persisted = Repo.get(PlayerPersistence, player_id)
+    persisted =
+      Repo.get(PlayerPersistence, player_id,
+        caller: owner_pid
+      )
 
     state =
       if persisted do
@@ -223,7 +226,11 @@ defmodule MmoServer.Player do
     if is_nil(state.sandbox_owner) or Process.alive?(state.sandbox_owner) do
       %PlayerPersistence{}
       |> PlayerPersistence.changeset(attrs)
-      |> Repo.insert(on_conflict: :replace_all, conflict_target: :id)
+      |> Repo.insert(
+        on_conflict: :replace_all,
+        conflict_target: :id,
+        caller: state.sandbox_owner
+      )
     end
 
     :ok

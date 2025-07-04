@@ -7,7 +7,6 @@ defmodule MmoServer.NPCSimulationTest do
   setup _tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(MmoServer.Repo)
     Ecto.Adapters.SQL.Sandbox.mode(MmoServer.Repo, {:shared, self()})
-    ZoneManager.ensure_zone_started("elwynn")
     :ok
   end
 

@@ -9,8 +9,16 @@ defmodule MmoServer.TestHelpers do
         args
       end
 
+    if process_mod == MmoServer.Player and is_map(args) and Map.has_key?(args, :player_id) do
+      MmoServer.Player.stop(args.player_id)
+    end
+
     child_spec = Supervisor.child_spec({process_mod, args}, id: {process_mod, make_ref()})
-    {:ok, pid} = start_supervised(child_spec)
+    {:ok, pid} =
+      case start_supervised(child_spec) do
+        {:error, {:already_started, pid}} -> {:ok, pid}
+        other -> other
+      end
 
     ExUnit.Callbacks.on_exit(fn ->
       if is_map(args) and process_mod == MmoServer.Player and Map.has_key?(args, :player_id) do

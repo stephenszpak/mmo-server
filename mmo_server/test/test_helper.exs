@@ -1,3 +1,5 @@
 ExUnit.start(formatters: [ExUnit.CLIFormatter, MmoServer.PassingFormatter])
 {:ok, _} = Application.ensure_all_started(:mmo_server)
+Horde.DynamicSupervisor.wait_for_quorum(MmoServer.PlayerSupervisor, :infinity)
+Horde.DynamicSupervisor.wait_for_quorum(MmoServer.ZoneSupervisor, :infinity)
 Ecto.Adapters.SQL.Sandbox.mode(MmoServer.Repo, :manual)

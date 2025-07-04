@@ -8,23 +8,30 @@ apt-get install -y curl git unzip build-essential libssl-dev autoconf ncurses-de
 
 echo "📦 Installing ASDF for Elixir & Erlang..."
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
-echo '. "$HOME/.asdf/asdf.sh"' >> ~/.bashrc
 source ~/.asdf/asdf.sh
 
 echo "➕ Adding plugins..."
 asdf plugin add erlang || true
 asdf plugin add elixir || true
 
+# Define versions
 ERLANG_VERSION="26.2.2"
 ELIXIR_VERSION="1.14.5-otp-26"
 
+# Install and set
 asdf install erlang "$ERLANG_VERSION"
 asdf install elixir "$ELIXIR_VERSION"
-asdf global elixir "$ELIXIR_VERSION"
 
-# You MUST source again for binaries to work in Codex
+# Set for this shell session
+asdf shell erlang "$ERLANG_VERSION"
+asdf shell elixir "$ELIXIR_VERSION"
 source ~/.asdf/asdf.sh
 
+# Verify installed
+echo "Erlang: $(erl -version || true)"
+echo "Elixir: $(elixir -v)"
+
+# Environment setup
 export MIX_ENV=test
 export PORT=4002
 
@@ -39,6 +46,5 @@ echo "🗃️  Preparing DB..."
 mix ecto.create --quiet || true
 mix ecto.migrate --quiet || true
 
-echo "🧪 Running tests..."
-mix test
+echo "🧪 Runn
 

@@ -10,8 +10,8 @@ defmodule MmoServer.PlayerTest do
   end
 
   test "player moves and takes damage" do
-    start_shared(MmoServer.Zone, "zone1")
-    pid = start_shared(MmoServer.Player, %{player_id: "player1", zone_id: "zone1"})
+    start_shared(MmoServer.Zone, "elwynn")
+    pid = start_shared(MmoServer.Player, %{player_id: "player1", zone_id: "elwynn"})
     GenServer.cast(pid, {:move, {1, 2, 3}})
     GenServer.cast(pid, {:damage, 10})
     state = :sys.get_state(pid)

@@ -36,8 +36,10 @@ export MIX_ENV=test
 export PORT=4002
 
 echo "📦 Installing Elixir deps..."
-mix local.hex --force
+echo "📦 Installing Hex & Rebar..."
+mix archive.install github hexpm/hex --branch latest --force
 mix local.rebar --force
+mix hex.info
 mix deps.get --only test
 mix deps.compile
 mix compile --warnings-as-errors

@@ -1,25 +1,36 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "🔧 Installing Elixir and dependencies"
+echo "🚀 Starting Codex environment setup for MmoServer"
 
-# Set Elixir environment
+# Set environment for test
 export MIX_ENV=test
 
-# Install Elixir and Hex tools
-mix local.hex --force
-mix local.rebar --force
+# Install hex and rebar (Elixir build tools)
+echo "📦 Installing Hex & Rebar..."
+mix local.hex --force || true
+mix local.rebar --force || true
 
-# Install dependencies
-mix deps.get
+# Force a clean install of dependencies (fixes corrupt cache issues)
+echo "📥 Fetching dependencies..."
+mix deps.get --only test
 
-# Setup DB (if needed — comment out if not using Ecto migrations)
-mix ecto.create --quiet
-mix ecto.migrate --quiet
+# Optional: Force compile deps (catches some hidden hex issues early)
+mix deps.compile
 
-# Compile with warnings as errors to catch issues
+# Prepare the database
+echo "🗃️  Setting up test database..."
+mix ecto.create --quiet || true
+mix ecto.migrate --quiet || true
+
+# Set PORT in case Phoenix/LiveView run a server
+export PORT=4002
+
+# Compile with strict checks
+echo "🔧 Compiling code with warnings as errors..."
 mix compile --warnings-as-errors
 
-# Run tests
+# Run the test suite
+echo "🧪 Running tests..."
 mix test
 

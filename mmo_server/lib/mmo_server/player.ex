@@ -111,13 +111,11 @@ defmodule MmoServer.Player do
       new_state = %{state | pos: new_pos, zone_id: new_zone}
       persist_state(new_state)
 
-      Task.start(fn ->
-        Horde.DynamicSupervisor.start_child(
-          MmoServer.PlayerSupervisor,
-          {MmoServer.Player,
-           %{player_id: state.id, zone_id: new_zone, sandbox_owner: state.sandbox_owner}}
-        )
-      end)
+      Horde.DynamicSupervisor.start_child(
+        MmoServer.PlayerSupervisor,
+        {MmoServer.Player,
+         %{player_id: state.id, zone_id: new_zone, sandbox_owner: state.sandbox_owner}}
+      )
 
       {:stop, :normal, new_state}
     else

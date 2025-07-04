@@ -20,6 +20,9 @@ defmodule MmoServer.TestHelpers do
         other -> other
       end
 
+   # 👇 Explicitly allow the newly spawned process access to the DB connection
+    Ecto.Adapters.SQL.Sandbox.allow(MmoServer.Repo, self(), pid)
+
     ExUnit.Callbacks.on_exit(fn ->
       if is_map(args) and process_mod == MmoServer.Player and Map.has_key?(args, :player_id) do
         MmoServer.Player.stop(args.player_id)

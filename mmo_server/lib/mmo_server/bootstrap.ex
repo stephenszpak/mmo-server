@@ -13,8 +13,8 @@ defmodule MmoServer.Bootstrap do
 
   @doc false
   def run do
-    Horde.DynamicSupervisor.wait_for_quorum(MmoServer.PlayerSupervisor)
-    Horde.DynamicSupervisor.wait_for_quorum(MmoServer.ZoneSupervisor)
+    Horde.DynamicSupervisor.wait_for_quorum(MmoServer.PlayerSupervisor, :infinity)
+    Horde.DynamicSupervisor.wait_for_quorum(MmoServer.ZoneSupervisor, :infinity)
 
     players = Repo.all(PlayerPersistence)
 

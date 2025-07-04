@@ -5,7 +5,7 @@ defmodule MmoServer.Bootstrap do
 
   use Task, restart: :transient
 
-  alias MmoServer.{Repo, PlayerPersistence}
+  alias MmoServer.{Repo, PlayerPersistence, ZoneManager}
 
   def start_link(_arg) do
     Task.start_link(__MODULE__, :run, [])
@@ -18,13 +18,11 @@ defmodule MmoServer.Bootstrap do
     players
     |> Enum.map(& &1.zone_id)
     |> Enum.uniq()
-    |> Enum.each(fn zone_id ->
-      DynamicSupervisor.start_child(MmoServer.ZoneSupervisor, {MmoServer.Zone, zone_id})
-    end)
+    |> Enum.each(&ZoneManager.ensure_zone_started/1)
 
     Enum.each(players, fn player ->
       spec = {MmoServer.Player, %{player_id: player.id, zone_id: player.zone_id}}
-      DynamicSupervisor.start_child(MmoServer.PlayerSupervisor, spec)
+      Horde.DynamicSupervisor.start_child(MmoServer.PlayerSupervisor, spec)
     end)
   end
 end

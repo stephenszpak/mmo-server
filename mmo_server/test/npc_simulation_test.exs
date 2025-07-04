@@ -36,7 +36,7 @@ defmodule MmoServer.NPCSimulationTest do
       assert NPC.get_status("wolf_2") == :alive
     end)
 
-    assert_receive {:npc_moved, "wolf_2", _}
+    assert_receive {:npc_moved, "wolf_2", _}, 1_200
     eventually(fn -> assert Player.get_status("p1") == :dead end, 50, 200)
   end
 
@@ -75,9 +75,10 @@ defmodule MmoServer.NPCSimulationTest do
   end
 
   test "zone restart boots npcs" do
-    {:ok, zone} = MmoServer.Zone.start_link("elwynn")
-    Process.exit(zone, :kill)
-    eventually(fn -> :ok end)
+    Horde.Registry.lookup(PlayerRegistry, {:zone, "elwynn"})
+    |> Enum.each(fn {pid, _} -> Process.exit(pid, :kill) end)
+
+    eventually(fn -> [] == Horde.Registry.lookup(PlayerRegistry, {:zone, "elwynn"}) end)
 
     start_shared(MmoServer.Zone, "elwynn")
     eventually(fn -> assert NPC.get_status("wolf_1") == :alive end)

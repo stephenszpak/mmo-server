@@ -220,9 +220,11 @@ defmodule MmoServer.Player do
       status: Atom.to_string(state.status)
     }
 
-    %PlayerPersistence{}
-    |> PlayerPersistence.changeset(attrs)
-    |> Repo.insert(on_conflict: :replace_all, conflict_target: :id)
+    if is_nil(state.sandbox_owner) or Process.alive?(state.sandbox_owner) do
+      %PlayerPersistence{}
+      |> PlayerPersistence.changeset(attrs)
+      |> Repo.insert(on_conflict: :replace_all, conflict_target: :id)
+    end
 
     :ok
   end

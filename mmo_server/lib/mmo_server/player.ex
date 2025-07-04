@@ -67,9 +67,7 @@ defmodule MmoServer.Player do
     end
 
     persisted =
-      Repo.get(PlayerPersistence, player_id,
-        caller: owner_pid
-      )
+      Repo.get(PlayerPersistence, player_id)
 
     state =
       if persisted do
@@ -228,8 +226,7 @@ defmodule MmoServer.Player do
       |> PlayerPersistence.changeset(attrs)
       |> Repo.insert(
         on_conflict: :replace_all,
-        conflict_target: :id,
-        caller: state.sandbox_owner
+        conflict_target: :id
       )
     end
 

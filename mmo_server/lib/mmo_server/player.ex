@@ -32,6 +32,22 @@ defmodule MmoServer.Player do
     GenServer.cast({:via, Horde.Registry, {PlayerRegistry, player_id}}, :respawn)
   end
 
+  @doc """
+  Stops the player process identified by `player_id` if it is running.
+  Useful in tests to ensure any replacement processes spawned during zone
+  handoff are terminated.
+  """
+  @spec stop(term()) :: :ok
+  def stop(player_id) do
+    case Horde.Registry.lookup(PlayerRegistry, player_id) do
+      [{pid, _}] ->
+        GenServer.stop(pid, :normal)
+        :ok
+      [] ->
+        :ok
+    end
+  end
+
   @spec get_status(term()) :: :alive | :dead | term()
   def get_status(player_id) do
     GenServer.call({:via, Horde.Registry, {PlayerRegistry, player_id}}, :get_status)

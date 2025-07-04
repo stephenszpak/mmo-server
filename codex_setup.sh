@@ -40,7 +40,7 @@ asdf shell elixir "$ELIXIR_VERSION"
 source ~/.asdf/asdf.sh
 
 echo "📦 Installing Hex & Rebar..."
-mix archive.install github hexpm/hex latest --force
+mix archive.install hexpm/hex --force
 mix local.rebar --force
 
 export MIX_ENV=test

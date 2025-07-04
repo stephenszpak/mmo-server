@@ -20,6 +20,10 @@ defmodule MmoServer.TestHelpers do
         other -> other
       end
 
+    if is_map(args) and Map.has_key?(args, :sandbox_owner) and args.sandbox_owner do
+      Ecto.Adapters.SQL.Sandbox.allow(MmoServer.Repo, args.sandbox_owner, pid)
+    end
+
 
     ExUnit.Callbacks.on_exit(fn ->
       if is_map(args) and process_mod == MmoServer.Player and Map.has_key?(args, :player_id) do

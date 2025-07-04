@@ -39,8 +39,13 @@ asdf shell erlang "$ERLANG_VERSION"
 asdf shell elixir "$ELIXIR_VERSION"
 source ~/.asdf/asdf.sh
 
-echo "📦 Installing Hex & Rebar..."
-mix archive.install hexpm/hex --force
+echo "⬇️  Downloading Hex archive..."
+curl -sSL https://github.com/hexpm/hex/releases/latest/download/hex.ez -o hex.ez
+
+echo "📦 Installing Hex manually..."
+mix archive.install ./hex.ez --force
+
+echo "📦 Installing Rebar..."
 mix local.rebar --force
 
 export MIX_ENV=test

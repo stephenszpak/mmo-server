@@ -34,8 +34,16 @@ defmodule MmoServer.Zone do
 
   @impl true
   def init(zone_id) do
+    {:ok, npc_sup} = MmoServer.Zone.NPCSupervisor.start_link(zone_id)
+
+    MmoServer.Zone.NPCConfig.npcs_for(zone_id)
+    |> Enum.each(fn npc ->
+      npc = Map.put(npc, :zone_id, zone_id)
+      MmoServer.Zone.NPCSupervisor.start_npc(npc_sup, npc)
+    end)
+
     schedule_tick()
-    {:ok, %{id: zone_id, positions: %{}}}
+    {:ok, %{id: zone_id, positions: %{}, npc_sup: npc_sup}}
   end
 
   @impl true
@@ -54,7 +62,13 @@ defmodule MmoServer.Zone do
   @impl true
   def handle_cast({:player_moved, player_id, pos}, state) do
     positions = Map.put(state.positions, player_id, pos)
-    Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{state.id}", {:player_moved, player_id, pos})
+
+    Phoenix.PubSub.broadcast(
+      MmoServer.PubSub,
+      "zone:#{state.id}",
+      {:player_moved, player_id, pos}
+    )
+
     {:noreply, %{state | positions: positions}}
   end
 
@@ -69,7 +83,6 @@ defmodule MmoServer.Zone do
   def handle_call({:get_position, player_id}, _from, state) do
     {:reply, Map.get(state.positions, player_id, {:error, :not_found}), state}
   end
-
 
   # return all known positions when no player_id is provided
   # allows callers like the dashboard to fetch the complete table

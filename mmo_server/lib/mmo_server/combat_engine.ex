@@ -55,15 +55,26 @@ defmodule MmoServer.CombatEngine do
     Process.send_after(self(), :tick, @tick_ms)
   end
 
-  defp alive?(player_id) do
-    case MmoServer.Player.get_status(player_id) do
+  defp alive?(id) when is_binary(id) do
+    case MmoServer.Player.get_status(id) do
+      :alive -> true
+      _ -> false
+    end
+  end
+
+  defp alive?({:npc, id}) do
+    case MmoServer.NPC.get_status(id) do
       :alive -> true
       _ -> false
     end
   end
 
   defp deal_damage(a, b) do
-    MmoServer.Player.damage(a, @damage)
-    MmoServer.Player.damage(b, @damage)
+    damage(a)
+    damage(b)
   end
+
+  defp damage(id) when is_binary(id), do: MmoServer.Player.damage(id, @damage)
+
+  defp damage({:npc, id}), do: MmoServer.NPC.damage(id, @damage)
 end

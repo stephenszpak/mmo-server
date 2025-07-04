@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 set -euo pipefail
 
 echo "🔧 Installing system dependencies..."
@@ -8,13 +8,13 @@ apt-get install -y curl git unzip build-essential libssl-dev autoconf ncurses-de
 
 echo "📦 Installing ASDF for Elixir & Erlang..."
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
-. ~/.asdf/asdf.sh
+echo '. "$HOME/.asdf/asdf.sh"' >> ~/.bashrc
+source ~/.asdf/asdf.sh
 
 echo "➕ Adding plugins..."
 asdf plugin add erlang || true
 asdf plugin add elixir || true
 
-# These versions match your mix.exs (Elixir 1.14, OTP 26)
 ERLANG_VERSION="26.2.2"
 ELIXIR_VERSION="1.14.5-otp-26"
 
@@ -22,7 +22,8 @@ asdf install erlang "$ERLANG_VERSION"
 asdf install elixir "$ELIXIR_VERSION"
 asdf global elixir "$ELIXIR_VERSION"
 
-. ~/.asdf/asdf.sh
+# You MUST source again for binaries to work in Codex
+source ~/.asdf/asdf.sh
 
 export MIX_ENV=test
 export PORT=4002

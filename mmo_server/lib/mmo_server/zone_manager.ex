@@ -1,0 +1,28 @@
+defmodule MmoServer.ZoneManager do
+  @moduledoc """
+  Helper utilities for working with zones.
+  """
+
+  alias MmoServer.ZoneMap
+
+  @spec get_zone_for_position({number(), number()}) :: String.t() | nil
+  def get_zone_for_position({x, y}) do
+    Enum.find_value(ZoneMap.zones(), fn {id, {{x1, y1}, {x2, y2}}} ->
+      if x >= x1 and x < x2 and y >= y1 and y < y2, do: id
+    end)
+  end
+
+  @doc """
+  Ensure a zone process is started under the ZoneSupervisor.
+  """
+  @spec ensure_zone_started(String.t()) :: :ok | {:error, term()}
+  def ensure_zone_started(zone_id) do
+    spec = {MmoServer.Zone, zone_id}
+    case Horde.DynamicSupervisor.start_child(MmoServer.ZoneSupervisor, spec) do
+      {:ok, _pid} -> :ok
+      {:error, {:already_started, _}} -> :ok
+      {:error, {:already_exists, _}} -> :ok
+      {:error, reason} -> {:error, reason}
+    end
+  end
+end

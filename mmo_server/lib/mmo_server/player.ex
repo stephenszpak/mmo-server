@@ -43,7 +43,7 @@ defmodule MmoServer.Player do
   end
 
   @impl true
-  alias MmoServer.{Repo, PlayerPersistence}
+  alias MmoServer.{Repo, PlayerPersistence, ZoneManager}
 
   def init({player_id, zone_id, owner_pid}) do
     if owner_pid do
@@ -75,6 +75,8 @@ defmodule MmoServer.Player do
         }
       end
 
+    Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:#{state.zone_id}")
+    MmoServer.Zone.join(state.zone_id, state.id)
     persist_state(state)
     {:ok, state}
   end
@@ -83,11 +85,29 @@ defmodule MmoServer.Player do
   def handle_cast({:move, {dx, dy, dz}}, state) do
     {x, y, z} = state.pos
     new_pos = {x + dx, y + dy, z + dz}
-    MmoServer.Zone.player_moved(state.zone_id, state.id, new_pos)
-    Logger.info("Player #{state.id} moved to #{inspect(new_pos)}")
-    new_state = %{state | pos: new_pos}
-    persist_state(new_state)
-    {:noreply, new_state}
+    new_zone = ZoneManager.get_zone_for_position({elem(new_pos, 0), elem(new_pos, 1)}) || state.zone_id
+
+    if new_zone != state.zone_id do
+      Zone.leave(state.zone_id, state.id)
+      Phoenix.PubSub.unsubscribe(MmoServer.PubSub, "zone:#{state.zone_id}")
+      new_state = %{state | pos: new_pos, zone_id: new_zone}
+      persist_state(new_state)
+
+      Task.start(fn ->
+        Horde.DynamicSupervisor.start_child(
+          MmoServer.PlayerSupervisor,
+          {MmoServer.Player, %{player_id: state.id, zone_id: new_zone}}
+        )
+      end)
+
+      {:stop, :normal, new_state}
+    else
+      MmoServer.Zone.player_moved(state.zone_id, state.id, new_pos)
+      Logger.info("Player #{state.id} moved to #{inspect(new_pos)}")
+      new_state = %{state | pos: new_pos}
+      persist_state(new_state)
+      {:noreply, new_state}
+    end
   end
 
   @impl true
@@ -137,6 +157,13 @@ defmodule MmoServer.Player do
   @impl true
   def handle_call(:get_status, _from, state) do
     {:reply, state.status, state}
+  end
+
+  @impl true
+  def terminate(_reason, state) do
+    Zone.leave(state.zone_id, state.id)
+    Phoenix.PubSub.unsubscribe(MmoServer.PubSub, "zone:#{state.zone_id}")
+    :ok
   end
 
   defp persist_state(state) do

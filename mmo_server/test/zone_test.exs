@@ -1,5 +1,6 @@
 defmodule MmoServer.ZoneTest do
   use ExUnit.Case, async: true
+  import MmoServer.TestHelpers
 
   test "zone broadcasts join and leave" do
     zone_id = unique_string("zone")

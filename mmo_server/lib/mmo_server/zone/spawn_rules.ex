@@ -11,6 +11,6 @@ defmodule MmoServer.Zone.SpawnRules do
 
   @spec rules_for(String.t()) :: list(map())
   def rules_for(zone_id) do
-    Map.get(@rules, zone_id, [])
+    Map.get(@rules, zone_id) || Map.get(@rules, "elwynn", [])
   end
 end

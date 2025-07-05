@@ -1,17 +1,23 @@
 defmodule MmoServer.Zone do
   use GenServer
 
-  def child_spec(zone_id) do
+  def child_spec(%{zone_id: zone_id} = args) do
     %{
       id: {:zone, zone_id},
-      start: {__MODULE__, :start_link, [zone_id]},
+      start: {__MODULE__, :start_link, [args]},
       restart: :temporary,
       type: :worker
     }
   end
 
-  def start_link(zone_id) do
-    GenServer.start_link(__MODULE__, zone_id, name: via(zone_id))
+  def child_spec(zone_id) when is_binary(zone_id), do: child_spec(%{zone_id: zone_id})
+
+  def start_link(%{zone_id: zone_id} = args) do
+    GenServer.start_link(__MODULE__, args, name: via(zone_id))
+  end
+
+  def start_link(zone_id) when is_binary(zone_id) do
+    start_link(%{zone_id: zone_id})
   end
 
   def join(zone_id, player_id) do
@@ -42,7 +48,8 @@ defmodule MmoServer.Zone do
   defp via(zone_id), do: {:via, Horde.Registry, {PlayerRegistry, {:zone, zone_id}}}
 
   @impl true
-  def init(zone_id) do
+  def init(%{zone_id: zone_id} = args) do
+    owner = Map.get(args, :sandbox_owner)
     Process.flag(:trap_exit, true)
     {:ok, npc_sup} = MmoServer.Zone.NPCSupervisor.start_link(zone_id)
 
@@ -53,9 +60,10 @@ defmodule MmoServer.Zone do
     end)
 
     {:ok, _spawn_pid} =
-      MmoServer.Zone.SpawnController.start_link(zone_id: zone_id, npc_sup: npc_sup)
+      MmoServer.Zone.SpawnController.start_link(zone_id: zone_id, npc_sup: npc_sup, sandbox_owner: owner)
 
     schedule_tick()
+    send(owner || self(), {:ready, self()})
     {:ok, %{id: zone_id, positions: %{}, npc_sup: npc_sup}}
   end
 

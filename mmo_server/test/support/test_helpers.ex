@@ -3,10 +3,10 @@ defmodule MmoServer.TestHelpers do
 
   def start_shared(process_mod, args \\ []) do
     args =
-      if is_map(args) do
-        Map.put(args, :sandbox_owner, self())
-      else
-        args
+      cond do
+        is_map(args) -> Map.put(args, :sandbox_owner, self())
+        process_mod == MmoServer.Zone -> %{zone_id: args, sandbox_owner: self()}
+        true -> args
       end
 
     if process_mod == MmoServer.Player and is_map(args) and Map.has_key?(args, :player_id) do
@@ -19,6 +19,8 @@ defmodule MmoServer.TestHelpers do
         {:error, {:already_started, pid}} -> {:ok, pid}
         other -> other
       end
+
+    assert_receive {:ready, ^pid}, 1_000
 
     if is_map(args) and Map.has_key?(args, :sandbox_owner) and args.sandbox_owner do
       Ecto.Adapters.SQL.Sandbox.allow(MmoServer.Repo, args.sandbox_owner, pid)

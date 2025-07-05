@@ -21,6 +21,7 @@ defmodule MmoServer.Zone.SpawnController do
   @impl true
   def init(opts) do
     zone_id = Keyword.fetch!(opts, :zone_id)
+    owner = Keyword.get(opts, :sandbox_owner)
     Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:#{zone_id}")
 
     state = %{
@@ -32,6 +33,7 @@ defmodule MmoServer.Zone.SpawnController do
 
     state = evaluate_rules(state)
     schedule_tick(state.tick_ms)
+    send(owner || self(), {:ready, self()})
     {:ok, state}
   end
 

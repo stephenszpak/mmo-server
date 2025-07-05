@@ -99,6 +99,10 @@ defmodule MmoServer.NPCSimulationTest do
     start_shared(Player, %{player_id: "killer", zone_id: "elwynn"})
     Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:elwynn")
 
+    eventually(fn ->
+      assert NPC.get_status("wolf_1") == :alive
+    end)
+
     MmoServer.CombatEngine.start_combat("killer", {:npc, "wolf_1"})
 
     assert_receive {:npc_damage, "wolf_1", _}, 5_000

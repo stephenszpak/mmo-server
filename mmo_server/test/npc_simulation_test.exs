@@ -93,4 +93,67 @@ defmodule MmoServer.NPCSimulationTest do
     Player.move("p2", {-15, -10, 0})
     eventually(fn -> assert Player.get_status("p2") == :dead end, 50, 200)
   end
+
+  test "player can kill npc" do
+    start_shared(MmoServer.Zone, "elwynn")
+    start_shared(Player, %{player_id: "killer", zone_id: "elwynn"})
+    Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:elwynn")
+
+    MmoServer.CombatEngine.start_combat("killer", {:npc, "wolf_1"})
+
+    assert_receive {:npc_damage, "wolf_1", _}, 5_000
+    assert_receive {:npc_death, "wolf_1"}, 5_000
+    assert NPC.get_status("wolf_1") == :dead
+  end
+
+  test "player enters zone and receives npc updates" do
+    start_shared(MmoServer.Zone, "elwynn")
+    Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:elwynn")
+    start_shared(Player, %{player_id: "listener", zone_id: "elwynn"})
+
+    assert_receive {:join, "listener"}
+    assert_receive {:npc_moved, _, _}, 1_200
+  end
+
+  test "player leaves zone mid-combat npc stops" do
+    start_shared(MmoServer.Zone, "elwynn")
+    start_shared(MmoServer.Zone, "durotar")
+    pid = start_shared(Player, %{player_id: "runner", zone_id: "elwynn"})
+    Player.move("runner", {25, 30, 0})
+    :timer.sleep(1_200)
+    hp_before = :sys.get_state(pid).hp
+    assert hp_before < 100
+
+    Player.move("runner", {95, 0, 0})
+    eventually(fn -> assert {95.0, 30.0, 0.0} == Player.get_position("runner") end)
+    Player.move("runner", {10, 0, 0})
+
+    eventually(fn -> assert {105.0, 30.0, 0.0} == Player.get_position("runner") end)
+    [{new_pid, _}] = Horde.Registry.lookup(PlayerRegistry, "runner")
+    hp_after = :sys.get_state(new_pid).hp
+    Process.sleep(600)
+    assert hp_after == :sys.get_state(new_pid).hp
+  end
+
+  test "aggro detection boundary precision" do
+    start_shared(MmoServer.Zone, "elwynn")
+    start_shared(Player, %{player_id: "edge", zone_id: "elwynn"})
+    Player.move("edge", {35, 30, 0})
+    eventually(fn -> assert Player.get_status("edge") == :dead end, 50, 200)
+
+    start_shared(Player, %{player_id: "edge_far", zone_id: "elwynn"})
+    Player.move("edge_far", {35.01, 30, 0})
+    :timer.sleep(1_200)
+    assert Player.get_status("edge_far") == :alive
+  end
+
+  test "npc tick loop survives rapid ticks" do
+    start_shared(MmoServer.Zone, "elwynn")
+    [{pid, _}] = Horde.Registry.lookup(PlayerRegistry, {:npc, "wolf_1"})
+    send(pid, :tick)
+    send(pid, :tick)
+    send(pid, :tick)
+    :timer.sleep(200)
+    assert Process.alive?(pid)
+  end
 end

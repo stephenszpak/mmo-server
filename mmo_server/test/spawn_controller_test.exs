@@ -8,6 +8,7 @@ defmodule MmoServer.SpawnControllerTest do
     on_exit(fn -> Application.delete_env(:mmo_server, :spawn_tick_ms) end)
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(MmoServer.Repo)
     Ecto.Adapters.SQL.Sandbox.mode(MmoServer.Repo, {:shared, self()})
+    start_shared(MmoServer.Zone, "elwynn")
     :ok
   end
 
@@ -26,7 +27,6 @@ defmodule MmoServer.SpawnControllerTest do
   end
 
   test "controller spawns new NPCs on low population" do
-    start_shared(MmoServer.Zone, "elwynn")
 
     eventually(fn ->
       assert count_npcs("elwynn") >= 3
@@ -34,7 +34,6 @@ defmodule MmoServer.SpawnControllerTest do
   end
 
   test "spawned npcs match rule spec" do
-    start_shared(MmoServer.Zone, "elwynn")
 
     eventually(fn -> assert count_npcs("elwynn") >= 3 end)
 
@@ -51,7 +50,6 @@ defmodule MmoServer.SpawnControllerTest do
   end
 
   test "controller does not exceed max population" do
-    start_shared(MmoServer.Zone, "elwynn")
 
     eventually(fn -> assert count_npcs("elwynn") == 5 end)
     Process.sleep(200)
@@ -59,7 +57,6 @@ defmodule MmoServer.SpawnControllerTest do
   end
 
   test "restarting controller does not over-spawn" do
-    start_shared(MmoServer.Zone, "elwynn")
 
     eventually(fn -> assert count_npcs("elwynn") == 5 end)
 
@@ -72,7 +69,6 @@ defmodule MmoServer.SpawnControllerTest do
   end
 
   test "dead npcs are replaced" do
-    start_shared(MmoServer.Zone, "elwynn")
     eventually(fn -> assert count_npcs("elwynn") == 5 end)
 
     MmoServer.NPC.damage("wolf_1", 200)

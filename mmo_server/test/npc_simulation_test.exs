@@ -7,11 +7,11 @@ defmodule MmoServer.NPCSimulationTest do
   setup _tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(MmoServer.Repo)
     Ecto.Adapters.SQL.Sandbox.mode(MmoServer.Repo, {:shared, self()})
+    start_shared(MmoServer.Zone, "elwynn")
     :ok
   end
 
   test "npc starts and ticks" do
-    start_shared(MmoServer.Zone, "elwynn")
 
     eventually(fn ->
       assert [{pid, _}] = Horde.Registry.lookup(PlayerRegistry, {:npc, "wolf_1"})
@@ -25,7 +25,6 @@ defmodule MmoServer.NPCSimulationTest do
   end
 
   test "aggressive npc attacks and kills player" do
-    start_shared(MmoServer.Zone, "elwynn")
     _player = start_shared(Player, %{player_id: "p1", zone_id: "elwynn"})
     Player.move("p1", {25, 30, 0})
     Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:elwynn")
@@ -40,7 +39,6 @@ defmodule MmoServer.NPCSimulationTest do
   end
 
   test "npc dies and respawns" do
-    start_shared(MmoServer.Zone, "elwynn")
     Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:elwynn")
 
     eventually(fn -> NPC.get_position("wolf_1") end)
@@ -58,7 +56,6 @@ defmodule MmoServer.NPCSimulationTest do
   end
 
   test "npc restarts on crash with single registry entry" do
-    start_shared(MmoServer.Zone, "elwynn")
 
     eventually(fn ->
       assert [{pid, _}] = Horde.Registry.lookup(PlayerRegistry, {:npc, "wolf_1"})
@@ -84,7 +81,6 @@ defmodule MmoServer.NPCSimulationTest do
   end
 
   test "aggro triggers only within range" do
-    start_shared(MmoServer.Zone, "elwynn")
     start_shared(Player, %{player_id: "p2", zone_id: "elwynn"})
     Player.move("p2", {40, 40, 0})
     :timer.sleep(1100)
@@ -95,7 +91,6 @@ defmodule MmoServer.NPCSimulationTest do
   end
 
   test "player can kill npc" do
-    start_shared(MmoServer.Zone, "elwynn")
     start_shared(Player, %{player_id: "killer", zone_id: "elwynn"})
     Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:elwynn")
 
@@ -111,7 +106,6 @@ defmodule MmoServer.NPCSimulationTest do
   end
 
   test "player enters zone and receives npc updates" do
-    start_shared(MmoServer.Zone, "elwynn")
     Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:elwynn")
     start_shared(Player, %{player_id: "listener", zone_id: "elwynn"})
 
@@ -120,7 +114,6 @@ defmodule MmoServer.NPCSimulationTest do
   end
 
   test "player leaves zone mid-combat npc stops" do
-    start_shared(MmoServer.Zone, "elwynn")
     start_shared(MmoServer.Zone, "durotar")
     pid = start_shared(Player, %{player_id: "runner", zone_id: "elwynn"})
     Player.move("runner", {25, 30, 0})
@@ -139,7 +132,6 @@ defmodule MmoServer.NPCSimulationTest do
   end
 
   test "aggro detection boundary precision" do
-    start_shared(MmoServer.Zone, "elwynn")
     start_shared(Player, %{player_id: "edge", zone_id: "elwynn"})
     Player.move("edge", {35, 30, 0})
     eventually(fn -> assert Player.get_status("edge") == :dead end, 50, 200)
@@ -151,7 +143,6 @@ defmodule MmoServer.NPCSimulationTest do
   end
 
   test "npc tick loop survives rapid ticks" do
-    start_shared(MmoServer.Zone, "elwynn")
     [{pid, _}] = Horde.Registry.lookup(PlayerRegistry, {:npc, "wolf_1"})
     send(pid, :tick)
     send(pid, :tick)

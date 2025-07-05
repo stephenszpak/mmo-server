@@ -58,13 +58,23 @@ defmodule MmoServer.Zone.SpawnController do
 
   defp spawn_npcs(state, rule, num, timestamp) do
     Enum.each(1..num, fn _ ->
-      id = "#{rule.type}_#{System.unique_integer([:positive])}"
+      id = unique_id(rule.type)
       npc = %{id: id, zone_id: state.zone_id, type: rule.type, pos: random_pos(rule.pos_range)}
       NPCSupervisor.start_npc(state.npc_sup, npc)
       Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{state.zone_id}", {:npc_spawned, id})
     end)
 
     %{state | last_spawn: Map.put(state.last_spawn, rule.type, timestamp)}
+  end
+
+  defp unique_id(type) do
+    id = "#{type}_#{System.unique_integer([:positive])}"
+
+    if Horde.Registry.lookup(PlayerRegistry, {:npc, id}) == [] do
+      id
+    else
+      unique_id(type)
+    end
   end
 
   defp random_pos({{x1, y1}, {x2, y2}}) do

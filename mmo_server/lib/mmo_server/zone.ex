@@ -45,14 +45,15 @@ defmodule MmoServer.Zone do
   def init(zone_id) do
     Process.flag(:trap_exit, true)
     {:ok, npc_sup} = MmoServer.Zone.NPCSupervisor.start_link(zone_id)
-    {:ok, _spawn_pid} =
-      MmoServer.Zone.SpawnController.start_link(zone_id: zone_id, npc_sup: npc_sup)
 
     MmoServer.Zone.NPCConfig.npcs_for(zone_id)
     |> Enum.each(fn npc ->
       npc = Map.put(npc, :zone_id, zone_id)
       MmoServer.Zone.NPCSupervisor.start_npc(npc_sup, npc)
     end)
+
+    {:ok, _spawn_pid} =
+      MmoServer.Zone.SpawnController.start_link(zone_id: zone_id, npc_sup: npc_sup)
 
     schedule_tick()
     {:ok, %{id: zone_id, positions: %{}, npc_sup: npc_sup}}

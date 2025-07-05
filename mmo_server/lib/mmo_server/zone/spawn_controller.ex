@@ -7,7 +7,10 @@ defmodule MmoServer.Zone.SpawnController do
   use GenServer
   alias MmoServer.Zone.{SpawnRules, NPCSupervisor}
 
-  @default_tick Application.compile_env(:mmo_server, :spawn_tick_ms, 10_000)
+  @doc false
+  defp default_tick do
+    Application.get_env(:mmo_server, :spawn_tick_ms, 10_000)
+  end
 
   def start_link(opts) do
     GenServer.start_link(__MODULE__, opts, name: via(opts[:zone_id]))
@@ -20,7 +23,7 @@ defmodule MmoServer.Zone.SpawnController do
     state = %{
       zone_id: Keyword.fetch!(opts, :zone_id),
       npc_sup: Keyword.fetch!(opts, :npc_sup),
-      tick_ms: Keyword.get(opts, :tick_ms, @default_tick),
+      tick_ms: Keyword.get(opts, :tick_ms, default_tick()),
       last_spawn: %{}
     }
 

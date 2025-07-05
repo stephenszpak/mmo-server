@@ -68,6 +68,11 @@ defmodule MmoServer.Player do
     GenServer.call({:via, Horde.Registry, {PlayerRegistry, player_id}}, :get_position)
   end
 
+  @spec get_zone_id(term()) :: String.t()
+  def get_zone_id(player_id) do
+    GenServer.call({:via, Horde.Registry, {PlayerRegistry, player_id}}, :get_zone_id)
+  end
+
   @impl true
   alias MmoServer.{Repo, PlayerPersistence, ZoneManager}
 
@@ -218,6 +223,11 @@ defmodule MmoServer.Player do
   @impl true
   def handle_call(:get_status, _from, state) do
     {:reply, state.status, state}
+  end
+
+  @impl true
+  def handle_call(:get_zone_id, _from, state) do
+    {:reply, state.zone_id, state}
   end
 
   @impl true

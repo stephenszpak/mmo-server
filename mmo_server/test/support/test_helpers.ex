@@ -1,6 +1,5 @@
 defmodule MmoServer.TestHelpers do
   import ExUnit.Callbacks, only: [start_supervised: 1]
-  import ExUnit.Assertions, only: [assert_receive: 2]
 
   def start_shared(process_mod, args \\ []) do
     args =

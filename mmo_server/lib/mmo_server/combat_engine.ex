@@ -39,7 +39,7 @@ defmodule MmoServer.CombatEngine do
   def handle_info(:tick, set) do
     set =
       Enum.reduce(set, set, fn pair = {a, b}, acc ->
-        if alive?(a) and alive?(b) do
+        if alive?(a) and alive?(b) and same_zone?(a, b) do
           deal_damage(a, b)
           acc
         else
@@ -74,6 +74,26 @@ defmodule MmoServer.CombatEngine do
       end
     catch
       :exit, _ -> false
+    end
+  end
+
+  defp same_zone?(a, b) do
+    zone_id(a) == zone_id(b)
+  end
+
+  defp zone_id(id) when is_binary(id) do
+    try do
+      MmoServer.Player.get_zone_id(id)
+    catch
+      :exit, _ -> nil
+    end
+  end
+
+  defp zone_id({:npc, id}) do
+    try do
+      MmoServer.NPC.get_zone_id(id)
+    catch
+      :exit, _ -> nil
     end
   end
 

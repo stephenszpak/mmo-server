@@ -19,9 +19,9 @@ defmodule MmoServer.NPCSimulationTest do
     end)
 
     pos1 = NPC.get_position("wolf_1")
-    Process.sleep(1100)
-    pos2 = NPC.get_position("wolf_1")
-    refute pos1 == pos2
+    eventually(fn ->
+      assert NPC.get_position("wolf_1") != pos1
+    end, 15, 200)
   end
 
   test "aggressive npc attacks and kills player" do

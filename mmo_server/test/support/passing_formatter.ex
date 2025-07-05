@@ -1,6 +1,5 @@
 defmodule MmoServer.PassingFormatter do
   use GenServer
-  @behaviour ExUnit.Formatter
 
   def init(opts) do
     {:ok, opts}

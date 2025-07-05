@@ -77,9 +77,8 @@ defmodule MmoServer.CombatEngine do
     end
   end
 
-  defp deal_damage(a, b) do
-    damage(a)
-    damage(b)
+  defp deal_damage(_attacker, target) do
+    damage(target)
   end
 
   defp damage(id) when is_binary(id), do: MmoServer.Player.damage(id, @damage)

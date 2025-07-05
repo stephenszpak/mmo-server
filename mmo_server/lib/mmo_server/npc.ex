@@ -51,6 +51,8 @@ defmodule MmoServer.NPC do
       tick_ms: Map.get(args, :tick_ms, @tick_ms)
     }
 
+    seed_random(state.id)
+
     schedule_tick(state.tick_ms)
     {:ok, state}
   end
@@ -150,6 +152,11 @@ defmodule MmoServer.NPC do
     )
 
     %{state | pos: new_pos}
+  end
+
+  defp seed_random(id) do
+    <<a, b, c, _rest::binary>> = :crypto.hash(:md5, to_string(id))
+    :rand.seed(:exsplus, {a, b, c})
   end
 
   defp maybe_aggro(state) do

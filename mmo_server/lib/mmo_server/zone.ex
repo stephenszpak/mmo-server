@@ -110,6 +110,14 @@ defmodule MmoServer.Zone do
     {:noreply, state}
   end
 
+  @impl true
+  def handle_info({:EXIT, _pid, _reason}, state) do
+    # Child processes such as the NPC supervisor or spawn controller may
+    # terminate normally during the tests. Since the zone is not responsible
+    # for restarting them, we simply ignore these messages.
+    {:noreply, state}
+  end
+
   defp schedule_tick do
     Process.send_after(self(), :tick, 100)
   end

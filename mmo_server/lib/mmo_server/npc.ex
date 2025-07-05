@@ -5,7 +5,7 @@ defmodule MmoServer.NPC do
   use GenServer
   require Logger
 
-  @tick_ms 1_000
+  @tick_ms Application.compile_env(:mmo_server, :npc_tick_ms, 1_000)
 
   defstruct [
     :id,

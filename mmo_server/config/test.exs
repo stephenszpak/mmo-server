@@ -18,4 +18,5 @@ config :logger, level: :warning
 config :mmo_server,
   world_tick_ms: 100,
   boss_every: 3,
-  storm_chance: 0.0
+  storm_chance: 0.0,
+  npc_tick_ms: 100

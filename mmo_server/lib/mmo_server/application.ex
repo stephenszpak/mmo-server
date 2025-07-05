@@ -13,6 +13,7 @@ defmodule MmoServer.Application do
       MmoServerWeb.Presence,
       MmoServer.Protocol.UdpServer,
       MmoServer.CombatEngine,
+      MmoServer.WorldClock,
       {Horde.Registry, [name: PlayerRegistry, keys: :unique]},
       {MmoServer.PlayerSupervisor, []},
       {MmoServer.ZoneSupervisor, []}

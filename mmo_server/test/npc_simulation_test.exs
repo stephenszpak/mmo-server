@@ -124,7 +124,7 @@ defmodule MmoServer.NPCSimulationTest do
     hp_before = :sys.get_state(pid).hp
     assert hp_before < 100
 
-    Player.move("runner", {95, 0, 0})
+    Player.move("runner", {70, 0, 0})
     eventually(fn -> assert {95.0, 30.0, 0.0} == Player.get_position("runner") end)
     Player.move("runner", {10, 0, 0})
 

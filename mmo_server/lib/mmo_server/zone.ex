@@ -45,6 +45,9 @@ defmodule MmoServer.Zone do
   def init(zone_id) do
     {:ok, npc_sup} = MmoServer.Zone.NPCSupervisor.start_link(zone_id)
 
+    {:ok, _spawn} =
+      MmoServer.Zone.SpawnController.start_link(zone_id: zone_id, npc_sup: npc_sup)
+
     MmoServer.Zone.NPCConfig.npcs_for(zone_id)
     |> Enum.each(fn npc ->
       npc = Map.put(npc, :zone_id, zone_id)

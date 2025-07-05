@@ -113,6 +113,9 @@ defmodule MmoServer.NPC do
         :aggressive ->
           maybe_aggro(state)
           |> move_random()
+
+        _other ->
+          move_random(state)
       end
 
     schedule_tick(state.tick_ms)

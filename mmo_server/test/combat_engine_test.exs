@@ -10,21 +10,25 @@ defmodule MmoServer.CombatEngineTest do
   end
 
   test "player dies and respawns" do
-    start_shared(MmoServer.Zone, "zone1")
-    start_shared(MmoServer.Player, %{player_id: "a", zone_id: "zone1"})
-    start_shared(MmoServer.Player, %{player_id: "b", zone_id: "zone1"})
+    zone = unique_string("zone")
+    a = unique_string("a")
+    b = unique_string("b")
 
-    Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:zone1")
+    start_shared(MmoServer.Zone, zone)
+    start_shared(MmoServer.Player, %{player_id: a, zone_id: zone})
+    start_shared(MmoServer.Player, %{player_id: b, zone_id: zone})
 
-    MmoServer.CombatEngine.start_combat("a", "b")
+    Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:#{zone}")
 
-    assert_receive {:death, "b"}, 5_000
+    MmoServer.CombatEngine.start_combat(a, b)
 
-    assert :dead == MmoServer.Player.get_status("b")
+    assert_receive {:death, ^b}, 5_000
 
-    assert_receive {:player_respawned, "b"}, 12_000
+    assert :dead == MmoServer.Player.get_status(b)
 
-    assert :alive == MmoServer.Player.get_status("b")
-    assert 100 == (:sys.get_state({:via, Horde.Registry, {PlayerRegistry, "b"}}).hp)
+    assert_receive {:player_respawned, ^b}, 12_000
+
+    assert :alive == MmoServer.Player.get_status(b)
+    assert 100 == (:sys.get_state({:via, Horde.Registry, {PlayerRegistry, b}}).hp)
   end
 end

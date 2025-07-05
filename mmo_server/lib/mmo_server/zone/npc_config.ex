@@ -12,6 +12,13 @@ defmodule MmoServer.Zone.NPCConfig do
 
   @spec npcs_for(String.t()) :: list(map())
   def npcs_for(zone_id) do
-    Map.get(@npcs, zone_id, [])
+    Map.get(@npcs, base(zone_id), [])
+  end
+
+  defp base(id) do
+    id
+    |> to_string()
+    |> String.split("_", parts: 2)
+    |> hd()
   end
 end

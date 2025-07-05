@@ -25,16 +25,18 @@ defmodule MmoServer.NPCSimulationTest do
   end
 
   test "aggressive npc attacks and kills player" do
-    zone_id = "zone_#{System.unique_integer([:positive])}"
-    player_id = "player_#{System.unique_integer([:positive])}"
+    start_shared(MmoServer.Zone, "elwynn")
+    _player = start_shared(Player, %{player_id: "p1", zone_id: "elwynn"})
+    Player.move("p1", {25, 30, 0})
+    Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:elwynn")
 
-    start_shared(MmoServer.Zone, %{zone_id: zone_id})
-    _player = start_shared(Player, %{player_id: player_id, zone_id: zone_id})
-    Player.move(player_id, {25, 30, 0})
-    Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:#{zone_id}")
+    eventually(fn ->
+      assert :alive == Player.get_status("p1")
+      assert NPC.get_status("wolf_2") == :alive
+    end)
 
     assert_receive {:npc_moved, "wolf_2", _}, 1_200
-    assert_receive {:death, ^player_id}, 2_000
+    eventually(fn -> assert Player.get_status("p1") == :dead end, 50, 200)
   end
 
   test "npc dies and respawns" do

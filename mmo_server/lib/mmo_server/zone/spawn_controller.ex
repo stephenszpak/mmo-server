@@ -48,6 +48,12 @@ defmodule MmoServer.Zone.SpawnController do
     {:noreply, state}
   end
 
+  @impl true
+  def handle_info(_msg, state) do
+    # Ignore unrelated zone events such as player or NPC spawns
+    {:noreply, state}
+  end
+
   defp schedule_tick(ms), do: Process.send_after(self(), :tick, ms)
 
   defp evaluate_rules(state) do

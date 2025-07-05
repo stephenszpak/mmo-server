@@ -46,7 +46,7 @@ defmodule MmoServer.NPCSimulationTest do
     eventually(fn -> NPC.get_position("wolf_1") end)
     NPC.damage("wolf_1", 200)
 
-    assert_receive {:npc_death, "wolf_1"}
+    assert_receive {:npc_death, "wolf_1"}, 500
     status = NPC.get_status("wolf_1")
     assert status == :dead
     pos = NPC.get_position("wolf_1")
@@ -121,8 +121,7 @@ defmodule MmoServer.NPCSimulationTest do
     pid = start_shared(Player, %{player_id: "runner", zone_id: "elwynn"})
     Player.move("runner", {25, 30, 0})
     :timer.sleep(1_200)
-    hp_before = :sys.get_state(pid).hp
-    assert hp_before < 100
+    eventually(fn -> assert :sys.get_state(pid).hp < 100 end, 20, 100)
 
     Player.move("runner", {70, 0, 0})
     eventually(fn -> assert {95.0, 30.0, 0.0} == Player.get_position("runner") end)

@@ -20,8 +20,11 @@ defmodule MmoServer.Zone.SpawnController do
 
   @impl true
   def init(opts) do
+    zone_id = Keyword.fetch!(opts, :zone_id)
+    Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:#{zone_id}")
+
     state = %{
-      zone_id: Keyword.fetch!(opts, :zone_id),
+      zone_id: zone_id,
       npc_sup: Keyword.fetch!(opts, :npc_sup),
       tick_ms: Keyword.get(opts, :tick_ms, default_tick()),
       last_spawn: %{}
@@ -36,6 +39,12 @@ defmodule MmoServer.Zone.SpawnController do
   def handle_info(:tick, state) do
     state = evaluate_rules(state)
     schedule_tick(state.tick_ms)
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_info({:npc_death, _id}, state) do
+    state = evaluate_rules(state)
     {:noreply, state}
   end
 

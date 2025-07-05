@@ -43,8 +43,15 @@ defmodule MmoServer.Zone.SpawnController do
   end
 
   @impl true
-  def handle_info({:npc_death, _id}, state) do
-    state = evaluate_rules(state)
+  def handle_info({:npc_death, id}, state) do
+    type =
+      id
+      |> to_string()
+      |> String.split("_", parts: 2)
+      |> hd()
+      |> String.to_atom()
+
+    state = evaluate_rules(state, [type])
     {:noreply, state}
   end
 
@@ -56,14 +63,16 @@ defmodule MmoServer.Zone.SpawnController do
 
   defp schedule_tick(ms), do: Process.send_after(self(), :tick, ms)
 
-  defp evaluate_rules(state) do
+  defp evaluate_rules(state, force_types \\ []) do
     now = System.system_time(:millisecond)
 
     Enum.reduce(SpawnRules.rules_for(state.zone_id), state, fn rule, acc ->
       count = npc_count(acc.npc_sup, rule.type)
       need = rule.max - count
 
-      if need > 0 and spawn_allowed?(acc, rule.type, now) do
+      allowed = rule.type in force_types or spawn_allowed?(acc, rule.type, now)
+
+      if need > 0 and allowed do
         spawn_npcs(acc, rule, need, now)
       else
         acc

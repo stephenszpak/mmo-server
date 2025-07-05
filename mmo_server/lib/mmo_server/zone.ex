@@ -43,9 +43,9 @@ defmodule MmoServer.Zone do
 
   @impl true
   def init(zone_id) do
+    Process.flag(:trap_exit, true)
     {:ok, npc_sup} = MmoServer.Zone.NPCSupervisor.start_link(zone_id)
-
-    {:ok, _spawn} =
+    {:ok, _spawn_pid} =
       MmoServer.Zone.SpawnController.start_link(zone_id: zone_id, npc_sup: npc_sup)
 
     MmoServer.Zone.NPCConfig.npcs_for(zone_id)

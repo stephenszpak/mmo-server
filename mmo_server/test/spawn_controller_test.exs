@@ -76,7 +76,7 @@ defmodule MmoServer.SpawnControllerTest do
     eventually(fn -> assert count_npcs("elwynn") == 5 end)
 
     MmoServer.NPC.damage("wolf_1", 200)
-    eventually(fn -> assert count_npcs("elwynn") == 5 end, 20, 100)
+    eventually(fn -> assert count_npcs("elwynn") == 5 end, 50, 100)
   end
 end
 

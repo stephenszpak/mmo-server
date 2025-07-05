@@ -1,7 +1,6 @@
 defmodule MmoServer.Zone do
   use GenServer
 
-  @impl true
   def child_spec(zone_id) do
     %{
       id: {:zone, zone_id},

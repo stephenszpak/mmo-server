@@ -1,7 +1,7 @@
 defmodule MmoServer.NPCSimulationTest do
   use ExUnit.Case, async: false
 
-  alias MmoServer.{NPC, Player, ZoneManager}
+  alias MmoServer.{NPC, Player}
   import MmoServer.TestHelpers
 
   setup _tags do
@@ -26,7 +26,7 @@ defmodule MmoServer.NPCSimulationTest do
 
   test "aggressive npc attacks and kills player" do
     start_shared(MmoServer.Zone, "elwynn")
-    player = start_shared(Player, %{player_id: "p1", zone_id: "elwynn"})
+    _player = start_shared(Player, %{player_id: "p1", zone_id: "elwynn"})
     Player.move("p1", {25, 30, 0})
     Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:elwynn")
 

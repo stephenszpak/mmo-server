@@ -13,24 +13,25 @@ defmodule MmoServer.PersistenceTest do
   end
 
   test "player state persists across lifecycle" do
-    zone_id = "zone_#{System.unique_integer([:positive])}"
-    player_id = "player_#{System.unique_integer([:positive])}"
+    pid = start_shared(Player, %{player_id: "thrall", zone_id: "elwynn"})
+    Player.move("thrall", {1.0, 2.0, 3.0})
 
-    pid = start_shared(Player, %{player_id: player_id, zone_id: zone_id})
-    Player.move(player_id, {1.0, 2.0, 3.0})
-    Player.get_position(player_id)
-    p = Repo.get!(PlayerPersistence, player_id)
-    assert {p.x, p.y, p.z} == {1.0, 2.0, 3.0}
+    eventually(fn ->
+      p = Repo.get!(PlayerPersistence, "thrall")
+      assert {p.x, p.y, p.z} == {1.0, 2.0, 3.0}
+    end)
 
-    Player.damage(player_id, 200)
-    Player.respawn(player_id)
-    Player.get_status(player_id)
-    p = Repo.get!(PlayerPersistence, player_id)
-    assert p.hp == 100
-    assert p.status == "alive"
+    Player.damage("thrall", 200)
+    Player.respawn("thrall")
+
+    eventually(fn ->
+      p = Repo.get!(PlayerPersistence, "thrall")
+      assert p.hp == 100
+      assert p.status == "alive"
+    end)
 
     Process.exit(pid, :kill)
-    pid2 = start_shared(Player, %{player_id: player_id, zone_id: zone_id})
+    pid2 = start_shared(Player, %{player_id: "thrall", zone_id: "elwynn"})
     state = :sys.get_state(pid2)
     assert state.hp == 100
     assert state.status == :alive

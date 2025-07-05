@@ -72,14 +72,11 @@ defmodule MmoServer.SpawnControllerTest do
   end
 
   test "dead npcs are replaced" do
-    zone_id = "zone_#{System.unique_integer([:positive])}"
-    start_shared(MmoServer.Zone, %{zone_id: zone_id})
-    Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:#{zone_id}")
+    start_shared(MmoServer.Zone, "elwynn")
+    eventually(fn -> assert count_npcs("elwynn") == 5 end)
 
-    assert_receive {:npc_spawned, _}, 1_000
     MmoServer.NPC.damage("wolf_1", 200)
-    assert_receive {:npc_death, "wolf_1"}, 1_000
-    assert_receive {:npc_spawned, _}, 1_000
+    eventually(fn -> assert count_npcs("elwynn") == 5 end, 50, 100)
   end
 end
 

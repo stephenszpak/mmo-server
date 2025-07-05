@@ -116,7 +116,6 @@ defmodule MmoServer.Player do
     Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:#{state.zone_id}")
     MmoServer.Zone.join(state.zone_id, state.id)
     persist_state(state)
-    send(owner_pid || self(), {:ready, self()})
     {:ok, state}
   end
 

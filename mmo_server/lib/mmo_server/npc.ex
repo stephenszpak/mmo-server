@@ -39,7 +39,6 @@ defmodule MmoServer.NPC do
   def get_status(id), do: GenServer.call(via(id), :get_status)
   def get_position(id), do: GenServer.call(via(id), :get_position)
   def get_zone_id(id), do: GenServer.call(via(id), :get_zone_id)
-  def process_tick(id), do: GenServer.call(via(id), :tick_now)
 
   ## Server callbacks
   @impl true
@@ -51,10 +50,8 @@ defmodule MmoServer.NPC do
       pos: Map.get(args, :pos, {0, 0}),
       tick_ms: Map.get(args, :tick_ms, @tick_ms)
     }
-    owner = Map.get(args, :sandbox_owner)
 
     schedule_tick(state.tick_ms)
-    send(owner || self(), {:ready, self()})
     {:ok, state}
   end
 
@@ -136,15 +133,6 @@ defmodule MmoServer.NPC do
 
   def handle_call(:get_zone_id, _from, state) do
     {:reply, state.zone_id, state}
-  end
-
-  def handle_call(:tick_now, _from, state) do
-    state =
-      state
-      |> maybe_aggro()
-      |> move_random()
-
-    {:reply, :ok, state}
   end
 
   defp schedule_tick(ms), do: Process.send_after(self(), :tick, ms)

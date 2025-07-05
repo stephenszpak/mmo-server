@@ -16,28 +16,29 @@ defmodule MmoServer.ZoneHandoffTest do
   end
 
   test "handoff between zones preserves state and restarts process" do
-    pid = start_shared(Player, %{player_id: "thrall", zone_id: "elwynn"})
-    Player.damage("thrall", 20)
+    player = unique_string("thrall")
+    pid = start_shared(Player, %{player_id: player, zone_id: "elwynn"})
+    Player.damage(player, 20)
 
     # capture initial pid from registry
-    [{old_pid, _}] = Horde.Registry.lookup(PlayerRegistry, "thrall")
+    [{old_pid, _}] = Horde.Registry.lookup(PlayerRegistry, player)
     assert pid == old_pid
 
-    Player.move("thrall", {95, 0, 0})
-    eventually(fn -> assert {95.0, 0.0, 0.0} == Player.get_position("thrall") end)
+    Player.move(player, {95, 0, 0})
+    eventually(fn -> assert {95.0, 0.0, 0.0} == Player.get_position(player) end)
 
-    Player.move("thrall", {10, 0, 0})
+    Player.move(player, {10, 0, 0})
 
     eventually(fn ->
-      assert {105.0, 0.0, 0.0} == Player.get_position("thrall")
-      assert "durotar" == Repo.get!(PlayerPersistence, "thrall").zone_id
+      assert {105.0, 0.0, 0.0} == Player.get_position(player)
+      assert "durotar" == Repo.get!(PlayerPersistence, player).zone_id
     end)
 
-    assert_receive {:leave, "thrall"}
-    assert_receive {:join, "thrall"}
+    assert_receive {:leave, ^player}
+    assert_receive {:join, ^player}
 
     # new process registration
-    [{new_pid, _}] = Horde.Registry.lookup(PlayerRegistry, "thrall")
+    [{new_pid, _}] = Horde.Registry.lookup(PlayerRegistry, player)
     refute Process.alive?(old_pid)
     assert Process.alive?(new_pid)
     refute old_pid == new_pid
@@ -48,7 +49,7 @@ defmodule MmoServer.ZoneHandoffTest do
     assert state.status == :alive
     assert state.pos == {105.0, 0.0, 0.0}
 
-    record = Repo.get!(PlayerPersistence, "thrall")
+    record = Repo.get!(PlayerPersistence, player)
     assert record.hp == 80
     assert record.status == "alive"
 
@@ -63,9 +64,9 @@ defmodule MmoServer.ZoneHandoffTest do
 
     # restart process and ensure persisted state
     Process.exit(new_pid, :kill)
-    eventually(fn -> [] == Horde.Registry.lookup(PlayerRegistry, "thrall") end)
+    eventually(fn -> [] == Horde.Registry.lookup(PlayerRegistry, player) end)
 
-    pid2 = start_shared(Player, %{player_id: "thrall", zone_id: "durotar"})
+    pid2 = start_shared(Player, %{player_id: player, zone_id: "durotar"})
     state2 = :sys.get_state(pid2)
     assert state2.zone_id == "durotar"
     assert state2.hp == 80

@@ -2,11 +2,13 @@ defmodule MmoServer.ZoneTest do
   use ExUnit.Case, async: true
 
   test "zone broadcasts join and leave" do
-    {:ok, zone} = MmoServer.Zone.start_link("zone1")
-    Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:zone1")
-    GenServer.cast(zone, {:join, "player1"})
-    assert_receive {:join, "player1"}
-    GenServer.cast(zone, {:leave, "player1"})
-    assert_receive {:leave, "player1"}
+    zone_id = unique_string("zone")
+    player_id = unique_string("player")
+    {:ok, zone} = MmoServer.Zone.start_link(zone_id)
+    Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:#{zone_id}")
+    GenServer.cast(zone, {:join, player_id})
+    assert_receive {:join, ^player_id}
+    GenServer.cast(zone, {:leave, player_id})
+    assert_receive {:leave, ^player_id}
   end
 end

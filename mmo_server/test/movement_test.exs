@@ -10,21 +10,25 @@ defmodule MmoServer.MovementTest do
   end
 
   test "udp movement updates position" do
-    start_shared(MmoServer.Zone, "zone1")
-    start_shared(MmoServer.Player, %{player_id: "1", zone_id: "zone1"})
+    zone = unique_string("zone")
+    pid_int = System.unique_integer([:positive])
+    player = Integer.to_string(pid_int)
+
+    start_shared(MmoServer.Zone, zone)
+    start_shared(MmoServer.Player, %{player_id: player, zone_id: zone})
 
     {:ok, sock} = :gen_udp.open(0, [:binary])
 
-    packet = <<1::32, 1::16, 1.0::float, 2.0::float, 3.0::float>>
+    packet = <<pid_int::32, 1::16, 1.0::float, 2.0::float, 3.0::float>>
     :gen_udp.send(sock, {127,0,0,1}, 4000, packet)
     :timer.sleep(100)
 
-    assert {1.0, 2.0, 3.0} == MmoServer.Player.get_position("1")
+    assert {1.0, 2.0, 3.0} == MmoServer.Player.get_position(player)
 
-    packet2 = <<1::32, 1::16, 10.0::float, 0.0::float, 0.0::float>>
+    packet2 = <<pid_int::32, 1::16, 10.0::float, 0.0::float, 0.0::float>>
     :gen_udp.send(sock, {127,0,0,1}, 4000, packet2)
     :timer.sleep(100)
 
-    assert {6.0, 2.0, 3.0} == MmoServer.Player.get_position("1")
+    assert {6.0, 2.0, 3.0} == MmoServer.Player.get_position(player)
   end
 end

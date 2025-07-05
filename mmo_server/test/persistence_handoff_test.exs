@@ -15,17 +15,18 @@ defmodule MmoServer.PersistenceHandoffTest do
   end
 
   test "player moves across zones and state is preserved" do
-    _pid = start_shared(Player, %{player_id: "thrall", zone_id: "elwynn"})
-    Player.move("thrall", {95, 0, 0})
+    player = unique_string("thrall")
+    _pid = start_shared(Player, %{player_id: player, zone_id: "elwynn"})
+    Player.move(player, {95, 0, 0})
     eventually(fn -> assert {95.0, 0.0, 0.0} == Player.get_position("thrall") end)
 
-    Player.move("thrall", {10, 0, 0})
+    Player.move(player, {10, 0, 0})
 
     eventually(fn ->
-      assert {105.0, 0.0, 0.0} == Player.get_position("thrall")
-      assert "durotar" == Repo.get!(PlayerPersistence, "thrall").zone_id
+      assert {105.0, 0.0, 0.0} == Player.get_position(player)
+      assert "durotar" == Repo.get!(PlayerPersistence, player).zone_id
     end)
 
-    assert_receive {:join, "thrall"}
+    assert_receive {:join, ^player}
   end
 end

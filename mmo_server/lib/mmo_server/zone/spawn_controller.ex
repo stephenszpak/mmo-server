@@ -27,6 +27,7 @@ defmodule MmoServer.Zone.SpawnController do
       last_spawn: %{}
     }
 
+    state = evaluate_rules(state)
     schedule_tick(state.tick_ms)
     {:ok, state}
   end

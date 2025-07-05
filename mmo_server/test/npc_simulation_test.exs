@@ -37,7 +37,7 @@ defmodule MmoServer.NPCSimulationTest do
     end)
 
     assert_receive {:npc_moved, "wolf_2", _}, 1_200
-    eventually(fn -> assert Player.get_status(p1) == :dead end end, 50, 200)
+    eventually(fn -> assert Player.get_status(p1) == :dead end, 50, 200)
   end
 
   test "npc dies and respawns", %{zone_id: zone_id} do
@@ -90,7 +90,7 @@ defmodule MmoServer.NPCSimulationTest do
     assert Player.get_status(p2) == :alive
 
     Player.move(p2, {-15, -10, 0})
-    eventually(fn -> assert Player.get_status(p2) == :dead end end, 50, 200)
+    eventually(fn -> assert Player.get_status(p2) == :dead end, 50, 200)
   end
 
   test "player can kill npc", %{zone_id: zone_id} do
@@ -141,7 +141,7 @@ defmodule MmoServer.NPCSimulationTest do
     edge = unique_string("edge")
     start_shared(Player, %{player_id: edge, zone_id: zone_id})
     Player.move(edge, {35, 30, 0})
-    eventually(fn -> assert Player.get_status(edge) == :dead end end, 50, 200)
+    eventually(fn -> assert Player.get_status(edge) == :dead end, 50, 200)
 
     far = unique_string("edge_far")
     start_shared(Player, %{player_id: far, zone_id: zone_id})

@@ -12,7 +12,7 @@ defmodule MmoServer.NPCSimulationTest do
     %{zone_id: zone_id}
   end
 
-  test "npc starts and ticks", %{zone_id: zone_id} do
+  test "npc starts and ticks", %{zone_id: _zone_id} do
 
     eventually(fn ->
       assert [{pid, _}] = Horde.Registry.lookup(PlayerRegistry, {:npc, "wolf_1"})

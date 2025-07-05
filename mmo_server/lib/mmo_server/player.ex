@@ -123,7 +123,14 @@ defmodule MmoServer.Player do
   def handle_cast({:move, {dx, dy, dz}}, state) do
     {x, y, z} = state.pos
     new_pos = {x + dx, y + dy, z + dz}
-    new_zone = ZoneManager.get_zone_for_position({elem(new_pos, 0), elem(new_pos, 1)}) || state.zone_id
+    target_base = ZoneManager.get_zone_for_position({elem(new_pos, 0), elem(new_pos, 1)})
+    current_base = ZoneManager.base(state.zone_id)
+    new_zone =
+      cond do
+        is_nil(target_base) -> state.zone_id
+        target_base == current_base -> state.zone_id
+        true -> target_base
+      end
 
     if new_zone != state.zone_id do
       MmoServer.Zone.leave(state.zone_id, state.id)

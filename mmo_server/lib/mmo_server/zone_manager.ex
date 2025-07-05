@@ -5,6 +5,18 @@ defmodule MmoServer.ZoneManager do
 
   alias MmoServer.ZoneMap
 
+  @doc """
+  Returns the base identifier for a zone. This is useful when zones are started
+  with unique suffixes for isolation in tests.
+  """
+  @spec base(String.t()) :: String.t()
+  def base(id) do
+    id
+    |> to_string()
+    |> String.split("_", parts: 2)
+    |> hd()
+  end
+
   @spec get_zone_for_position({number(), number()}) :: String.t() | nil
   def get_zone_for_position({x, y}) do
     Enum.find_value(ZoneMap.zones(), fn {id, {{x1, y1}, {x2, y2}}} ->

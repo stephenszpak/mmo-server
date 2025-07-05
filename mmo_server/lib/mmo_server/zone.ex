@@ -118,6 +118,18 @@ defmodule MmoServer.Zone do
     {:noreply, state}
   end
 
+  @impl true
+  def terminate(_reason, state) do
+    Horde.Registry.lookup(PlayerRegistry, {:spawn_controller, state.id})
+    |> Enum.each(fn {pid, _} -> Process.exit(pid, :shutdown) end)
+
+    if Process.alive?(state.npc_sup) do
+      Process.exit(state.npc_sup, :shutdown)
+    end
+
+    :ok
+  end
+
   defp schedule_tick do
     Process.send_after(self(), :tick, 100)
   end

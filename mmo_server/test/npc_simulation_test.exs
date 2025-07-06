@@ -15,7 +15,7 @@ defmodule MmoServer.NPCSimulationTest do
   test "npc starts and ticks", %{zone_id: _zone_id} do
 
     eventually(fn ->
-      assert [{pid, _}] = Horde.Registry.lookup(PlayerRegistry, {:npc, "wolf_1"})
+      assert [{pid, _}] = Horde.Registry.lookup(NPCRegistry, {:npc, "wolf_1"})
       assert Process.alive?(pid)
     end)
 
@@ -61,16 +61,16 @@ defmodule MmoServer.NPCSimulationTest do
   test "npc restarts on crash with single registry entry", _ctx do
 
     eventually(fn ->
-      assert [{pid, _}] = Horde.Registry.lookup(PlayerRegistry, {:npc, "wolf_1"})
+      assert [{pid, _}] = Horde.Registry.lookup(NPCRegistry, {:npc, "wolf_1"})
       Process.exit(pid, :kill)
     end)
 
     eventually(fn ->
-      [{pid, _}] = Horde.Registry.lookup(PlayerRegistry, {:npc, "wolf_1"})
+      [{pid, _}] = Horde.Registry.lookup(NPCRegistry, {:npc, "wolf_1"})
       assert Process.alive?(pid)
     end)
 
-    assert 1 == length(Horde.Registry.lookup(PlayerRegistry, {:npc, "wolf_1"}))
+    assert 1 == length(Horde.Registry.lookup(NPCRegistry, {:npc, "wolf_1"}))
   end
 
   test "zone restart boots npcs", %{zone_id: zone_id} do
@@ -150,7 +150,7 @@ defmodule MmoServer.NPCSimulationTest do
   end
 
   test "npc tick loop survives rapid ticks" do
-    [{pid, _}] = Horde.Registry.lookup(PlayerRegistry, {:npc, "wolf_1"})
+    [{pid, _}] = Horde.Registry.lookup(NPCRegistry, {:npc, "wolf_1"})
     send(pid, :tick)
     send(pid, :tick)
     send(pid, :tick)

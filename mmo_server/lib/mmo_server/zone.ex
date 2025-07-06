@@ -1,6 +1,8 @@
 defmodule MmoServer.Zone do
   use GenServer
 
+  @tick_ms Application.compile_env(:mmo_server, :zone_tick_ms, 100)
+
   def child_spec(zone_id) do
     %{
       id: {:zone, zone_id},
@@ -55,8 +57,8 @@ defmodule MmoServer.Zone do
     {:ok, _spawn_pid} =
       MmoServer.Zone.SpawnController.start_link(zone_id: zone_id, npc_sup: npc_sup)
 
-    schedule_tick()
-    {:ok, %{id: zone_id, positions: %{}, npc_sup: npc_sup}}
+    schedule_tick(@tick_ms)
+    {:ok, %{id: zone_id, positions: %{}, npc_sup: npc_sup, tick_ms: @tick_ms}}
   end
 
   @impl true
@@ -106,8 +108,11 @@ defmodule MmoServer.Zone do
 
   @impl true
   def handle_info(:tick, state) do
+    start = System.monotonic_time()
     Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{state.id}", {:positions, state.positions})
-    schedule_tick()
+    duration = System.monotonic_time() - start
+    :telemetry.execute([:mmo_server, :zone, :tick], %{duration: duration}, %{zone_id: state.id})
+    schedule_tick(state.tick_ms)
     {:noreply, state}
   end
 
@@ -121,17 +126,26 @@ defmodule MmoServer.Zone do
 
   @impl true
   def terminate(_reason, state) do
+    require Logger
+    Logger.info("Zone #{state.id} shutting down")
+
     Horde.Registry.lookup(PlayerRegistry, {:spawn_controller, state.id})
     |> Enum.each(fn {pid, _} -> Process.exit(pid, :shutdown) end)
 
     if Process.alive?(state.npc_sup) do
+      DynamicSupervisor.which_children(state.npc_sup)
+      |> Enum.each(fn {_, pid, _, _} ->
+        if Process.alive?(pid), do: Process.exit(pid, :shutdown)
+      end)
       Process.exit(state.npc_sup, :shutdown)
     end
+
+    Enum.each(Map.keys(state.positions), &MmoServer.Player.stop/1)
 
     :ok
   end
 
-  defp schedule_tick do
-    Process.send_after(self(), :tick, 100)
+  defp schedule_tick(ms) do
+    Process.send_after(self(), :tick, ms)
   end
 end

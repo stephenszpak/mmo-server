@@ -10,6 +10,10 @@ defmodule Telemetry.Supervisor do
 
   @impl true
   def init(_arg) do
-    Supervisor.init([], strategy: :one_for_one)
+    children = [
+      {MmoServer.Telemetry.ConsoleReporter, MmoServer.Metrics.metrics()}
+    ]
+
+    Supervisor.init(children, strategy: :one_for_one)
   end
 end

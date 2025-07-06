@@ -18,7 +18,9 @@ defmodule MmoServer.PersistenceHandoffTest do
     player = unique_string("thrall")
     _pid = start_shared(Player, %{player_id: player, zone_id: "elwynn"})
     Player.move(player, {95, 0, 0})
-    eventually(fn -> assert {95.0, 0.0, 0.0} == Player.get_position("thrall") end)
+    eventually(fn ->
+      assert {95.0, 0.0, 0.0} == Player.get_position(player)
+    end)
 
     Player.move(player, {10, 0, 0})
 

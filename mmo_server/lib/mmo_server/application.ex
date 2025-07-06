@@ -15,6 +15,7 @@ defmodule MmoServer.Application do
       MmoServer.CombatEngine,
       MmoServer.WorldClock,
       {Horde.Registry, [name: PlayerRegistry, keys: :unique]},
+      {Horde.Registry, [name: NPCRegistry, keys: :unique]},
       {MmoServer.PlayerSupervisor, []},
       {MmoServer.ZoneSupervisor, []}
     ] ++ maybe_bootstrap()

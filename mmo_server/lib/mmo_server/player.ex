@@ -150,6 +150,11 @@ defmodule MmoServer.Player do
       Logger.info("Player #{state.id} moved to #{inspect(new_pos)}")
       new_state = %{state | pos: new_pos}
       persist_state(new_state)
+      :telemetry.execute([
+        :mmo_server,
+        :player,
+        :moved
+      ], %{count: 1}, %{player_id: state.id, zone_id: state.zone_id})
       {:noreply, new_state}
     end
   end

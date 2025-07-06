@@ -11,6 +11,7 @@ defmodule MmoServer.NPC do
     :id,
     :zone_id,
     :type,
+    :behavior,
     pos: {0, 0},
     hp: 100,
     status: :alive,
@@ -21,6 +22,7 @@ defmodule MmoServer.NPC do
           id: term(),
           zone_id: term(),
           type: atom(),
+          behavior: atom(),
           pos: {number(), number()},
           hp: non_neg_integer(),
           status: :alive | :dead,
@@ -32,7 +34,7 @@ defmodule MmoServer.NPC do
     GenServer.start_link(__MODULE__, args, name: via(id))
   end
 
-  defp via(id), do: {:via, Horde.Registry, {PlayerRegistry, {:npc, id}}}
+  defp via(id), do: {:via, Horde.Registry, {NPCRegistry, {:npc, id}}}
 
   # Client helpers
   def damage(id, amount), do: GenServer.cast(via(id), {:damage, amount})
@@ -43,10 +45,18 @@ defmodule MmoServer.NPC do
   ## Server callbacks
   @impl true
   def init(args) do
+    behavior =
+      Map.get(args, :behavior) ||
+        case Map.get(args, :type) do
+          b when b in [:guard, :patrol, :aggressive] -> b
+          _ -> :patrol
+        end
+
     state = %__MODULE__{
       id: args.id,
       zone_id: args.zone_id,
-      type: Map.get(args, :type, :passive),
+      type: Map.get(args, :type),
+      behavior: behavior,
       pos: Map.get(args, :pos, {0, 0}),
       tick_ms: Map.get(args, :tick_ms, @tick_ms)
     }
@@ -96,6 +106,8 @@ defmodule MmoServer.NPC do
       {:npc_respawned, state.id}
     )
 
+    :telemetry.execute([:mmo_server, :npc, :respawn], %{count: 1}, %{id: state.id, zone_id: state.zone_id})
+
     schedule_tick(new_state.tick_ms)
     {:noreply, new_state}
   end
@@ -107,21 +119,22 @@ defmodule MmoServer.NPC do
   end
 
   def handle_info(:tick, state) do
-    state =
-      case state.type do
-        :passive ->
-          move_random(state)
+    new_state =
+      case state.behavior do
+        :guard ->
+          maybe_aggro(state)
 
         :aggressive ->
-          maybe_aggro(state)
-          |> move_random()
+          state
+          |> move_towards_player()
+          |> maybe_aggro()
 
-        _other ->
+        _ ->
           move_random(state)
       end
 
     schedule_tick(state.tick_ms)
-    {:noreply, state}
+    {:noreply, new_state}
   end
 
   @impl true
@@ -162,16 +175,48 @@ defmodule MmoServer.NPC do
   defp maybe_aggro(state) do
     players = MmoServer.Zone.get_position(state.zone_id)
 
-    Enum.find(players, fn {_id, {px, py, _}} ->
-      distance(state.pos, {px, py}) <= 10
-    end)
-    |> case do
-      {player_id, _} -> MmoServer.CombatEngine.start_combat({:npc, state.id}, player_id)
-      _ -> :ok
+    closest =
+      players
+      |> Enum.map(fn {id, {px, py, _}} -> {id, {px, py}, distance(state.pos, {px, py})} end)
+      |> Enum.filter(fn {_id, _pos, dist} -> dist <= 10 end)
+      |> Enum.min_by(fn {_id, _pos, dist} -> dist end, fn -> nil end)
+
+    case closest do
+      {player_id, _pos, _dist} ->
+        MmoServer.CombatEngine.start_combat({:npc, state.id}, player_id)
+      _ ->
+        :ok
     end
 
     state
   end
+
+  defp move_towards_player(state) do
+    players = MmoServer.Zone.get_position(state.zone_id)
+
+    case Enum.min_by(players, fn {_id, {px, py, _}} -> distance(state.pos, {px, py}) end, fn -> nil end) do
+      {_, {px, py, _}} ->
+        {x, y} = state.pos
+        dx = clamp(px - x)
+        dy = clamp(py - y)
+        new_pos = {x + dx, y + dy}
+
+        Phoenix.PubSub.broadcast(
+          MmoServer.PubSub,
+          "zone:#{state.zone_id}",
+          {:npc_moved, state.id, new_pos}
+        )
+
+        %{state | pos: new_pos}
+
+      _ ->
+        move_random(state)
+    end
+  end
+
+  defp clamp(d) when d > 0, do: 1
+  defp clamp(d) when d < 0, do: -1
+  defp clamp(_), do: 0
 
   defp distance({x1, y1}, {x2, y2}) do
     :math.sqrt(:math.pow(x1 - x2, 2) + :math.pow(y1 - y2, 2))

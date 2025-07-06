@@ -94,7 +94,7 @@ defmodule MmoServer.Zone.SpawnController do
   defp unique_id(type) do
     id = "#{type}_#{System.unique_integer([:positive])}"
 
-    if Horde.Registry.lookup(PlayerRegistry, {:npc, id}) == [] do
+    if Horde.Registry.lookup(NPCRegistry, {:npc, id}) == [] do
       id
     else
       unique_id(type)

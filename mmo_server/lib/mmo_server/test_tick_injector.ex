@@ -1,5 +1,7 @@
 defmodule MmoServer.TestTickInjector do
-  @moduledoc """Helpers to manually trigger tick messages in tests."""
+  @moduledoc """
+  Helpers to manually trigger tick messages in tests.
+  """
 
   def tick_zone(zone_id) do
     case Horde.Registry.lookup(PlayerRegistry, {:zone, zone_id}) do

@@ -140,7 +140,7 @@ defmodule MmoServer.NPCSimulationTest do
     edge = unique_string("edge")
     start_shared(Player, %{player_id: edge, zone_id: zone_id})
     Player.move(edge, {35, 30, 0})
-    eventually(fn -> assert Player.get_status(edge) == :dead end end, 100, 200)
+    eventually(fn -> assert Player.get_status(edge) == :dead end, 100, 200)
 
     far = unique_string("edge_far")
     start_shared(Player, %{player_id: far, zone_id: zone_id})

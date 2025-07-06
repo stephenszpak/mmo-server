@@ -91,7 +91,7 @@ defmodule MmoServer.NPCSimulationTest do
     assert Player.get_status(p2) == :alive
 
     Player.move(p2, {-15, -10, 0})
-    eventually(fn -> assert Player.get_status(p2) == :dead end end, 100, 200)
+    eventually(fn -> assert Player.get_status(p2) == :dead end, 100, 200)
   end
 
   test "player can kill npc", %{zone_id: zone_id} do

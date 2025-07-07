@@ -52,9 +52,27 @@ defmodule MmoServer.TestHelpers do
 
       if lookup_key do
         Horde.Registry.lookup(PlayerRegistry, lookup_key)
-        |> Enum.each(fn {pid, _} -> if Process.alive?(pid), do: Process.exit(pid, :normal) end)
+        |> Enum.each(fn {pid, _} ->
+          if Process.alive?(pid) do
+            ref = Process.monitor(pid)
+            Process.exit(pid, :normal)
+            receive do
+              {:DOWN, ^ref, :process, ^pid, _} -> :ok
+            after
+              5_000 -> :ok
+            end
+          end
+        end)
       else
-        if Process.alive?(pid), do: Process.exit(pid, :normal)
+        if Process.alive?(pid) do
+          ref = Process.monitor(pid)
+          Process.exit(pid, :normal)
+          receive do
+            {:DOWN, ^ref, :process, ^pid, _} -> :ok
+          after
+            5_000 -> :ok
+          end
+        end
       end
 
       if started? and Process.alive?(owner) do

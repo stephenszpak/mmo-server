@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="csrf-token" content={Plug.CSRFProtection.get_csrf_token()} />
+</head>
+<body>
 <div class="p-4 space-y-6">
   <h1 class="text-xl font-bold">Sandbox Dashboard</h1>
   <div class="text-xs text-gray-500">Connected: <%= @live_connected %></div>
@@ -75,3 +82,5 @@
 <script defer phx-track-static type="text/javascript" src="/js/phoenix.min.js"></script>
 <script defer phx-track-static type="text/javascript" src="/js/phoenix_live_view.min.js"></script>
 <script defer type="text/javascript" src="/assets/app.js"></script>
+</body>
+</html>

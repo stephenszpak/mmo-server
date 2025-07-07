@@ -6,6 +6,7 @@ defmodule MmoServer.InstanceManager do
 
   use GenServer
   alias MmoServer.{Player, ZoneManager}
+  alias __MODULE__.Instance
 
   @idle_ms Application.compile_env(:mmo_server, :instance_idle_ms, 60_000)
 

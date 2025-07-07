@@ -50,7 +50,7 @@ defmodule MmoServer.InstanceManagerTest do
     start_shared(Player, %{player_id: p1, zone_id: zone_id})
     start_shared(Player, %{player_id: p2, zone_id: zone_id})
 
-    {:ok, inst} = InstanceManager.start_instance(zone_id, [p1, p2])
+    {:ok, inst} = InstanceManager.start_instance(zone_id, [p1, p2], sandbox_owner: self())
 
     assert Regex.match?(~r/^#{zone_id}_\d{8}T\d{6}$/, inst)
     assert Enum.member?(InstanceManager.active_instances(), inst)
@@ -64,13 +64,23 @@ defmodule MmoServer.InstanceManagerTest do
       assert Player.get_zone_id(p2) == zone
       assert String.starts_with?(zone, base)
     end)
+
+    Player.stop(p1)
+    Player.stop(p2)
+
+    eventually(fn ->
+      assert [] == Horde.Registry.lookup(PlayerRegistry, p1)
+      assert [] == Horde.Registry.lookup(PlayerRegistry, p2)
+    end)
+
+    wait_for_instance_shutdown(inst)
   end
 
   test "instance spawns npcs and handles combat", %{zone_id: zone_id} do
     player = unique_string("hero")
     start_shared(Player, %{player_id: player, zone_id: zone_id})
 
-    {:ok, inst} = InstanceManager.start_instance(zone_id, [player])
+    {:ok, inst} = InstanceManager.start_instance(zone_id, [player], sandbox_owner: self())
 
     base = base_zone(inst)
 
@@ -83,13 +93,17 @@ defmodule MmoServer.InstanceManagerTest do
     Player.move(player, {x, y, 0})
 
     eventually(fn -> assert Player.get_status(player) == :dead end, 50, 200)
+
+    Player.stop(player)
+    eventually(fn -> assert [] == Horde.Registry.lookup(PlayerRegistry, player) end)
+    wait_for_instance_shutdown(inst)
   end
 
   test "instance shuts down when idle", %{zone_id: zone_id} do
     player = unique_string("solo")
     start_shared(Player, %{player_id: player, zone_id: zone_id})
 
-    {:ok, inst} = InstanceManager.start_instance(zone_id, [player])
+    {:ok, inst} = InstanceManager.start_instance(zone_id, [player], sandbox_owner: self())
     Player.stop(player)
 
     eventually(fn -> assert [] == Horde.Registry.lookup(PlayerRegistry, player) end)

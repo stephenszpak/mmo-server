@@ -18,8 +18,8 @@ defmodule MmoServer.InstanceManager do
   Start a new instance based on `base_zone_id` and move the given players
   into the new zone. Returns `{:ok, instance_id}`.
   """
-  def start_instance(base_zone_id, player_ids) do
-    GenServer.call(__MODULE__, {:start_instance, base_zone_id, player_ids})
+  def start_instance(base_zone_id, player_ids, opts \\ []) do
+    GenServer.call(__MODULE__, {:start_instance, base_zone_id, player_ids, opts})
   end
 
   @doc """
@@ -37,18 +37,24 @@ defmodule MmoServer.InstanceManager do
   end
 
   @impl true
-  def handle_call({:start_instance, base_zone, players}, _from, state) do
+  def handle_call({:start_instance, base_zone, players}, from, state) do
+    handle_call({:start_instance, base_zone, players, []}, from, state)
+  end
+
+  def handle_call({:start_instance, base_zone, players, opts}, _from, state) do
     id = unique_id(base_zone)
     stop_zone(base_zone)
     :ok = ZoneManager.ensure_zone_started(id)
     Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{id}", {:instance_started, id})
     {:ok, pid} = Instance.start_link(id: id, players: players, manager: self())
 
+    owner = Keyword.get(opts, :sandbox_owner)
+
     Enum.each(players, fn player_id ->
       Player.stop(player_id)
       Horde.DynamicSupervisor.start_child(
         MmoServer.PlayerSupervisor,
-        {Player, %{player_id: player_id, zone_id: id}}
+        {Player, %{player_id: player_id, zone_id: id, sandbox_owner: owner}}
       )
     end)
 

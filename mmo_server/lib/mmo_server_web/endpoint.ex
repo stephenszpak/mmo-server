@@ -19,7 +19,7 @@ defmodule MmoServerWeb.Endpoint do
     at: "/",
     from: :mmo_server,
     gzip: false,
-    only: ~w(js)
+    only: ~w(assets js)
 
   plug Plug.RequestId
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]

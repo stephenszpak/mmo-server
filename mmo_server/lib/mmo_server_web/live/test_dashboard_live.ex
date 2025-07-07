@@ -6,7 +6,7 @@ defmodule MmoServerWeb.TestDashboardLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    Logger.info("TestDashboardLive connected?: #{connected?(socket)}")
+    Logger.info("LiveView mounted \u2013 connected? #{connected?(socket)}")
 
     if connected?(socket) do
       Phoenix.PubSub.subscribe(MmoServer.PubSub, "world:clock")
@@ -20,6 +20,7 @@ defmodule MmoServerWeb.TestDashboardLive do
       |> assign(:npcs, fetch_npcs())
       |> assign(:instances, InstanceManager.active_instances())
       |> assign(:selected_player, nil)
+      |> assign(:live_connected, connected?(socket))
       |> assign(:logs, [])
       |> log("LiveView mounted")
 
@@ -93,11 +94,13 @@ defmodule MmoServerWeb.TestDashboardLive do
   # Player selection
   @impl true
   def handle_event("select_player", %{"player" => id}, socket) do
+    Logger.info("Select player: #{inspect(id)}")
     {:noreply, assign(socket, :selected_player, id)}
   end
 
   # Player movement
   def handle_event("move", %{"dir" => dir}, %{assigns: %{selected_player: id}} = socket) when is_binary(id) do
+    Logger.info("Move event: #{inspect({id, dir})}")
     delta =
       case dir do
         "north" -> {0, 1, 0}
@@ -112,40 +115,57 @@ defmodule MmoServerWeb.TestDashboardLive do
   end
 
   def handle_event("damage", _params, %{assigns: %{selected_player: id}} = socket) when is_binary(id) do
+    Logger.info("Damage event for #{id}")
     Player.damage(id, 50)
     {:noreply, socket}
   end
 
   def handle_event("respawn", _params, %{assigns: %{selected_player: id}} = socket) when is_binary(id) do
+    Logger.info("Respawn event for #{id}")
     Player.respawn(id)
     {:noreply, socket}
   end
 
   def handle_event("kill", _params, %{assigns: %{selected_player: id}} = socket) when is_binary(id) do
+    Logger.info("Kill event for #{id}")
     Player.stop(id)
     {:noreply, socket}
   end
 
   # World events
   def handle_event("world_boss", _params, socket) do
+    Logger.info("World boss event")
     WorldEvents.spawn_world_boss()
     {:noreply, socket |> log("World boss spawned")}
   end
 
   def handle_event("storm", _params, socket) do
+    Logger.info("Storm event")
     WorldEvents.storm_event()
     {:noreply, socket |> log("Storm triggered")}
   end
 
   def handle_event("merchant", _params, socket) do
+    Logger.info("Merchant event")
     WorldEvents.rotate_merchant_inventory()
     {:noreply, socket |> log("Merchant inventory rotated")}
   end
 
   def handle_event("start_instance", %{"base_zone" => zone, "players" => players}, socket) do
+    Logger.info("Start instance: #{inspect(zone)} players: #{inspect(players)}")
     {:ok, id} = InstanceManager.start_instance(zone, players)
     Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:#{id}")
     {:noreply, socket |> log("Instance #{id} started") |> refresh_state()}
+  end
+
+  def handle_event("log_test", _params, socket) do
+    Logger.info("Test event triggered")
+    {:noreply, log(socket, "Test event triggered")}
+  end
+
+  def handle_event(event, params, socket) do
+    Logger.warn("Unhandled event: #{event}, #{inspect(params)}")
+    {:noreply, socket}
   end
 
   @impl true

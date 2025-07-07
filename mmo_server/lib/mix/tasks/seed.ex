@@ -7,7 +7,7 @@ defmodule Mix.Tasks.Seed do
     Mix.Task.run("app.start")
 
     for zone <- ["elwynn", "durotar"] do
-      DynamicSupervisor.start_child(MmoServer.ZoneSupervisor, {MmoServer.Zone, zone})
+      :ok = MmoServer.ZoneManager.ensure_zone_started(zone)
     end
 
     for player <- ["thrall", "jaina", "arthas"] do
@@ -27,9 +27,9 @@ defmodule Mix.Tasks.Seed do
       |> PlayerPersistence.changeset(attrs)
       |> Repo.insert!(on_conflict: :replace_all, conflict_target: :id)
 
-      DynamicSupervisor.start_child(
+      Horde.DynamicSupervisor.start_child(
         MmoServer.PlayerSupervisor,
-        {MmoServer.Player, %{player_id: player, zone_id: zone}}
+        MmoServer.Player.child_spec(%{player_id: player, zone_id: zone})
       )
     end
   end

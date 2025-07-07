@@ -1,4 +1,4 @@
-alias MmoServer.{Repo, PlayerPersistence, LootDrop}
+alias MmoServer.{Repo, PlayerPersistence, PlayerStats, LootDrop}
 
 players = [
   %{id: "player1", zone_id: "zone1"},
@@ -16,6 +16,10 @@ for attrs <- players do
   %PlayerPersistence{}
   |> PlayerPersistence.changeset(attrs)
   |> Repo.insert!(on_conflict: :replace_all, conflict_target: :id)
+
+  %PlayerStats{}
+  |> PlayerStats.changeset(%{player_id: attrs.id, xp: 0, level: 1, next_level_xp: 100})
+  |> Repo.insert!(on_conflict: :replace_all, conflict_target: :player_id)
 end
 
 loot_drops = [

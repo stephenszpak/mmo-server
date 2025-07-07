@@ -247,6 +247,7 @@ defmodule MmoServer.Player do
   def terminate(_reason, state) do
     MmoServer.Zone.leave(state.zone_id, state.id)
     Phoenix.PubSub.unsubscribe(MmoServer.PubSub, "zone:#{state.zone_id}")
+    persist_state(state)
     :ok
   end
 
@@ -262,6 +263,8 @@ defmodule MmoServer.Player do
       hp: state.hp,
       status: Atom.to_string(state.status)
     }
+
+    Logger.info("Persisting player state: #{inspect(attrs)}")
 
     if is_nil(state.sandbox_owner) or Process.alive?(state.sandbox_owner) do
       opts =

@@ -3,7 +3,6 @@ defmodule MmoServer.Player do
   require Logger
 
   @doc false
-  @impl true
   def child_spec(%{player_id: player_id} = args) do
     %{
       id: {:player, player_id},

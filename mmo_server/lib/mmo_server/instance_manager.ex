@@ -149,14 +149,18 @@ defmodule MmoServer.InstanceManager do
 
     defp player_active_in_zone?(player_id, zone_id) do
       case Horde.Registry.lookup(PlayerRegistry, player_id) do
-        [{pid, _}] when Process.alive?(pid) ->
-          try do
-            case :sys.get_state(pid) do
-              %{zone_id: ^zone_id} -> true
-              _ -> false
+        [{pid, _}] ->
+          if Process.alive?(pid) do
+            try do
+              case :sys.get_state(pid) do
+                %{zone_id: ^zone_id} -> true
+                _ -> false
+              end
+            catch
+              _, _ -> false
             end
-          catch
-            _, _ -> false
+          else
+            false
           end
 
         _ ->

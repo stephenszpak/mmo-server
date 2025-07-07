@@ -4,11 +4,21 @@ defmodule MmoServer.TestHelpers do
   def start_shared(process_mod, args), do: start_shared(process_mod, args, [])
 
   def start_shared(process_mod, args, opts) when is_list(opts) do
-    opts = Keyword.merge([sandbox_owner: self(), name: nil], opts)
+    opts = Keyword.merge([sandbox_owner: :new, name: nil], opts)
+
+    {owner, started?} =
+      case opts[:sandbox_owner] do
+        :new ->
+          {Ecto.Adapters.SQL.Sandbox.start_owner!(MmoServer.Repo, shared: true), true}
+        :self ->
+          {self(), false}
+        pid ->
+          {pid, false}
+      end
 
     args =
       if is_map(args) do
-        Map.put_new(args, :sandbox_owner, opts[:sandbox_owner])
+        Map.put_new(args, :sandbox_owner, owner)
       else
         args
       end
@@ -24,8 +34,8 @@ defmodule MmoServer.TestHelpers do
         other -> other
       end
 
-    if opts[:sandbox_owner] do
-      Ecto.Adapters.SQL.Sandbox.allow(MmoServer.Repo, opts[:sandbox_owner], pid)
+    if owner do
+      Ecto.Adapters.SQL.Sandbox.allow(MmoServer.Repo, owner, pid)
     end
 
     ExUnit.Callbacks.on_exit(fn ->
@@ -41,6 +51,10 @@ defmodule MmoServer.TestHelpers do
         |> Enum.each(fn {pid, _} -> if Process.alive?(pid), do: Process.exit(pid, :normal) end)
       else
         if Process.alive?(pid), do: Process.exit(pid, :normal)
+      end
+
+      if started? and Process.alive?(owner) do
+        Ecto.Adapters.SQL.Sandbox.stop_owner(owner)
       end
     end)
 

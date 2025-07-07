@@ -86,6 +86,8 @@ defmodule MmoServer.NPC do
           {:npc_death, state.id}
         )
 
+        MmoServer.LootSystem.drop_for_npc(state)
+
         Process.send_after(self(), :respawn, 10_000)
         {:noreply, %{state | status: :dead}}
       else

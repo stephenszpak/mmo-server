@@ -29,7 +29,8 @@ defmodule MmoServer.ZoneManager do
   """
   @spec ensure_zone_started(String.t()) :: :ok | {:error, term()}
   def ensure_zone_started(zone_id) do
-    spec = {MmoServer.Zone, zone_id}
+    spec = MmoServer.Zone.child_spec(zone_id)
+
     case Horde.DynamicSupervisor.start_child(MmoServer.ZoneSupervisor, spec) do
       {:ok, _pid} -> :ok
       {:error, {:already_started, _}} -> :ok

@@ -36,6 +36,13 @@ defmodule MmoServer.InstanceManagerTest do
     |> length()
   end
 
+  defp wait_for_instance_shutdown(inst) do
+    eventually(fn ->
+      assert [] == Horde.Registry.lookup(PlayerRegistry, {:zone, inst})
+      assert [] == InstanceManager.active_instances()
+    end)
+  end
+
   test "instance creation and player migration", %{zone_id: zone_id} do
     p1 = unique_string("p1")
     p2 = unique_string("p2")
@@ -49,10 +56,13 @@ defmodule MmoServer.InstanceManagerTest do
     assert Enum.member?(InstanceManager.active_instances(), inst)
 
     base = base_zone(inst)
+    zone = Player.get_zone_id(p1)
+    refute zone == base
 
     eventually(fn ->
-      assert String.starts_with?(Player.get_zone_id(p1), base)
-      assert String.starts_with?(Player.get_zone_id(p2), base)
+      assert Player.get_zone_id(p1) == zone
+      assert Player.get_zone_id(p2) == zone
+      assert String.starts_with?(zone, base)
     end)
   end
 
@@ -81,19 +91,9 @@ defmodule MmoServer.InstanceManagerTest do
 
     {:ok, inst} = InstanceManager.start_instance(zone_id, [player])
     Player.stop(player)
-    base = base_zone(inst)
-
-    Process.sleep(100)
 
     eventually(fn -> assert [] == Horde.Registry.lookup(PlayerRegistry, player) end)
-
-    eventually(fn ->
-      IO.inspect(InstanceManager.active_instances(), label: "instances")
-      assert [] == Horde.Registry.lookup(PlayerRegistry, {:zone, inst})
-      refute Enum.any?(InstanceManager.active_instances(), fn id ->
-               String.starts_with?(id, base)
-             end)
-    end, 20, 100)
+    wait_for_instance_shutdown(inst)
 
     assert [] == Horde.Registry.lookup(NPCRegistry, {:npc, "wolf_1"})
     assert [] == Horde.Registry.lookup(NPCRegistry, {:npc, "wolf_2"})

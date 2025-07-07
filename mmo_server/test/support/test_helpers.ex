@@ -66,5 +66,9 @@ defmodule MmoServer.TestHelpers do
         eventually(fun, attempts - 1, interval)
     end
   end
+
+  def base_zone(id) when is_binary(id) do
+    Regex.replace(~r/_\d{8}T\d{6}$/, id, "")
+  end
 end
 

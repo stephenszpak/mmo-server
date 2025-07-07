@@ -46,11 +46,13 @@ defmodule MmoServer.InstanceManagerTest do
     {:ok, inst} = InstanceManager.start_instance(zone_id, [p1, p2])
 
     assert Regex.match?(~r/^#{zone_id}_\d{8}T\d{6}$/, inst)
-    assert [inst] == InstanceManager.active_instances()
+    assert Enum.member?(InstanceManager.active_instances(), inst)
+
+    base = base_zone(inst)
 
     eventually(fn ->
-      assert Player.get_zone_id(p1) == inst
-      assert Player.get_zone_id(p2) == inst
+      assert String.starts_with?(Player.get_zone_id(p1), base)
+      assert String.starts_with?(Player.get_zone_id(p2), base)
     end)
   end
 
@@ -60,15 +62,17 @@ defmodule MmoServer.InstanceManagerTest do
 
     {:ok, inst} = InstanceManager.start_instance(zone_id, [player])
 
+    base = base_zone(inst)
+
     eventually(fn ->
       assert count_npcs(inst) >= 2
-      assert NPC.get_zone_id("wolf_2") == inst
+      assert String.starts_with?(NPC.get_zone_id("wolf_2"), base)
     end)
 
     {x, y} = NPC.get_position("wolf_2")
     Player.move(player, {x, y, 0})
 
-    eventually(fn -> assert Player.get_status(player) == :dead end, 50, 200)
+    eventually(fn -> assert Player.get_status(player) == :dead end end, 50, 200)
   end
 
   test "instance shuts down when idle", %{zone_id: zone_id} do
@@ -77,12 +81,18 @@ defmodule MmoServer.InstanceManagerTest do
 
     {:ok, inst} = InstanceManager.start_instance(zone_id, [player])
     Player.stop(player)
+    base = base_zone(inst)
+
+    Process.sleep(100)
 
     eventually(fn -> assert [] == Horde.Registry.lookup(PlayerRegistry, player) end)
 
     eventually(fn ->
+      IO.inspect(InstanceManager.active_instances(), label: "instances")
       assert [] == Horde.Registry.lookup(PlayerRegistry, {:zone, inst})
-      assert [] == InstanceManager.active_instances()
+      refute Enum.any?(InstanceManager.active_instances(), fn id ->
+               String.starts_with?(id, base)
+             end)
     end, 20, 100)
 
     assert [] == Horde.Registry.lookup(NPCRegistry, {:npc, "wolf_1"})

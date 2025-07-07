@@ -5,6 +5,7 @@ defmodule MmoServer.InstanceManager do
   """
 
   use GenServer
+  require Logger
   alias MmoServer.{Player, ZoneManager}
   alias __MODULE__.Instance
 
@@ -51,11 +52,14 @@ defmodule MmoServer.InstanceManager do
     owner = Keyword.get(opts, :sandbox_owner)
 
     Enum.each(players, fn player_id ->
+      Logger.debug("Migrating #{player_id} to instance #{id}")
       Player.stop(player_id)
-      Horde.DynamicSupervisor.start_child(
-        MmoServer.PlayerSupervisor,
-        {Player, %{player_id: player_id, zone_id: id, sandbox_owner: owner}}
-      )
+      {:ok, _pid} =
+        Horde.DynamicSupervisor.start_child(
+          MmoServer.PlayerSupervisor,
+          {Player, %{player_id: player_id, zone_id: id, sandbox_owner: owner}}
+        )
+      Player.persist(player_id)
     end)
 
     {:reply, {:ok, id}, Map.put(state, id, pid)}

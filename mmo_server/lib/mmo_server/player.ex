@@ -43,6 +43,15 @@ defmodule MmoServer.Player do
   end
 
   @doc """
+  Persist the current state for the given player immediately.
+  Useful after zone transfers to guarantee the database is updated.
+  """
+  @spec persist(term()) :: :ok
+  def persist(player_id) do
+    GenServer.call({:via, Horde.Registry, {PlayerRegistry, player_id}}, :persist)
+  end
+
+  @doc """
   Stops the player process identified by `player_id` if it is running.
   Useful in tests to ensure any replacement processes spawned during zone
   handoff are terminated.
@@ -116,6 +125,7 @@ defmodule MmoServer.Player do
 
     Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:#{state.zone_id}")
     MmoServer.Zone.join(state.zone_id, state.id)
+    Logger.debug("Player #{state.id} started in zone #{state.zone_id}")
     persist_state(state)
     {:ok, state}
   end
@@ -244,6 +254,12 @@ defmodule MmoServer.Player do
   end
 
   @impl true
+  def handle_call(:persist, _from, state) do
+    persist_state(state)
+    {:reply, :ok, state}
+  end
+
+  @impl true
   def terminate(_reason, state) do
     MmoServer.Zone.leave(state.zone_id, state.id)
     Phoenix.PubSub.unsubscribe(MmoServer.PubSub, "zone:#{state.zone_id}")
@@ -264,6 +280,7 @@ defmodule MmoServer.Player do
       status: Atom.to_string(state.status)
     }
 
+    Logger.debug("Persisting player #{state.id} in zone #{state.zone_id}")
     Logger.info("Persisting player state: #{inspect(attrs)}")
 
     if is_nil(state.sandbox_owner) or Process.alive?(state.sandbox_owner) do

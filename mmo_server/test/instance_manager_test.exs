@@ -76,10 +76,10 @@ defmodule MmoServer.InstanceManagerTest do
     {:ok, inst} = InstanceManager.start_instance(zone_id, [player])
     Player.stop(player)
 
-    eventually(fn -> [] == Horde.Registry.lookup(PlayerRegistry, player) end)
+    eventually(fn -> assert [] == Horde.Registry.lookup(PlayerRegistry, player) end)
 
     eventually(fn ->
-      [] == Horde.Registry.lookup(PlayerRegistry, {:zone, inst})
+      assert [] == Horde.Registry.lookup(PlayerRegistry, {:zone, inst})
       assert [] == InstanceManager.active_instances()
     end, 20, 100)
 

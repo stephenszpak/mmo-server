@@ -8,8 +8,6 @@ defmodule MmoServer.InstanceManager do
   alias MmoServer.{Player, ZoneManager}
   alias __MODULE__.Instance
 
-  @idle_ms Application.compile_env(:mmo_server, :instance_idle_ms, 60_000)
-
   ## Public API
 
   def start_link(opts \\ []) do
@@ -43,6 +41,7 @@ defmodule MmoServer.InstanceManager do
     id = unique_id(base_zone)
     :ok = ZoneManager.ensure_zone_started(id)
     Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{id}", {:instance_started, id})
+    stop_zone(base_zone)
     {:ok, pid} = Instance.start_link(id: id, players: players, manager: self())
 
     Enum.each(players, fn player_id ->
@@ -70,6 +69,11 @@ defmodule MmoServer.InstanceManager do
   defp unique_id(base) do
     ts = DateTime.utc_now() |> Calendar.strftime("%Y%m%dT%H%M%S")
     "#{base}_#{ts}"
+  end
+
+  defp stop_zone(id) do
+    Horde.Registry.lookup(PlayerRegistry, {:zone, id})
+    |> Enum.each(fn {pid, _} -> Process.exit(pid, :shutdown) end)
   end
 
   # ------------------------------------------------------------------
@@ -118,7 +122,8 @@ defmodule MmoServer.InstanceManager do
 
     defp maybe_schedule_idle(%{players: players, timer: nil} = state) do
       if MapSet.size(players) == 0 do
-        ref = Process.send_after(self(), :check_idle, @idle_ms)
+        idle_ms = Application.get_env(:mmo_server, :instance_idle_ms, 60_000)
+        ref = Process.send_after(self(), :check_idle, idle_ms)
         %{state | timer: ref}
       else
         state
@@ -134,10 +139,7 @@ defmodule MmoServer.InstanceManager do
       %{state | timer: nil}
     end
 
-    defp stop_zone(id) do
-      Horde.Registry.lookup(PlayerRegistry, {:zone, id})
-      |> Enum.each(fn {pid, _} -> Process.exit(pid, :shutdown) end)
-    end
+    defp stop_zone(id), do: MmoServer.InstanceManager.stop_zone(id)
   end
 end
 

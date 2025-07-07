@@ -9,7 +9,7 @@ defmodule MmoServer.LootSystemTest do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Repo)
     Ecto.Adapters.SQL.Sandbox.mode(Repo, {:shared, self()})
     zone_id = unique_string("elwynn")
-    start_shared(MmoServer.Zone, zone_id, sandbox_owner: self())
+    start_shared(MmoServer.Zone, zone_id)
     {:ok, zone_id: zone_id}
   end
 
@@ -22,7 +22,7 @@ defmodule MmoServer.LootSystemTest do
 
   test "player can pick up loot", %{zone_id: zone_id} do
     player_id = unique_string("p")
-    start_shared(Player, %{player_id: player_id, zone_id: zone_id}, sandbox_owner: self())
+    start_shared(Player, %{player_id: player_id, zone_id: zone_id})
     Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:#{zone_id}")
     NPC.damage("wolf_1", 200)
 

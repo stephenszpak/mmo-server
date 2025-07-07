@@ -31,6 +31,35 @@
   </div>
 
   <div>
+    <h2 class="font-semibold">Equipped</h2>
+    <ul class="list-disc ml-4">
+      <%= for item <- @equipped do %>
+        <li>
+          <%= item.slot %> -
+          <span class={quality_color(item.quality)}><%= item.item %></span>
+          <button phx-click="unequip" phx-value-slot={item.slot} class="btn ml-1">Unequip</button>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+
+  <div>
+    <h2 class="font-semibold">Inventory</h2>
+    <ul class="list-disc ml-4">
+      <%= for item <- @inventory do %>
+        <li>
+          <span class={quality_color(item.quality)}><%= item.item %></span>
+          <%= if !item.equipped do %>
+            <button phx-click="equip" phx-value-item_id={item.id} class="btn ml-1">Equip</button>
+          <% else %>
+            (equipped)
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+
+  <div>
     <h2 class="font-semibold">NPCs</h2>
     <%= for zone <- @zones do %>
       <h3 class="mt-2 font-semibold"><%= zone %></h3>

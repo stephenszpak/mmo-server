@@ -3,6 +3,7 @@ defmodule MmoServerWeb.TestDashboardLive do
 
   require Logger
   alias MmoServer.{Player, WorldEvents, InstanceManager, ZoneMap}
+  alias MmoServer.Player.Inventory
 
   @impl true
   def mount(_params, _session, socket) do
@@ -20,6 +21,8 @@ defmodule MmoServerWeb.TestDashboardLive do
       |> assign(:npcs, fetch_npcs())
       |> assign(:instances, InstanceManager.active_instances())
       |> assign(:selected_player, nil)
+      |> assign(:inventory, [])
+      |> assign(:equipped, [])
       |> assign(:live_connected, connected?(socket))
       |> assign(:last_log, System.system_time(:millisecond))
       |> assign(:logs, [])
@@ -105,7 +108,10 @@ defmodule MmoServerWeb.TestDashboardLive do
   @impl true
   def handle_event("select_player", %{"player" => id}, socket) do
     Logger.info("Select player: #{inspect(id)}")
-    {:noreply, assign(socket, :selected_player, id)}
+    {:noreply,
+     socket
+     |> assign(:selected_player, id)
+     |> refresh_inventory(id)}
   end
 
   # Player movement
@@ -140,6 +146,20 @@ defmodule MmoServerWeb.TestDashboardLive do
     Logger.info("Kill event for #{id}")
     Player.stop(id)
     {:noreply, socket}
+  end
+
+  def handle_event("equip", %{"item_id" => item_id}, %{assigns: %{selected_player: player_id}} = socket)
+      when is_binary(player_id) do
+    Logger.info("Equip item #{item_id} for #{player_id}")
+    Inventory.equip(player_id, item_id)
+    {:noreply, refresh_inventory(socket, player_id)}
+  end
+
+  def handle_event("unequip", %{"slot" => slot}, %{assigns: %{selected_player: player_id}} = socket)
+      when is_binary(player_id) do
+    Logger.info("Unequip slot #{slot} for #{player_id}")
+    Inventory.unequip(player_id, slot)
+    {:noreply, refresh_inventory(socket, player_id)}
   end
 
   # World events
@@ -226,4 +246,14 @@ defmodule MmoServerWeb.TestDashboardLive do
     |> assign(:npcs, fetch_npcs())
     |> assign(:instances, InstanceManager.active_instances())
   end
+
+  defp refresh_inventory(socket, player_id) do
+    socket
+    |> assign(:inventory, Inventory.list(player_id))
+    |> assign(:equipped, Inventory.get_equipped(player_id))
+  end
+
+  defp quality_color("epic"), do: "text-purple-700"
+  defp quality_color("rare"), do: "text-green-600"
+  defp quality_color(_), do: "text-gray-700"
 end

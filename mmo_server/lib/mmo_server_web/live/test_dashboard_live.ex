@@ -1,32 +1,38 @@
 defmodule MmoServerWeb.TestDashboardLive do
   use Phoenix.LiveView, layout: false
 
+  require Logger
   alias MmoServer.{Player, NPC, WorldEvents, InstanceManager, ZoneMap}
 
   @impl true
   def mount(_params, _session, socket) do
+    Logger.info("TestDashboardLive connected?: #{connected?(socket)}")
+
     if connected?(socket) do
       Phoenix.PubSub.subscribe(MmoServer.PubSub, "world:clock")
-      subscribe_zones(base_zones())
-      subscribe_zones(InstanceManager.active_instances())
+      subscribe_all_zones()
     end
 
-    {:ok,
-     socket
-     |> assign(:players, fetch_players())
-     |> assign(:zones, base_zones())
-     |> assign(:npcs, fetch_npcs())
-     |> assign(:instances, InstanceManager.active_instances())
-     |> assign(:selected_player, nil)
-     |> assign(:logs, [])}
+    socket =
+      socket
+      |> assign(:players, fetch_players())
+      |> assign(:zones, base_zones())
+      |> assign(:npcs, fetch_npcs())
+      |> assign(:instances, InstanceManager.active_instances())
+      |> assign(:selected_player, nil)
+      |> assign(:logs, [])
+      |> log("LiveView mounted")
+
+    {:ok, socket}
   end
 
   defp base_zones do
     Map.keys(ZoneMap.zones())
   end
 
-  defp subscribe_zones(ids) do
-    Enum.each(ids, fn id ->
+  defp subscribe_all_zones do
+    Horde.Registry.select(PlayerRegistry, [{{{:zone, :"$1"}, :_, :_}, [], [:"$1"]}])
+    |> Enum.each(fn id ->
       Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:#{id}")
     end)
   end
@@ -180,9 +186,9 @@ defmodule MmoServerWeb.TestDashboardLive do
   end
 
   def handle_info(msg, socket) do
-    IO.inspect(msg, label: "LiveView Event")
-    text = inspect(msg)
-    {:noreply, socket |> log(text) |> refresh_state()}
+    IO.inspect(msg, label: "LiveView Unmatched")
+    Logger.debug("unhandled: #{inspect(msg)}")
+    {:noreply, socket |> log(inspect(msg)) |> refresh_state()}
   end
 
   defp refresh_state(socket) do

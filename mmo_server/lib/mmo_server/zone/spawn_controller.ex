@@ -110,13 +110,28 @@ defmodule MmoServer.Zone.SpawnController do
   defp npc_count(npc_sup, type) do
     prefix = Atom.to_string(type)
 
-    DynamicSupervisor.which_children(npc_sup)
-    |> Enum.count(fn {_, pid, _, _} ->
-      s = :sys.get_state(pid)
-      alive = Map.get(s, :status) == :alive
-      matches = String.starts_with?(to_string(Map.get(s, :id)), prefix) or Map.get(s, :type) == type
-      alive and matches
-    end)
+    if Process.alive?(npc_sup) do
+      DynamicSupervisor.which_children(npc_sup)
+      |> Enum.count(fn {_, pid, _, _} ->
+        if Process.alive?(pid) do
+          try do
+            s = :sys.get_state(pid)
+            alive = Map.get(s, :status) == :alive
+            matches =
+              String.starts_with?(to_string(Map.get(s, :id)), prefix) or
+                Map.get(s, :type) == type
+            alive and matches
+          catch
+            _, _ ->
+              false
+          end
+        else
+          false
+        end
+      end)
+    else
+      0
+    end
   end
 
   defp spawn_allowed?(state, type, now) do

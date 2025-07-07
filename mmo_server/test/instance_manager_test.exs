@@ -14,6 +14,8 @@ defmodule MmoServer.InstanceManagerTest do
 
     zone_id = unique_string("elwynn")
 
+    eventually(fn -> assert [] == InstanceManager.active_instances() end)
+
     for id <- ["wolf_1", "wolf_2"] do
       Horde.Registry.lookup(NPCRegistry, {:npc, id})
       |> Enum.each(fn {pid, _} -> Process.exit(pid, :kill) end)

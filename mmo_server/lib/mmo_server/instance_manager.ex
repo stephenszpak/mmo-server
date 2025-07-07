@@ -97,7 +97,15 @@ defmodule MmoServer.InstanceManager do
     @impl true
     def handle_info({:join, player_id}, state) do
       state = cancel_timer(state)
-      {:noreply, %{state | players: MapSet.put(state.players, player_id)}}
+
+      players =
+        if player_active_in_zone?(player_id, state.id) do
+          MapSet.put(state.players, player_id)
+        else
+          state.players
+        end
+
+      {:noreply, %{state | players: players}}
     end
 
     def handle_info({:leave, player_id}, state) do
@@ -137,6 +145,23 @@ defmodule MmoServer.InstanceManager do
     defp cancel_timer(%{timer: ref} = state) do
       Process.cancel_timer(ref)
       %{state | timer: nil}
+    end
+
+    defp player_active_in_zone?(player_id, zone_id) do
+      case Horde.Registry.lookup(PlayerRegistry, player_id) do
+        [{pid, _}] when Process.alive?(pid) ->
+          try do
+            case :sys.get_state(pid) do
+              %{zone_id: ^zone_id} -> true
+              _ -> false
+            end
+          catch
+            _, _ -> false
+          end
+
+        _ ->
+          false
+      end
     end
 
     defp stop_zone(id), do: MmoServer.InstanceManager.stop_zone(id)

@@ -215,10 +215,9 @@ defmodule MmoServerWeb.TestDashboardLive do
     {:noreply, socket |> log("instance_shutdown #{id}") |> refresh_state()}
   end
 
-  def handle_info(msg, socket) do
-    IO.inspect(msg, label: "LiveView Unmatched")
-    Logger.debug("unhandled: #{inspect(msg)}")
-    {:noreply, socket |> log(inspect(msg)) |> refresh_state()}
+  @impl true
+  def handle_info(_msg, socket) do
+    {:noreply, refresh_state(socket)}
   end
 
   defp refresh_state(socket) do

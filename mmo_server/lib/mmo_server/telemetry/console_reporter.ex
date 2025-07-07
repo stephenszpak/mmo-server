@@ -13,8 +13,8 @@ defmodule MmoServer.Telemetry.ConsoleReporter do
     {:ok, metrics}
   end
 
-  def handle_event(event, measurements, metadata, _config) do
-    IO.inspect({event, measurements, metadata}, label: "telemetry")
+  def handle_event(_event, _measurements, _metadata, _config) do
+    :ok
   end
 
   @impl true

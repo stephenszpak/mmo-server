@@ -1,7 +1,8 @@
-import {Socket} from "/js/phoenix.min.js"
-import {LiveSocket} from "/js/phoenix_live_view.min.js"
-
-let liveSocket = new LiveSocket("/live", Socket)
+// Phoenix ships compiled JavaScript that exposes `Phoenix` and `LiveView`
+// objects on the global `window`. These provide the `Socket` and
+// `LiveSocket` constructors. Since the static assets are served directly
+// without a bundler, we use the globals instead of ES module imports.
+let liveSocket = new LiveView.LiveSocket("/live", Phoenix.Socket)
 liveSocket.connect()
 
 window.liveSocket = liveSocket

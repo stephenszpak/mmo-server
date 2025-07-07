@@ -16,12 +16,16 @@ defmodule MmoServer.NPCSimulationTest do
 
     start_shared(MmoServer.Zone, zone_id)
 
-    eventually(fn ->
-      assert NPC.get_zone_id("wolf_1") == zone_id
-      assert NPC.get_zone_id("wolf_2") == zone_id
-      assert NPC.get_status("wolf_1") == :alive
-      assert NPC.get_status("wolf_2") == :alive
-    end)
+    eventually(
+      fn ->
+        assert NPC.get_zone_id("wolf_1") == zone_id
+        assert NPC.get_zone_id("wolf_2") == zone_id
+        assert NPC.get_status("wolf_1") == :alive
+        assert NPC.get_status("wolf_2") == :alive
+      end,
+      20,
+      100
+    )
 
     %{zone_id: zone_id}
   end

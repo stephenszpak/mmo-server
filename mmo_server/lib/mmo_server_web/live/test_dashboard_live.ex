@@ -39,12 +39,16 @@ defmodule MmoServerWeb.TestDashboardLive do
 
   defp player_info(id) do
     case Horde.Registry.lookup(PlayerRegistry, id) do
-      [{pid, _}] when Process.alive?(pid) ->
-        try do
-          s = :sys.get_state(pid)
-          %{id: id, zone: s.zone_id, hp: s.hp, status: s.status}
-        catch
-          _, _ -> %{id: id, zone: nil, hp: nil, status: nil}
+      [{pid, _}] ->
+        if Process.alive?(pid) do
+          try do
+            s = :sys.get_state(pid)
+            %{id: id, zone: s.zone_id, hp: s.hp, status: s.status}
+          catch
+            _, _ -> %{id: id, zone: nil, hp: nil, status: nil}
+          end
+        else
+          %{id: id, zone: nil, hp: nil, status: nil}
         end
 
       _ ->
@@ -59,12 +63,16 @@ defmodule MmoServerWeb.TestDashboardLive do
 
   defp npc_info(id) do
     case Horde.Registry.lookup(NPCRegistry, {:npc, id}) do
-      [{pid, _}] when Process.alive?(pid) ->
-        try do
-          s = :sys.get_state(pid)
-          %{id: id, zone: s.zone_id, type: s.type, hp: s.hp}
-        catch
-          _, _ -> %{id: id, zone: nil, type: nil, hp: nil}
+      [{pid, _}] ->
+        if Process.alive?(pid) do
+          try do
+            s = :sys.get_state(pid)
+            %{id: id, zone: s.zone_id, type: s.type, hp: s.hp}
+          catch
+            _, _ -> %{id: id, zone: nil, type: nil, hp: nil}
+          end
+        else
+          %{id: id, zone: nil, type: nil, hp: nil}
         end
 
       _ ->

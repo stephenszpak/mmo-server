@@ -4,25 +4,11 @@ defmodule MmoServer.TestHelpers do
   def start_shared(process_mod, args), do: start_shared(process_mod, args, [])
 
   def start_shared(process_mod, args, opts) when is_list(opts) do
-    opts = Keyword.merge([sandbox_owner: :new, name: nil], opts)
-
-    {owner, started?} =
-      case opts[:sandbox_owner] do
-        :new ->
-          try do
-            {Ecto.Adapters.SQL.Sandbox.start_owner!(MmoServer.Repo, shared: true), true}
-          rescue
-            MatchError -> {self(), false}
-          end
-        :self ->
-          {self(), false}
-        pid ->
-          {pid, false}
-      end
+    opts = Keyword.merge([name: nil], opts)
 
     args =
       if is_map(args) do
-        Map.put_new(args, :sandbox_owner, owner)
+        Map.put(args, :sandbox_owner, self())
       else
         args
       end
@@ -38,9 +24,7 @@ defmodule MmoServer.TestHelpers do
         other -> other
       end
 
-    if owner do
-      Ecto.Adapters.SQL.Sandbox.allow(MmoServer.Repo, owner, pid)
-    end
+    Ecto.Adapters.SQL.Sandbox.allow(MmoServer.Repo, self(), pid)
 
     ExUnit.Callbacks.on_exit(fn ->
       lookup_key =
@@ -75,9 +59,6 @@ defmodule MmoServer.TestHelpers do
         end
       end
 
-      if started? and Process.alive?(owner) do
-        Ecto.Adapters.SQL.Sandbox.stop_owner(owner)
-      end
     end)
 
     pid

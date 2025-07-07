@@ -21,6 +21,7 @@ defmodule MmoServerWeb.TestDashboardLive do
       |> assign(:instances, InstanceManager.active_instances())
       |> assign(:selected_player, nil)
       |> assign(:live_connected, connected?(socket))
+      |> assign(:last_log, System.system_time(:millisecond))
       |> assign(:logs, [])
       |> log("LiveView mounted")
 
@@ -88,7 +89,16 @@ defmodule MmoServerWeb.TestDashboardLive do
   end
 
   defp log(socket, msg) do
-    assign(socket, :logs, ([msg | socket.assigns.logs] |> Enum.take(50)))
+    now = System.system_time(:millisecond)
+    last = socket.assigns[:last_log] || 0
+
+    if now - last >= 15_000 do
+      socket
+      |> assign(:logs, ([msg | socket.assigns.logs] |> Enum.take(50)))
+      |> assign(:last_log, now)
+    else
+      socket
+    end
   end
 
   # Player selection

@@ -10,6 +10,7 @@ defmodule MmoServer.LootDrop do
     field :x, :float
     field :y, :float
     field :z, :float
+    field :quality, :string
     field :owner, :string
     field :picked_up, :boolean, default: false
     timestamps()
@@ -18,7 +19,7 @@ defmodule MmoServer.LootDrop do
   @doc false
   def changeset(struct, attrs) do
     struct
-    |> cast(attrs, [:npc_id, :item, :zone_id, :x, :y, :z, :owner, :picked_up])
-    |> validate_required([:npc_id, :item, :zone_id, :x, :y, :z, :picked_up])
+    |> cast(attrs, [:npc_id, :item, :zone_id, :x, :y, :z, :quality, :owner, :picked_up])
+    |> validate_required([:npc_id, :item, :zone_id, :x, :y, :z, :quality, :picked_up])
   end
 end

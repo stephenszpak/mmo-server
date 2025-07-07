@@ -2,6 +2,7 @@ defmodule MmoServer.LootSystemTest do
   use ExUnit.Case, async: false
 
   alias MmoServer.{LootSystem, LootDrop, NPC, Player, Repo}
+  alias MmoServer.Player.Inventory
   import MmoServer.TestHelpers
 
   setup do
@@ -40,6 +41,12 @@ defmodule MmoServer.LootSystemTest do
 
     eventually(fn ->
       assert Repo.get(LootDrop, drop.id).picked_up
+    end)
+
+    eventually(fn ->
+      [item] = Inventory.list(player_id)
+      assert item.item == drop.item
+      assert item.quality == drop.quality
     end)
 
     assert_receive {:loot_picked_up, ^player_id, _}, 1000

@@ -3,14 +3,16 @@ defmodule MmoServer.LootSystem do
   Handles creation and pickup of loot drops.
   """
 
+  require Logger
   alias MmoServer.{Repo, LootDrop, LootTables, Player}
+  alias MmoServer.Player.Inventory
 
   @pickup_radius 5
 
   @spec drop_for_npc(MmoServer.NPC.t()) :: :ok
   def drop_for_npc(%MmoServer.NPC{id: id, type: type, zone_id: zone, pos: {x, y}}) do
     LootTables.loot_for(type)
-    |> Enum.each(fn %{item: item, chance: chance} ->
+    |> Enum.each(fn %{item: item, quality: quality, chance: chance} ->
       if :rand.uniform() < chance do
         %LootDrop{}
         |> LootDrop.changeset(%{
@@ -20,12 +22,14 @@ defmodule MmoServer.LootSystem do
           x: x,
           y: y,
           z: 0.0,
+          quality: quality,
           picked_up: false
         })
         |> Repo.insert()
         |> case do
           {:ok, drop} ->
             Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{zone}", {:loot_dropped, drop})
+            Logger.info("Dropped #{item} [#{quality}] at #{zone}")
             :ok
           _ -> :ok
         end
@@ -46,6 +50,7 @@ defmodule MmoServer.LootSystem do
           LootDrop.changeset(drop, %{owner: player_id, picked_up: true})
 
         {:ok, updated} = Repo.update(changeset)
+        Inventory.add_item(player_id, %{item: drop.item, quality: drop.quality})
         Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{drop.zone_id}", {:loot_picked_up, player_id, drop.item})
         updated
       else

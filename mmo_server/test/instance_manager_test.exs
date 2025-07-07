@@ -72,7 +72,7 @@ defmodule MmoServer.InstanceManagerTest do
     {x, y} = NPC.get_position("wolf_2")
     Player.move(player, {x, y, 0})
 
-    eventually(fn -> assert Player.get_status(player) == :dead end end, 50, 200)
+    eventually(fn -> assert Player.get_status(player) == :dead end, 50, 200)
   end
 
   test "instance shuts down when idle", %{zone_id: zone_id} do

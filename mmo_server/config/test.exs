@@ -6,7 +6,8 @@ config :mmo_server, MmoServer.Repo,
   hostname: "localhost",
   port: 5433,
   database: "mmo_server_dev",
-  pool: Ecto.Adapters.SQL.Sandbox
+  pool: Ecto.Adapters.SQL.Sandbox,
+  pool_size: 20
 
 
 config :mmo_server, MmoServerWeb.Endpoint,

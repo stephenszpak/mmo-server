@@ -39,9 +39,9 @@ defmodule MmoServer.InstanceManager do
   @impl true
   def handle_call({:start_instance, base_zone, players}, _from, state) do
     id = unique_id(base_zone)
+    stop_zone(base_zone)
     :ok = ZoneManager.ensure_zone_started(id)
     Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{id}", {:instance_started, id})
-    stop_zone(base_zone)
     {:ok, pid} = Instance.start_link(id: id, players: players, manager: self())
 
     Enum.each(players, fn player_id ->
@@ -71,9 +71,9 @@ defmodule MmoServer.InstanceManager do
     "#{base}_#{ts}"
   end
 
-  defp stop_zone(id) do
+  def stop_zone(id) do
     Horde.Registry.lookup(PlayerRegistry, {:zone, id})
-    |> Enum.each(fn {pid, _} -> Process.exit(pid, :shutdown) end)
+    |> Enum.each(fn {pid, _} -> GenServer.stop(pid, :shutdown) end)
   end
 
   # ------------------------------------------------------------------

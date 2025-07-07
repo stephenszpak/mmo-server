@@ -77,6 +77,9 @@ defmodule MmoServer.Player do
   alias MmoServer.{Repo, PlayerPersistence, ZoneManager}
 
   def init({player_id, zone_id, owner_pid}) do
+    if owner_pid do
+      Ecto.Adapters.SQL.Sandbox.allow(MmoServer.Repo, owner_pid, self())
+    end
     ref = if owner_pid, do: Process.monitor(owner_pid)
 
     persisted =

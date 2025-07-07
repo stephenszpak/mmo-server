@@ -17,7 +17,8 @@ defmodule MmoServer.Application do
       {Horde.Registry, [name: PlayerRegistry, keys: :unique]},
       {Horde.Registry, [name: NPCRegistry, keys: :unique]},
       {MmoServer.PlayerSupervisor, []},
-      {MmoServer.ZoneSupervisor, []}
+      {MmoServer.ZoneSupervisor, []},
+      {MmoServer.InstanceManager, []}
     ] ++ maybe_bootstrap()
 
     opts = [strategy: :one_for_one, name: MmoServer.Supervisor]

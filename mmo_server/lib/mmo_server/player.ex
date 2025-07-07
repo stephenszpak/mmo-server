@@ -86,31 +86,29 @@ defmodule MmoServer.Player do
         Repo.get(PlayerPersistence, player_id)
       end
 
+    base_state =
+      %__MODULE__{
+        id: player_id,
+        zone_id: zone_id,
+        pos: {0, 0, 0},
+        hp: 100,
+        mana: 100,
+        status: :alive,
+        conn_pid: nil,
+        sandbox_owner: owner_pid,
+        sandbox_ref: ref
+      }
+
     state =
       if persisted do
-        %__MODULE__{
-          id: persisted.id,
-          zone_id: persisted.zone_id,
-          pos: {persisted.x, persisted.y, persisted.z},
-          hp: persisted.hp,
-          mana: 100,
-          status: String.to_atom(persisted.status),
-          conn_pid: nil,
-          sandbox_owner: owner_pid,
-          sandbox_ref: ref
+        %{
+          base_state
+          | pos: {persisted.x, persisted.y, persisted.z},
+            hp: persisted.hp,
+            status: String.to_atom(persisted.status)
         }
       else
-        %__MODULE__{
-          id: player_id,
-          zone_id: zone_id,
-          pos: {0, 0, 0},
-          hp: 100,
-          mana: 100,
-          status: :alive,
-          conn_pid: nil,
-          sandbox_owner: owner_pid,
-          sandbox_ref: ref
-        }
+        base_state
       end
 
     Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:#{state.zone_id}")

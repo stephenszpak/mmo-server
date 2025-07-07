@@ -1,0 +1,72 @@
+<div class="p-4 space-y-6">
+  <h1 class="text-xl font-bold">Sandbox Dashboard</h1>
+
+  <div>
+    <h2 class="font-semibold">Player Actions</h2>
+    <form phx-change="select_player" class="mt-2">
+      <select name="player" class="border p-1">
+        <%= for p <- @players do %>
+          <option value={p.id} selected={p.id == @selected_player}><%= p.id %> (<%= p.zone %>)</option>
+        <% end %>
+      </select>
+    </form>
+    <div class="space-x-2 mt-2">
+      <button phx-click="move" phx-value-dir="north" class="btn">N</button>
+      <button phx-click="move" phx-value-dir="south" class="btn">S</button>
+      <button phx-click="move" phx-value-dir="east" class="btn">E</button>
+      <button phx-click="move" phx-value-dir="west" class="btn">W</button>
+      <button phx-click="damage" class="btn">Damage</button>
+      <button phx-click="respawn" class="btn">Respawn</button>
+      <button phx-click="kill" class="btn">Kill</button>
+    </div>
+  </div>
+
+  <div>
+    <h2 class="font-semibold">NPCs</h2>
+    <%= for zone <- @zones do %>
+      <h3 class="mt-2 font-semibold"><%= zone %></h3>
+      <ul class="list-disc ml-4">
+        <%= for npc <- Enum.filter(@npcs, &(&1.zone == zone)) do %>
+          <li><%= npc.id %> (<%= npc.type %>) HP: <%= npc.hp %></li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+
+  <div>
+    <h2 class="font-semibold">World Events</h2>
+    <div class="space-x-2 mt-2">
+      <button phx-click="world_boss" class="btn">Spawn World Boss</button>
+      <button phx-click="storm" class="btn">Trigger Storm</button>
+      <button phx-click="merchant" class="btn">Rotate Merchant</button>
+    </div>
+  </div>
+
+  <div>
+    <h2 class="font-semibold">Dungeon Instances</h2>
+    <form phx-submit="start_instance" class="mt-2 space-x-2">
+      <select name="base_zone" class="border p-1">
+        <%= for z <- @zones do %>
+          <option value={z}><%= z %></option>
+        <% end %>
+      </select>
+      <select multiple name="players[]" class="border p-1">
+        <%= for p <- @players do %>
+          <option value={p.id}><%= p.id %></option>
+        <% end %>
+      </select>
+      <button type="submit" class="btn">Start Instance</button>
+    </form>
+    <ul class="list-disc ml-4 mt-2">
+      <%= for inst <- @instances do %>
+        <li><%= inst %></li>
+      <% end %>
+    </ul>
+  </div>
+
+  <div id="console" class="h-40 overflow-y-scroll bg-gray-100 p-2 text-sm">
+    <%= for msg <- @log do %>
+      <div><%= msg %></div>
+    <% end %>
+  </div>
+</div>

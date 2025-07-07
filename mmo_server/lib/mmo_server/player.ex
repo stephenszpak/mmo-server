@@ -2,6 +2,18 @@ defmodule MmoServer.Player do
   use GenServer
   require Logger
 
+  @doc false
+  @impl true
+  def child_spec(%{player_id: player_id} = args) do
+    %{
+      id: {:player, player_id},
+      start: {__MODULE__, :start_link, [args]},
+      restart: :transient,
+      shutdown: 5000,
+      type: :worker
+    }
+  end
+
   defstruct [
     :id,
     :zone_id,

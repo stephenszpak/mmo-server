@@ -2,7 +2,7 @@ defmodule MmoServerWeb.TestDashboardLive do
   use Phoenix.LiveView, layout: false
 
   require Logger
-  alias MmoServer.{Player, NPC, WorldEvents, InstanceManager, ZoneMap}
+  alias MmoServer.{Player, WorldEvents, InstanceManager, ZoneMap}
 
   @impl true
   def mount(_params, _session, socket) do
@@ -174,7 +174,7 @@ defmodule MmoServerWeb.TestDashboardLive do
   end
 
   def handle_event(event, params, socket) do
-    Logger.warn("Unhandled event: #{event}, #{inspect(params)}")
+    Logger.warning("Unhandled event: #{event}, #{inspect(params)}")
     {:noreply, socket}
   end
 

@@ -9,7 +9,11 @@ defmodule MmoServer.TestHelpers do
     {owner, started?} =
       case opts[:sandbox_owner] do
         :new ->
-          {Ecto.Adapters.SQL.Sandbox.start_owner!(MmoServer.Repo, shared: true), true}
+          try do
+            {Ecto.Adapters.SQL.Sandbox.start_owner!(MmoServer.Repo, shared: true), true}
+          rescue
+            MatchError -> {self(), false}
+          end
         :self ->
           {self(), false}
         pid ->

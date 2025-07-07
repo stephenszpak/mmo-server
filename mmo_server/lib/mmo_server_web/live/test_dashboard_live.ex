@@ -18,7 +18,7 @@ defmodule MmoServerWeb.TestDashboardLive do
      |> assign(:npcs, fetch_npcs())
      |> assign(:instances, InstanceManager.active_instances())
      |> assign(:selected_player, nil)
-     |> assign(:log, [])}
+     |> assign(:logs, [])}
   end
 
   defp base_zones do
@@ -81,7 +81,7 @@ defmodule MmoServerWeb.TestDashboardLive do
   end
 
   defp log(socket, msg) do
-    assign(socket, :log, ([msg | socket.assigns.log] |> Enum.take(50)))
+    assign(socket, :logs, ([msg | socket.assigns.logs] |> Enum.take(50)))
   end
 
   # Player selection
@@ -143,12 +143,44 @@ defmodule MmoServerWeb.TestDashboardLive do
   end
 
   @impl true
-  def handle_info({:instance_started, id}, socket) do
+  def handle_info({:tick, count} = msg, socket) do
+    IO.inspect(msg, label: "LiveView Event")
+    {:noreply, socket |> log("tick #{count}") |> refresh_state()}
+  end
+
+  def handle_info({:spawn_world_boss, zone} = msg, socket) do
+    IO.inspect(msg, label: "LiveView Event")
+    {:noreply, socket |> log("spawn_world_boss #{zone}") |> refresh_state()}
+  end
+
+  def handle_info({:player_moved, id, pos} = msg, socket) do
+    IO.inspect(msg, label: "LiveView Event")
+    {:noreply, socket |> log("player #{id} moved to #{inspect(pos)}") |> refresh_state()}
+  end
+
+  def handle_info({:npc_moved, id, pos} = msg, socket) do
+    IO.inspect(msg, label: "LiveView Event")
+    {:noreply, socket |> log("npc #{id} moved to #{inspect(pos)}") |> refresh_state()}
+  end
+
+  def handle_info({:zone_event, event} = msg, socket) do
+    IO.inspect(msg, label: "LiveView Event")
+    {:noreply, socket |> log("zone_event #{inspect(event)}") |> refresh_state()}
+  end
+
+  def handle_info({:instance_started, id} = msg, socket) do
+    IO.inspect(msg, label: "LiveView Event")
     Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:#{id}")
-    {:noreply, refresh_state(socket)}
+    {:noreply, socket |> log("instance_started #{id}") |> refresh_state()}
+  end
+
+  def handle_info({:instance_shutdown, id} = msg, socket) do
+    IO.inspect(msg, label: "LiveView Event")
+    {:noreply, socket |> log("instance_shutdown #{id}") |> refresh_state()}
   end
 
   def handle_info(msg, socket) do
+    IO.inspect(msg, label: "LiveView Event")
     text = inspect(msg)
     {:noreply, socket |> log(text) |> refresh_state()}
   end

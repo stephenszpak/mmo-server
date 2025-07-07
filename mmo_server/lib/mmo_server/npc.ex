@@ -15,7 +15,8 @@ defmodule MmoServer.NPC do
     pos: {0, 0},
     hp: 100,
     status: :alive,
-    tick_ms: @tick_ms
+    tick_ms: @tick_ms,
+    last_attacker: nil
   ]
 
   @type t :: %__MODULE__{
@@ -37,7 +38,7 @@ defmodule MmoServer.NPC do
   defp via(id), do: {:via, Horde.Registry, {NPCRegistry, {:npc, id}}}
 
   # Client helpers
-  def damage(id, amount), do: GenServer.cast(via(id), {:damage, amount})
+  def damage(id, amount, attacker \\ nil), do: GenServer.cast(via(id), {:damage, amount, attacker})
   def get_status(id), do: GenServer.call(via(id), :get_status)
   def get_position(id), do: GenServer.call(via(id), :get_position)
   def get_zone_id(id), do: GenServer.call(via(id), :get_zone_id)
@@ -68,7 +69,7 @@ defmodule MmoServer.NPC do
   end
 
   @impl true
-  def handle_cast({:damage, amount}, state) do
+  def handle_cast({:damage, amount, attacker}, state) do
     if state.status == :alive do
       Phoenix.PubSub.broadcast(
         MmoServer.PubSub,
@@ -77,7 +78,7 @@ defmodule MmoServer.NPC do
       )
 
       new_hp = max(state.hp - amount, 0)
-      state = %{state | hp: new_hp}
+      state = %{state | hp: new_hp, last_attacker: attacker || state.last_attacker}
 
       if new_hp <= 0 do
         Phoenix.PubSub.broadcast(
@@ -85,6 +86,11 @@ defmodule MmoServer.NPC do
           "zone:#{state.zone_id}",
           {:npc_death, state.id}
         )
+
+        if attacker do
+          xp = xp_reward(state.type)
+          MmoServer.Player.XP.gain(attacker, xp)
+        end
 
         MmoServer.LootSystem.drop_for_npc(state)
 
@@ -100,7 +106,7 @@ defmodule MmoServer.NPC do
 
   @impl true
   def handle_info(:respawn, state) do
-    new_state = %{state | hp: 100, status: :alive}
+    new_state = %{state | hp: 100, status: :alive, last_attacker: nil}
 
     Phoenix.PubSub.broadcast(
       MmoServer.PubSub,
@@ -223,4 +229,8 @@ defmodule MmoServer.NPC do
   defp distance({x1, y1}, {x2, y2}) do
     :math.sqrt(:math.pow(x1 - x2, 2) + :math.pow(y1 - y2, 2))
   end
+
+  defp xp_reward(:wolf), do: 20
+  defp xp_reward(:elite), do: 50
+  defp xp_reward(_), do: 20
 end

@@ -1,6 +1,6 @@
 defmodule Mix.Tasks.Seed do
   use Mix.Task
-  alias MmoServer.{Repo, PlayerPersistence, LootDrop}
+  alias MmoServer.{Repo, PlayerPersistence, PlayerStats, LootDrop}
 
   @shortdoc "Seed test zones and players"
   def run(_args) do
@@ -26,6 +26,10 @@ defmodule Mix.Tasks.Seed do
       %PlayerPersistence{}
       |> PlayerPersistence.changeset(attrs)
       |> Repo.insert!(on_conflict: :replace_all, conflict_target: :id)
+
+      %PlayerStats{}
+      |> PlayerStats.changeset(%{player_id: player, xp: 0, level: 1, next_level_xp: 100})
+      |> Repo.insert!(on_conflict: :replace_all, conflict_target: :player_id)
 
       Horde.DynamicSupervisor.start_child(
         MmoServer.PlayerSupervisor,

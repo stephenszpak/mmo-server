@@ -1,5 +1,6 @@
 <div class="p-4 space-y-6">
   <h1 class="text-xl font-bold">Sandbox Dashboard</h1>
+  <div class="text-xs text-gray-500">Connected: <%= @live_connected %></div>
 
   <div>
     <h2 class="font-semibold">Player Actions</h2>
@@ -18,6 +19,7 @@
       <button phx-click="damage" class="btn">Damage</button>
       <button phx-click="respawn" class="btn">Respawn</button>
       <button phx-click="kill" class="btn">Kill</button>
+      <button phx-click="log_test" class="btn">Test Event</button>
     </div>
   </div>
 
@@ -70,3 +72,4 @@
     <% end %>
   </div>
 </div>
+<script defer type="text/javascript" src="/assets/app.js"></script>

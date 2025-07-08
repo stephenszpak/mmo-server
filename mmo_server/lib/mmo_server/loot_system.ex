@@ -51,6 +51,11 @@ defmodule MmoServer.LootSystem do
 
         {:ok, updated} = Repo.update(changeset)
         Inventory.add_item(player_id, %{item: drop.item, quality: drop.quality})
+        MmoServer.Quests.record_progress(
+          player_id,
+          MmoServer.Quests.pelt_collect_id(),
+          %{type: "collect", target: drop.item}
+        )
         Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{drop.zone_id}", {:loot_picked_up, player_id, drop.item})
         updated
       else

@@ -123,6 +123,8 @@ MmoServer.Player.move("player1", {1.0, 2.0, 3.0})
 
 get full zone state:
 
-```elixi
+```elixir
+MmoServer.Quests.get_progress("player1", MmoServer.Quests.wolf_kill_id())
+```
 
 These commands must be executed from the `mmo_server` directory after the server has started.

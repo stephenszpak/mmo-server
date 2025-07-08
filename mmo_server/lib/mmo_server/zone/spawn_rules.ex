@@ -5,7 +5,7 @@ defmodule MmoServer.Zone.SpawnRules do
 
   @rules %{
     "elwynn" => [
-      %{type: :wolf, min: 3, max: 5, pos_range: {{10, 10}, {50, 50}}}
+      %{template: "wolf", min: 3, max: 5, pos_range: {{10, 10}, {50, 50}}}
     ]
   }
 

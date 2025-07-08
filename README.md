@@ -24,12 +24,12 @@ This repository contains a minimal Phoenix application used for experimenting wi
    mix deps.get
    ```
 
-3. Create the development database (if it does not already exist) and seed initial players and loot drops:
+3. Create the development database (if it does not already exist) and load the development seed data:
 
    ```bash
-    mix ecto.create
-    mix ecto.migrate
-    mix seed
+   mix ecto.create
+   mix ecto.migrate
+   mix seed        # or: mix run priv/repo/seeds.exs
    ```
 
 4. Run the application:

@@ -12,7 +12,10 @@ defmodule MmoServer.LootSystem do
   @spec drop_for_npc(MmoServer.NPC.t()) :: :ok
   def drop_for_npc(%MmoServer.NPC{id: id, template: template, zone_id: zone, pos: {x, y}}) do
     template.loot_table
-    |> Enum.each(fn %{item: item, quality: quality, chance: chance} ->
+    |> Enum.each(fn loot ->
+      item = Map.get(loot, :item) || Map.get(loot, "item")
+      quality = Map.get(loot, :quality) || Map.get(loot, "quality")
+      chance = Map.get(loot, :chance) || Map.get(loot, "chance")
       if :rand.uniform() < chance do
         %LootDrop{}
         |> LootDrop.changeset(%{

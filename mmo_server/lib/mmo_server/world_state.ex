@@ -14,7 +14,7 @@ defmodule MmoServer.WorldState do
     use Ecto.Schema
     @primary_key {:key, :string, autogenerate: false}
     schema "world_state" do
-      field :value, :map
+      field :value, :string
       timestamps()
     end
   end

@@ -9,7 +9,7 @@ defmodule MmoServerWeb.TestDashboardLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    Logger.info("LiveView mounted \u2013 connected? #{connected?(socket)}")
+    Logger.debug("LiveView mounted \u2013 connected? #{connected?(socket)}")
 
     if connected?(socket) do
       Phoenix.PubSub.subscribe(MmoServer.PubSub, "world:clock")
@@ -120,7 +120,7 @@ defmodule MmoServerWeb.TestDashboardLive do
   # Player selection
   @impl true
   def handle_event("select_player", %{"player" => id}, socket) do
-    Logger.info("Select player: #{inspect(id)}")
+    Logger.debug("Select player: #{inspect(id)}")
     {:noreply,
      socket
      |> assign(:selected_player, id)
@@ -129,7 +129,7 @@ defmodule MmoServerWeb.TestDashboardLive do
 
   # Player movement
   def handle_event("move", %{"dir" => dir}, %{assigns: %{selected_player: id}} = socket) when is_binary(id) do
-    Logger.info("Move event: #{inspect({id, dir})}")
+    Logger.debug("Move event: #{inspect({id, dir})}")
     delta =
       case dir do
         "north" -> {0, 1, 0}
@@ -144,58 +144,58 @@ defmodule MmoServerWeb.TestDashboardLive do
   end
 
   def handle_event("damage", _params, %{assigns: %{selected_player: id}} = socket) when is_binary(id) do
-    Logger.info("Damage event for #{id}")
+    Logger.debug("Damage event for #{id}")
     Player.damage(id, 50)
     {:noreply, socket}
   end
 
   def handle_event("respawn", _params, %{assigns: %{selected_player: id}} = socket) when is_binary(id) do
-    Logger.info("Respawn event for #{id}")
+    Logger.debug("Respawn event for #{id}")
     Player.respawn(id)
     {:noreply, socket}
   end
 
   def handle_event("kill", _params, %{assigns: %{selected_player: id}} = socket) when is_binary(id) do
-    Logger.info("Kill event for #{id}")
+    Logger.debug("Kill event for #{id}")
     Player.stop(id)
     {:noreply, socket}
   end
 
   def handle_event("equip", %{"item_id" => item_id}, %{assigns: %{selected_player: player_id}} = socket)
       when is_binary(player_id) do
-    Logger.info("Equip item #{item_id} for #{player_id}")
+    Logger.debug("Equip item #{item_id} for #{player_id}")
     Inventory.equip(player_id, item_id)
     {:noreply, refresh_inventory(socket, player_id)}
   end
 
   def handle_event("unequip", %{"slot" => slot}, %{assigns: %{selected_player: player_id}} = socket)
       when is_binary(player_id) do
-    Logger.info("Unequip slot #{slot} for #{player_id}")
+    Logger.debug("Unequip slot #{slot} for #{player_id}")
     Inventory.unequip(player_id, slot)
     {:noreply, refresh_inventory(socket, player_id)}
   end
 
   # World events
   def handle_event("world_boss", _params, socket) do
-    Logger.info("World boss event")
+    Logger.debug("World boss event")
     WorldEvents.spawn_world_boss()
     {:noreply, socket |> log("World boss spawned")}
   end
 
   def handle_event("storm", _params, socket) do
-    Logger.info("Storm event")
+    Logger.debug("Storm event")
     WorldEvents.storm_event()
     {:noreply, socket |> log("Storm triggered")}
   end
 
   def handle_event("merchant", _params, socket) do
-    Logger.info("Merchant event")
+    Logger.debug("Merchant event")
     WorldEvents.rotate_merchant_inventory()
     {:noreply, socket |> log("Merchant inventory rotated")}
   end
 
   def handle_event("start_instance", %{"base_zone" => zone, "players" => players}, socket) do
-    Logger.info("Start instance: #{inspect(zone)} players: #{inspect(players)}")
+    Logger.debug("Start instance: #{inspect(zone)} players: #{inspect(players)}")
     {:ok, id} = InstanceManager.start_instance(zone, players)
     Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:#{id}")
     {:noreply, socket |> log("Instance #{id} started") |> refresh_state()}
@@ -211,49 +211,49 @@ defmodule MmoServerWeb.TestDashboardLive do
 
   # GM tools
   def handle_event("gm_spawn_npc", %{"zone" => zone, "template" => template}, socket) do
-    Logger.info("[GM] Spawn NPC #{template} in #{zone}")
+    Logger.debug("[GM] Spawn NPC #{template} in #{zone}")
     SpawnController.spawn_from_template(zone, template)
     {:noreply, socket |> log("spawned #{template} in #{zone}") |> refresh_state()}
   end
 
   def handle_event("gm_kill_all", %{"zone" => zone}, socket) do
-    Logger.info("[GM] Kill all NPCs in #{zone}")
+    Logger.debug("[GM] Kill all NPCs in #{zone}")
     Zone.kill_all_npcs(zone)
     {:noreply, socket |> log("kill_all #{zone}") |> refresh_state()}
   end
 
   def handle_event("gm_force_spawn", %{"zone" => zone}, socket) do
-    Logger.info("[GM] Force spawn wave in #{zone}")
+    Logger.debug("[GM] Force spawn wave in #{zone}")
     SpawnController.force_spawn_wave(zone)
     {:noreply, socket |> log("force_spawn #{zone}") |> refresh_state()}
   end
 
   def handle_event("gm_xp", %{"player" => player}, socket) do
-    Logger.info("[GM] Give XP to #{player}")
+    Logger.debug("[GM] Give XP to #{player}")
     Player.XP.gain(player, 50)
     {:noreply, socket |> log("gave 50 xp to #{player}") |> refresh_state()}
   end
 
   def handle_event("gm_drop_loot", %{"zone" => zone, "template" => item}, socket) do
-    Logger.info("[GM] Drop loot #{item} in #{zone}")
+    Logger.debug("[GM] Drop loot #{item} in #{zone}")
     LootSystem.spawn(zone, item)
     {:noreply, socket |> log("loot #{item} at #{zone}") |> refresh_state()}
   end
 
   def handle_event("gm_kill_player", %{"player" => player}, socket) do
-    Logger.info("[GM] Kill player #{player}")
+    Logger.debug("[GM] Kill player #{player}")
     Player.stop(player)
     {:noreply, socket |> log("killed player #{player}") |> refresh_state()}
   end
 
   def handle_event("gm_teleport", %{"player" => player, "zone" => zone}, socket) do
-    Logger.info("[GM] Teleport #{player} to #{zone}")
+    Logger.debug("[GM] Teleport #{player} to #{zone}")
     Player.teleport(player, zone)
     {:noreply, socket |> log("teleported #{player} to #{zone}") |> refresh_state()}
   end
 
   def handle_event("log_test", _params, socket) do
-    Logger.info("Test event triggered")
+    Logger.debug("Test event triggered")
     {:noreply, log(socket, "Test event triggered")}
   end
 
@@ -264,38 +264,38 @@ defmodule MmoServerWeb.TestDashboardLive do
 
   @impl true
   def handle_info({:tick, count} = msg, socket) do
-    IO.inspect(msg, label: "LiveView Event")
+    Logger.debug("LiveView Event: #{inspect(msg)}")
     {:noreply, socket |> log("tick #{count}") |> refresh_state()}
   end
 
   def handle_info({:spawn_world_boss, zone} = msg, socket) do
-    IO.inspect(msg, label: "LiveView Event")
+    Logger.debug("LiveView Event: #{inspect(msg)}")
     {:noreply, socket |> log("spawn_world_boss #{zone}") |> refresh_state()}
   end
 
   def handle_info({:player_moved, id, pos} = msg, socket) do
-    IO.inspect(msg, label: "LiveView Event")
+    Logger.debug("LiveView Event: #{inspect(msg)}")
     {:noreply, socket |> log("player #{id} moved to #{inspect(pos)}") |> refresh_state()}
   end
 
   def handle_info({:npc_moved, id, pos} = msg, socket) do
-    IO.inspect(msg, label: "LiveView Event")
+    Logger.debug("LiveView Event: #{inspect(msg)}")
     {:noreply, socket |> log("npc #{id} moved to #{inspect(pos)}") |> refresh_state()}
   end
 
   def handle_info({:zone_event, event} = msg, socket) do
-    IO.inspect(msg, label: "LiveView Event")
+    Logger.debug("LiveView Event: #{inspect(msg)}")
     {:noreply, socket |> log("zone_event #{inspect(event)}") |> refresh_state()}
   end
 
   def handle_info({:instance_started, id} = msg, socket) do
-    IO.inspect(msg, label: "LiveView Event")
+    Logger.debug("LiveView Event: #{inspect(msg)}")
     Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:#{id}")
     {:noreply, socket |> log("instance_started #{id}") |> refresh_state()}
   end
 
   def handle_info({:instance_shutdown, id} = msg, socket) do
-    IO.inspect(msg, label: "LiveView Event")
+    Logger.debug("LiveView Event: #{inspect(msg)}")
     {:noreply, socket |> log("instance_shutdown #{id}") |> refresh_state()}
   end
 

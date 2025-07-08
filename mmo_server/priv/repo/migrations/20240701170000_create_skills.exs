@@ -2,7 +2,8 @@ defmodule MmoServer.Repo.Migrations.CreateSkills do
   use Ecto.Migration
 
   def change do
-    create table(:skills) do
+    create table(:skills, primary_key: false) do
+      add :id, :uuid, primary_key: true
       add :class_id, references(:classes, type: :string, column: :id), null: false
       add :name, :string, null: false
       add :description, :text, null: false

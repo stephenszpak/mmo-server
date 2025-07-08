@@ -20,6 +20,8 @@ defmodule MmoServer.Player do
     :hp,
     :mana,
     :status,
+    :player_class,
+    :cooldowns,
     :conn_pid,
     :sandbox_owner,
     :sandbox_ref
@@ -56,6 +58,31 @@ defmodule MmoServer.Player do
   @spec teleport(term(), String.t()) :: :ok
   def teleport(player_id, zone_id) do
     GenServer.cast({:via, Horde.Registry, {PlayerRegistry, player_id}}, {:teleport, zone_id})
+  end
+
+  @doc "Set the player's class" 
+  def set_class(player_id, class_id) do
+    case Horde.Registry.lookup(PlayerRegistry, player_id) do
+      [{pid, _}] ->
+        GenServer.cast(pid, {:set_class, class_id})
+      [] ->
+        alias MmoServer.{Repo, PlayerPersistence}
+        with %PlayerPersistence{} = rec <- Repo.get(PlayerPersistence, player_id) do
+          rec |> PlayerPersistence.changeset(%{player_class: class_id}) |> Repo.update()
+        end
+        :ok
+    end
+  end
+
+  @doc "Retrieve the player's class with skills preloaded"
+  def get_class(player_id) do
+    alias MmoServer.{Repo, PlayerPersistence, Class}
+    with %PlayerPersistence{player_class: class_id} <- Repo.get(PlayerPersistence, player_id),
+         %Class{} = class <- Repo.get(Class, class_id) do
+      Repo.preload(class, :skills)
+    else
+      _ -> nil
+    end
   end
 
   @spec resurrect(term()) :: :ok
@@ -162,6 +189,8 @@ defmodule MmoServer.Player do
         hp: 100,
         mana: 100,
         status: :alive,
+        player_class: nil,
+        cooldowns: %{},
         conn_pid: nil,
         sandbox_owner: owner_pid,
         sandbox_ref: ref
@@ -173,7 +202,8 @@ defmodule MmoServer.Player do
           base_state
           | pos: {persisted.x, persisted.y, persisted.z},
             hp: persisted.hp,
-            status: String.to_atom(persisted.status)
+            status: String.to_atom(persisted.status),
+            player_class: persisted.player_class
         }
       else
         base_state
@@ -281,6 +311,13 @@ defmodule MmoServer.Player do
   end
 
   @impl true
+  def handle_cast({:set_class, class_id}, state) do
+    new_state = %{state | player_class: class_id}
+    persist_state(new_state)
+    {:noreply, new_state}
+  end
+
+  @impl true
   def handle_info(:respawn, state) do
     new_state = %{state | hp: 100, status: :alive, pos: {0, 0, 0}}
     MmoServer.Zone.player_respawned(state.zone_id, state.id)
@@ -323,6 +360,12 @@ defmodule MmoServer.Player do
   def handle_info({:positions, _positions}, state), do: {:noreply, state}
 
   @impl true
+  def handle_info({:cooldown_ready, skill_name}, state) do
+    Phoenix.PubSub.broadcast(MmoServer.PubSub, "player:#{state.id}", {:cooldown_ready, state.id, skill_name})
+    {:noreply, %{state | cooldowns: Map.delete(state.cooldowns, skill_name)}}
+  end
+
+  @impl true
   def handle_info(_msg, state), do: {:noreply, state}
 
   @impl true
@@ -338,6 +381,18 @@ defmodule MmoServer.Player do
   @impl true
   def handle_call(:get_zone_id, _from, state) do
     {:reply, state.zone_id, state}
+  end
+
+  @impl true
+  def handle_call({:use_skill, skill}, _from, state) do
+    if Map.has_key?(state.cooldowns, skill.name) do
+      {:reply, {:error, :cooldown}, state}
+    else
+      Process.send_after(self(), {:cooldown_ready, skill.name}, skill.cooldown * 1000)
+      Phoenix.PubSub.broadcast(MmoServer.PubSub, "player:#{state.id}", {:skill_used, state.id, skill.name, skill.cooldown})
+      new_state = %{state | cooldowns: Map.put(state.cooldowns, skill.name, true)}
+      {:reply, :ok, new_state}
+    end
   end
 
   @impl true
@@ -364,7 +419,8 @@ defmodule MmoServer.Player do
       y: y,
       z: z,
       hp: state.hp,
-      status: Atom.to_string(state.status)
+      status: Atom.to_string(state.status),
+      player_class: state.player_class
     }
 
     Logger.debug("Persisting player #{state.id} in zone #{state.zone_id}")

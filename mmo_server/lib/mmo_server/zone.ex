@@ -32,6 +32,14 @@ defmodule MmoServer.Zone do
     GenServer.cast(via(zone_id), {:player_respawned, player_id})
   end
 
+  @doc """
+  Terminate all NPC processes in the given zone.
+  Useful for GM tools to quickly despawn active NPCs.
+  """
+  def kill_all_npcs(zone_id) do
+    GenServer.cast(via(zone_id), :kill_all_npcs)
+  end
+
   # synchronous API to read a player's current position from the zone
   def get_position(zone_id, player_id) do
     GenServer.call(via(zone_id), {:get_position, player_id})
@@ -90,6 +98,18 @@ defmodule MmoServer.Zone do
   @impl true
   def handle_cast({:player_respawned, player_id}, state) do
     Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{state.id}", {:player_respawned, player_id})
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_cast(:kill_all_npcs, state) do
+    if Process.alive?(state.npc_sup) do
+      DynamicSupervisor.which_children(state.npc_sup)
+      |> Enum.each(fn {_, pid, _, _} ->
+        if Process.alive?(pid), do: Process.exit(pid, :shutdown)
+      end)
+    end
+
     {:noreply, state}
   end
 

@@ -25,8 +25,8 @@ defmodule MmoServerWeb.TestDashboardLive do
       |> assign(:gm_zones, base_zones())
       |> assign(:gm_players, fetch_players())
       |> assign(:gm_templates, fetch_templates())
-      |> assign(:gm_zone, hd(base_zones()))
-      |> assign(:gm_template, hd(fetch_templates()))
+        |> assign(:gm_zone, List.first(base_zones()))
+        |> assign(:gm_template, List.first(fetch_templates()))
       |> assign(:gm_player, nil)
       |> assign(:selected_player, nil)
       |> assign(:inventory, [])
@@ -312,8 +312,8 @@ defmodule MmoServerWeb.TestDashboardLive do
     |> assign(:gm_players, fetch_players())
     |> assign(:gm_zones, base_zones())
     |> assign(:gm_templates, fetch_templates())
-    |> assign_new(:gm_zone, fn -> hd(base_zones()) end)
-    |> assign_new(:gm_template, fn -> hd(fetch_templates()) end)
+    |> assign_new(:gm_zone, fn -> List.first(base_zones()) end)
+    |> assign_new(:gm_template, fn -> List.first(fetch_templates()) end)
     |> assign_new(:gm_player, fn -> nil end)
   end
 

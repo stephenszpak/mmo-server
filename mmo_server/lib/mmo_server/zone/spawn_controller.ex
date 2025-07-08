@@ -5,6 +5,7 @@ defmodule MmoServer.Zone.SpawnController do
   """
 
   use GenServer
+  require Logger
   alias MmoServer.Zone.{SpawnRules, NPCSupervisor}
 
   @doc false

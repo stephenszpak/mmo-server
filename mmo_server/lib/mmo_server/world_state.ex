@@ -65,7 +65,7 @@ defmodule MmoServer.WorldState do
 
   @impl true
   def handle_call({:put, key, value}, _from, state) do
-    now = DateTime.utc_now()
+    now = DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_naive()
 
     %Record{key: key, value: value, inserted_at: now, updated_at: now}
     |> Repo.insert(

@@ -2,6 +2,7 @@ defmodule MmoServer.Quests do
   @moduledoc "Quest acceptance and progress tracking"
 
   alias MmoServer.{Repo, Quest, QuestProgress}
+  import Ecto.Query, only: [from: 2]
   @wolf_kill_id "11111111-1111-1111-1111-111111111111"
   @pelt_collect_id "22222222-2222-2222-2222-222222222222"
   def wolf_kill_id, do: @wolf_kill_id
@@ -66,6 +67,23 @@ defmodule MmoServer.Quests do
         _ -> Repo.rollback(:invalid)
       end
     end)
+  end
+
+  @doc """
+  Record quest progress for all active quests matching the given event.
+  This helper allows callers to simply supply the event without needing
+  to know the quest id.
+  """
+  @spec record_event(String.t(), map()) :: :ok
+  def record_event(player_id, %{type: type, target: target} = event) do
+    from(q in QuestProgress,
+      where: q.player_id == ^player_id and q.completed == false,
+      select: q.quest_id
+    )
+    |> Repo.all()
+    |> Enum.each(fn id -> record_progress(player_id, id, event) end)
+
+    :ok
   end
 
   defp find_required(%Quest{objectives: objectives}, obj) do

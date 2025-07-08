@@ -1,7 +1,6 @@
 defmodule MmoServer.Player.XP do
   @moduledoc "Player XP and leveling utilities"
 
-  import Ecto.Query
   require Logger
   alias MmoServer.{Repo, PlayerStats}
 
@@ -25,7 +24,7 @@ defmodule MmoServer.Player.XP do
       new_xp = stats.xp + amount
       {level, xp, next_xp} =
         if new_xp >= stats.next_level_xp do
-          level_up_values(stats.level + 1, new_xp - stats.next_level_xp)
+          level_up_values(stats.level + 1)
         else
           {stats.level, new_xp, stats.next_level_xp}
         end

@@ -6,7 +6,7 @@ defmodule MmoServer.QuestProgress do
   schema "quest_progress" do
     field :quest_id, :binary_id
     field :player_id, :string
-    field :progress, :map
+    field :progress, {:array, :map}
     field :completed, :boolean, default: false
     timestamps()
   end

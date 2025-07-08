@@ -6,8 +6,8 @@ defmodule MmoServer.Quest do
   schema "quests" do
     field :title, :string
     field :description, :string
-    field :objectives, :map
-    field :rewards, :map
+    field :objectives, {:array, :map}
+    field :rewards, {:array, :map}
     timestamps()
   end
 

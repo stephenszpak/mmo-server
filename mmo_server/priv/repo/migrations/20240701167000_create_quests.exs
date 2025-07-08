@@ -6,8 +6,8 @@ defmodule MmoServer.Repo.Migrations.CreateQuests do
       add :id, :uuid, primary_key: true
       add :title, :string, null: false
       add :description, :text, null: false
-      add :objectives, :map, null: false
-      add :rewards, :map, null: false
+      add :objectives, {:array, :map}, null: false
+      add :rewards, {:array, :map}, null: false
       timestamps()
     end
   end

@@ -63,7 +63,9 @@ defmodule MmoServer.Player.XP do
     end)
   end
 
-  defp level_up_values(level, xp \ 0) do
+  # Calculate values after a level up. The `xp` parameter defaults to 0
+  # using the standard `\\` syntax for optional arguments.
+  defp level_up_values(level, xp \\ 0) do
     next_xp = round(100 * :math.pow(1.25, level))
     {level, xp, next_xp}
   end

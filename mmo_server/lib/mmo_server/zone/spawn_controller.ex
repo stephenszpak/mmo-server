@@ -98,7 +98,7 @@ defmodule MmoServer.Zone.SpawnController do
     if Horde.Registry.lookup(NPCRegistry, {:npc, id}) == [] do
       id
     else
-      unique_id(type)
+      unique_id(template)
     end
   end
 

@@ -45,33 +45,25 @@ defmodule MmoServer.Seeds do
     {:ok, json} = File.read(path)
     {:ok, data} = Jason.decode(json)
 
-    Enum.reduce(data, 1000, fn %{"name" => name, "role" => role, "lore" => lore, "skills" => skills}, next_id ->
+    for %{"name" => name, "role" => role, "lore" => lore, "skills" => skills} <- data do
       id = slugify(name)
 
       %Class{}
       |> Class.changeset(%{id: id, name: name, role: role, lore: lore})
       |> Repo.insert!(on_conflict: :replace_all, conflict_target: :id)
 
-      next_id =
-        Enum.reduce(skills, next_id, fn skill, acc ->
-          %Skill{}
-          |> Skill.changeset(%{
-            id: acc,
-            class_id: id,
-            name: skill["name"],
-            description: skill["description"],
-            cooldown: skill["cooldown_seconds"],
-            type: Map.get(skill, "type", "utility")
-          })
-          |> Repo.insert!(on_conflict: :replace_all, conflict_target: [:class_id, :name])
-
-          acc + 1
-        end)
-
-      next_id
-    end)
-
-    :ok
+      for skill <- skills do
+        %Skill{}
+        |> Skill.changeset(%{
+          class_id: id,
+          name: skill["name"],
+          description: skill["description"],
+          cooldown: skill["cooldown_seconds"],
+          type: Map.get(skill, "type", "utility")
+        })
+        |> Repo.insert!(on_conflict: :replace_all, conflict_target: [:class_id, :name])
+      end
+    end
   end
 
   defp slugify(name) do

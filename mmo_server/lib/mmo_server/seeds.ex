@@ -39,7 +39,9 @@ defmodule MmoServer.Seeds do
   end
 
   defp seed_classes do
-    path = Path.join(:code.priv_dir(:mmo_server), "class_skills_with_lore.json")
+    path =
+      [:code.priv_dir(:mmo_server), "repo", "class_skills_with_lore.json"]
+      |> Path.join()
     {:ok, json} = File.read(path)
     {:ok, data} = Jason.decode(json)
 

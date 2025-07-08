@@ -92,11 +92,7 @@ defmodule MmoServer.NPC do
 
         if attacker do
           MmoServer.Player.XP.gain(attacker, state.template.xp_reward)
-          MmoServer.Quests.record_progress(
-            attacker,
-            MmoServer.Quests.wolf_kill_id(),
-            %{type: "kill", target: state.template.id}
-          )
+          MmoServer.Quests.record_event(attacker, %{type: "kill", target: state.template.id})
         end
 
         MmoServer.LootSystem.drop_for_npc(state)

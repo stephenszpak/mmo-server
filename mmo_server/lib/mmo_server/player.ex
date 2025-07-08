@@ -53,6 +53,36 @@ defmodule MmoServer.Player do
     GenServer.cast({:via, Horde.Registry, {PlayerRegistry, player_id}}, :respawn)
   end
 
+  @spec teleport(term(), String.t()) :: :ok
+  def teleport(player_id, zone_id) do
+    GenServer.cast({:via, Horde.Registry, {PlayerRegistry, player_id}}, {:teleport, zone_id})
+  end
+
+  @spec resurrect(term()) :: :ok
+  def resurrect(player_id) do
+    case Horde.Registry.lookup(PlayerRegistry, player_id) do
+      [{_pid, _}] ->
+        respawn(player_id)
+      [] ->
+        alias MmoServer.{Repo, PlayerPersistence, ZoneManager}
+
+        with %PlayerPersistence{} = record <- Repo.get(PlayerPersistence, player_id) do
+          ZoneManager.ensure_zone_started(record.zone_id)
+
+          record
+          |> PlayerPersistence.changeset(%{hp: 100, status: "alive", x: 0, y: 0, z: 0})
+          |> Repo.update!()
+
+          Horde.DynamicSupervisor.start_child(
+            MmoServer.PlayerSupervisor,
+            {MmoServer.Player, %{player_id: player_id, zone_id: record.zone_id}}
+          )
+        end
+
+        :ok
+    end
+  end
+
   @doc """
   Persist the current state for the given player immediately.
   Useful after zone transfers to guarantee the database is updated.
@@ -224,6 +254,30 @@ defmodule MmoServer.Player do
   @impl true
   def handle_cast(:respawn, state) do
     handle_info(:respawn, state)
+  end
+
+  @impl true
+  def handle_cast({:teleport, zone_id}, state) do
+    ZoneManager.ensure_zone_started(zone_id)
+
+    if zone_id != state.zone_id do
+      MmoServer.Zone.leave(state.zone_id, state.id)
+      Phoenix.PubSub.unsubscribe(MmoServer.PubSub, "zone:#{state.zone_id}")
+      new_state = %{state | pos: {0, 0, 0}, zone_id: zone_id}
+      persist_state(new_state)
+
+      Horde.DynamicSupervisor.start_child(
+        MmoServer.PlayerSupervisor,
+        {MmoServer.Player, %{player_id: state.id, zone_id: zone_id, sandbox_owner: state.sandbox_owner}}
+      )
+
+      {:stop, :normal, new_state}
+    else
+      new_state = %{state | pos: {0, 0, 0}}
+      MmoServer.Zone.player_moved(state.zone_id, state.id, new_state.pos)
+      persist_state(new_state)
+      {:noreply, new_state}
+    end
   end
 
   @impl true

@@ -7,6 +7,7 @@ defmodule MmoServer.Zone.SpawnController do
   use GenServer
   require Logger
   alias MmoServer.Zone.{SpawnRules, NPCSupervisor}
+  alias MmoServer.WorldState
 
   @doc false
   defp default_tick do
@@ -69,7 +70,9 @@ defmodule MmoServer.Zone.SpawnController do
     Enum.reduce(SpawnRules.rules_for(state.zone_id), state, fn rule, acc ->
       template = rule.template
       count = npc_count(acc.npc_sup, template)
-      need = rule.max - count
+
+      mult = if WorldState.get("storm_active") == "true", do: 2, else: 1
+      need = rule.max * mult - count
 
       allowed = template in force_types or spawn_allowed?(acc, template, now)
 

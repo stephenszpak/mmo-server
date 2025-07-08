@@ -2,7 +2,7 @@ defmodule MmoServerWeb.TestDashboardLive do
   use Phoenix.LiveView, layout: false
 
   require Logger
-  alias MmoServer.{Player, WorldEvents, InstanceManager, ZoneMap, MobTemplate, LootSystem}
+  alias MmoServer.{Player, WorldEvents, InstanceManager, ZoneMap, MobTemplate, LootSystem, WorldState}
   alias MmoServer.Zone.SpawnController
   alias MmoServer.Zone
   alias MmoServer.Player.Inventory
@@ -13,6 +13,7 @@ defmodule MmoServerWeb.TestDashboardLive do
 
     if connected?(socket) do
       Phoenix.PubSub.subscribe(MmoServer.PubSub, "world:clock")
+      Phoenix.PubSub.subscribe(MmoServer.PubSub, "world:state")
       subscribe_all_zones()
     end
 
@@ -31,6 +32,7 @@ defmodule MmoServerWeb.TestDashboardLive do
       |> assign(:selected_player, nil)
       |> assign(:inventory, [])
       |> assign(:equipped, [])
+      |> assign(:world_state, WorldState.all())
       |> assign(:live_connected, connected?(socket))
       |> assign(:last_log, System.system_time(:millisecond))
       |> assign(:logs, [])
@@ -194,6 +196,16 @@ defmodule MmoServerWeb.TestDashboardLive do
     {:noreply, socket |> log("Merchant inventory rotated")}
   end
 
+  def handle_event("toggle_state", %{"key" => key}, socket) do
+    if WorldState.get(key) == "true" do
+      WorldState.delete(key)
+    else
+      WorldState.put(key, "true")
+    end
+
+    {:noreply, socket}
+  end
+
   def handle_event("start_instance", %{"base_zone" => zone, "players" => players}, socket) do
     Logger.debug("Start instance: #{inspect(zone)} players: #{inspect(players)}")
     {:ok, id} = InstanceManager.start_instance(zone, players)
@@ -309,6 +321,14 @@ defmodule MmoServerWeb.TestDashboardLive do
     {:noreply, socket |> log("instance_shutdown #{id}") |> refresh_state()}
   end
 
+  def handle_info({:world_state_changed, key, value}, socket) do
+    {:noreply, assign(socket, :world_state, Map.put(socket.assigns.world_state, key, value))}
+  end
+
+  def handle_info({:world_state_deleted, key}, socket) do
+    {:noreply, assign(socket, :world_state, Map.delete(socket.assigns.world_state, key))}
+  end
+
   @impl true
   def handle_info(_msg, socket) do
     {:noreply, refresh_state(socket)}
@@ -322,6 +342,7 @@ defmodule MmoServerWeb.TestDashboardLive do
     |> assign(:gm_players, fetch_players())
     |> assign(:gm_zones, base_zones())
     |> assign(:gm_templates, fetch_templates())
+    |> assign(:world_state, WorldState.all())
     |> assign_new(:gm_zone, fn -> List.first(base_zones()) end)
     |> assign_new(:gm_template, fn -> List.first(fetch_templates()) end)
     |> assign_new(:gm_player, fn -> nil end)

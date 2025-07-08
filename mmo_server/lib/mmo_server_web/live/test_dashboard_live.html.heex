@@ -81,6 +81,20 @@
   </div>
 
   <div>
+    <h2 class="font-semibold">World State</h2>
+    <div class="space-x-2 mt-2">
+      <button phx-click="toggle_state" phx-value-key="storm_active" class="btn">Toggle Storm</button>
+      <button phx-click="toggle_state" phx-value-key="open_portal" class="btn">Toggle Portal</button>
+      <button phx-click="toggle_state" phx-value-key="boss_spawned" class="btn">Toggle Boss</button>
+    </div>
+    <ul class="list-disc ml-4 mt-2">
+      <%= for {k, v} <- @world_state do %>
+        <li><%= k %> - <%= v %></li>
+      <% end %>
+    </ul>
+  </div>
+
+  <div>
     <h2 class="font-semibold">Dungeon Instances</h2>
     <form phx-submit="start_instance" class="mt-2 space-x-2">
       <select name="base_zone" class="border p-1">

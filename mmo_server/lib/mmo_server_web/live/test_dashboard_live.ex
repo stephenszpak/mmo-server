@@ -250,6 +250,12 @@ defmodule MmoServerWeb.TestDashboardLive do
     {:noreply, socket |> log("killed player #{player}") |> refresh_state()}
   end
 
+  def handle_event("gm_resurrect", %{"player" => player}, socket) do
+    Logger.debug("[GM] Resurrect player #{player}")
+    Player.resurrect(player)
+    {:noreply, socket |> log("resurrected #{player}") |> refresh_state()}
+  end
+
   def handle_event("gm_teleport", %{"player" => player, "zone" => zone}, socket) do
     Logger.debug("[GM] Teleport #{player} to #{zone}")
     Player.teleport(player, zone)

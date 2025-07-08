@@ -4,6 +4,7 @@ defmodule MmoServer.NPC do
   """
   use GenServer
   require Logger
+  alias MmoServer.MobTemplate
 
   @tick_ms Application.compile_env(:mmo_server, :npc_tick_ms, 1_000)
 
@@ -11,6 +12,7 @@ defmodule MmoServer.NPC do
     :id,
     :zone_id,
     :type,
+    :template,
     :behavior,
     pos: {0, 0},
     hp: 100,
@@ -23,6 +25,7 @@ defmodule MmoServer.NPC do
           id: term(),
           zone_id: term(),
           type: atom(),
+          template: MmoServer.MobTemplate.t(),
           behavior: atom(),
           pos: {number(), number()},
           hp: non_neg_integer(),
@@ -46,19 +49,19 @@ defmodule MmoServer.NPC do
   ## Server callbacks
   @impl true
   def init(args) do
+    template = MobTemplate.get!(args.template_id)
+
     behavior =
-      Map.get(args, :behavior) ||
-        case Map.get(args, :type) do
-          b when b in [:guard, :patrol, :aggressive] -> b
-          _ -> :patrol
-        end
+      Map.get(args, :behavior) || if(template.aggressive, do: :aggressive, else: :patrol)
 
     state = %__MODULE__{
       id: args.id,
       zone_id: args.zone_id,
-      type: Map.get(args, :type),
+      type: String.to_atom(template.id),
+      template: template,
       behavior: behavior,
       pos: Map.get(args, :pos, {0, 0}),
+      hp: template.hp,
       tick_ms: Map.get(args, :tick_ms, @tick_ms)
     }
 
@@ -88,8 +91,7 @@ defmodule MmoServer.NPC do
         )
 
         if attacker do
-          xp = xp_reward(state.type)
-          MmoServer.Player.XP.gain(attacker, xp)
+          MmoServer.Player.XP.gain(attacker, state.template.xp_reward)
         end
 
         MmoServer.LootSystem.drop_for_npc(state)
@@ -106,7 +108,7 @@ defmodule MmoServer.NPC do
 
   @impl true
   def handle_info(:respawn, state) do
-    new_state = %{state | hp: 100, status: :alive, last_attacker: nil}
+    new_state = %{state | hp: state.template.hp, status: :alive, last_attacker: nil}
 
     Phoenix.PubSub.broadcast(
       MmoServer.PubSub,
@@ -229,8 +231,4 @@ defmodule MmoServer.NPC do
   defp distance({x1, y1}, {x2, y2}) do
     :math.sqrt(:math.pow(x1 - x2, 2) + :math.pow(y1 - y2, 2))
   end
-
-  defp xp_reward(:wolf), do: 20
-  defp xp_reward(:elite), do: 50
-  defp xp_reward(_), do: 20
 end

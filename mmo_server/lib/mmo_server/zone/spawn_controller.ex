@@ -44,14 +44,13 @@ defmodule MmoServer.Zone.SpawnController do
 
   @impl true
   def handle_info({:npc_death, id}, state) do
-    type =
+    template =
       id
       |> to_string()
       |> String.split("_", parts: 2)
       |> hd()
-      |> String.to_atom()
 
-    state = evaluate_rules(state, [type])
+    state = evaluate_rules(state, [template])
     {:noreply, state}
   end
 
@@ -67,10 +66,11 @@ defmodule MmoServer.Zone.SpawnController do
     now = System.system_time(:millisecond)
 
     Enum.reduce(SpawnRules.rules_for(state.zone_id), state, fn rule, acc ->
-      count = npc_count(acc.npc_sup, rule.type)
+      template = rule.template
+      count = npc_count(acc.npc_sup, template)
       need = rule.max - count
 
-      allowed = rule.type in force_types or spawn_allowed?(acc, rule.type, now)
+      allowed = template in force_types or spawn_allowed?(acc, template, now)
 
       if need > 0 and allowed do
         spawn_npcs(acc, rule, need, now)
@@ -82,17 +82,18 @@ defmodule MmoServer.Zone.SpawnController do
 
   defp spawn_npcs(state, rule, num, timestamp) do
     Enum.each(1..num, fn _ ->
-      id = unique_id(rule.type)
-      npc = %{id: id, zone_id: state.zone_id, type: rule.type, pos: random_pos(rule.pos_range)}
+      id = unique_id(rule.template)
+      npc = %{id: id, zone_id: state.zone_id, template_id: rule.template, pos: random_pos(rule.pos_range)}
       NPCSupervisor.start_npc(state.npc_sup, npc)
       Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{state.zone_id}", {:npc_spawned, id})
+      Logger.info("Spawned #{id} from template #{rule.template}")
     end)
 
-    %{state | last_spawn: Map.put(state.last_spawn, rule.type, timestamp)}
+    %{state | last_spawn: Map.put(state.last_spawn, rule.template, timestamp)}
   end
 
-  defp unique_id(type) do
-    id = "#{type}_#{System.unique_integer([:positive])}"
+  defp unique_id(template) do
+    id = "#{template}_#{System.unique_integer([:positive])}"
 
     if Horde.Registry.lookup(NPCRegistry, {:npc, id}) == [] do
       id
@@ -107,8 +108,8 @@ defmodule MmoServer.Zone.SpawnController do
     {x, y}
   end
 
-  defp npc_count(npc_sup, type) do
-    prefix = Atom.to_string(type)
+  defp npc_count(npc_sup, template) do
+    prefix = to_string(template)
 
     if Process.alive?(npc_sup) do
       DynamicSupervisor.which_children(npc_sup)
@@ -119,7 +120,7 @@ defmodule MmoServer.Zone.SpawnController do
             alive = Map.get(s, :status) == :alive
             matches =
               String.starts_with?(to_string(Map.get(s, :id)), prefix) or
-                Map.get(s, :type) == type
+                Map.get(s, :type) == String.to_atom(template)
             alive and matches
           catch
             _, _ ->
@@ -134,8 +135,8 @@ defmodule MmoServer.Zone.SpawnController do
     end
   end
 
-  defp spawn_allowed?(state, type, now) do
-    case Map.get(state.last_spawn, type) do
+  defp spawn_allowed?(state, template, now) do
+    case Map.get(state.last_spawn, template) do
       nil -> true
       last -> now - last >= state.tick_ms
     end

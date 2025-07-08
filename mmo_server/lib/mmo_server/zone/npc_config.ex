@@ -5,8 +5,8 @@ defmodule MmoServer.Zone.NPCConfig do
 
   @npcs %{
     "elwynn" => [
-      %{id: "wolf_1", type: :wolf, behavior: :patrol, pos: {20, 30}},
-      %{id: "wolf_2", type: :wolf, behavior: :aggressive, pos: {25, 30}}
+      %{id: "wolf_1", template_id: "wolf", behavior: :patrol, pos: {20, 30}},
+      %{id: "wolf_2", template_id: "wolf", behavior: :aggressive, pos: {25, 30}}
     ]
   }
 

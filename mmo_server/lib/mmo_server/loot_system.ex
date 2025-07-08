@@ -4,14 +4,14 @@ defmodule MmoServer.LootSystem do
   """
 
   require Logger
-  alias MmoServer.{Repo, LootDrop, LootTables, Player}
+  alias MmoServer.{Repo, LootDrop, Player}
   alias MmoServer.Player.Inventory
 
   @pickup_radius 5
 
   @spec drop_for_npc(MmoServer.NPC.t()) :: :ok
-  def drop_for_npc(%MmoServer.NPC{id: id, type: type, zone_id: zone, pos: {x, y}}) do
-    LootTables.loot_for(type)
+  def drop_for_npc(%MmoServer.NPC{id: id, template: template, zone_id: zone, pos: {x, y}}) do
+    template.loot_table
     |> Enum.each(fn %{item: item, quality: quality, chance: chance} ->
       if :rand.uniform() < chance do
         %LootDrop{}

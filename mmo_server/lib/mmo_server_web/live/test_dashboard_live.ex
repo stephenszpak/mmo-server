@@ -201,7 +201,11 @@ defmodule MmoServerWeb.TestDashboardLive do
     {:noreply, socket |> log("Instance #{id} started") |> refresh_state()}
   end
 
-  def handle_event("gm_select", %{"zone" => zone, "template" => template, "player" => player}, socket) do
+  def handle_event("gm_select", params, socket) do
+    zone = Map.get(params, "zone", socket.assigns.gm_zone)
+    template = Map.get(params, "template", socket.assigns.gm_template)
+    player = Map.get(params, "player", socket.assigns.gm_player)
+
     {:noreply,
      socket
      |> assign(:gm_zone, zone)

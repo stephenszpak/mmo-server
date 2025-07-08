@@ -9,7 +9,7 @@ defmodule MmoServer.Repo.Migrations.CreateMobTemplates do
       add :damage, :integer, null: false
       add :xp_reward, :integer, null: false
       add :aggressive, :boolean, null: false, default: false
-      add :loot_table, :map, null: false
+      add :loot_table, {:array, :map}, null: false
       timestamps()
     end
   end

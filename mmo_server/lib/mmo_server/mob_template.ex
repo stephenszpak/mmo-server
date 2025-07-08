@@ -14,7 +14,7 @@ defmodule MmoServer.MobTemplate do
     field :damage, :integer
     field :xp_reward, :integer
     field :aggressive, :boolean, default: false
-    field :loot_table, :map
+    field :loot_table, {:array, :map}
     timestamps()
   end
 

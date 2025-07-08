@@ -102,6 +102,36 @@
     </ul>
   </div>
 
+  <details class="mt-4">
+    <summary class="font-semibold cursor-pointer">GM Tools</summary>
+    <form phx-change="gm_select" class="mt-2 space-x-2" id="gm-form">
+      <select name="zone" class="border p-1">
+        <%= for z <- @gm_zones do %>
+          <option value={z} selected={z == @gm_zone}><%= z %></option>
+        <% end %>
+      </select>
+      <select name="template" class="border p-1">
+        <%= for t <- @gm_templates do %>
+          <option value={t} selected={t == @gm_template}><%= t %></option>
+        <% end %>
+      </select>
+      <select name="player" class="border p-1">
+        <%= for p <- @gm_players do %>
+          <option value={p.id} selected={p.id == @gm_player}><%= p.id %></option>
+        <% end %>
+      </select>
+    </form>
+    <div class="space-x-2 mt-2">
+      <button phx-click="gm_spawn_npc" phx-value-zone={@gm_zone} phx-value-template={@gm_template} class="btn">Spawn NPC</button>
+      <button phx-click="gm_kill_all" phx-value-zone={@gm_zone} class="btn">Despawn NPCs</button>
+      <button phx-click="gm_force_spawn" phx-value-zone={@gm_zone} class="btn">Force Spawn Wave</button>
+      <button phx-click="gm_xp" phx-value-player={@gm_player} class="btn">Give XP</button>
+      <button phx-click="gm_drop_loot" phx-value-zone={@gm_zone} phx-value-template={@gm_template} class="btn">Drop Loot</button>
+      <button phx-click="gm_kill_player" phx-value-player={@gm_player} class="btn">Kill Player</button>
+      <button phx-click="gm_teleport" phx-value-player={@gm_player} phx-value-zone={@gm_zone} class="btn">Teleport Player</button>
+    </div>
+  </details>
+
   <div id="console" class="h-40 overflow-y-scroll bg-gray-100 p-2 text-sm">
     <%= for msg <- @logs do %>
       <div><%= msg %></div>

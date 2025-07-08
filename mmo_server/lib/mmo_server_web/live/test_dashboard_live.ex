@@ -2,7 +2,9 @@ defmodule MmoServerWeb.TestDashboardLive do
   use Phoenix.LiveView, layout: false
 
   require Logger
-  alias MmoServer.{Player, WorldEvents, InstanceManager, ZoneMap}
+  alias MmoServer.{Player, WorldEvents, InstanceManager, ZoneMap, MobTemplate, LootSystem}
+  alias MmoServer.Zone.SpawnController
+  alias MmoServer.Zone
   alias MmoServer.Player.Inventory
 
   @impl true
@@ -20,6 +22,12 @@ defmodule MmoServerWeb.TestDashboardLive do
       |> assign(:zones, base_zones())
       |> assign(:npcs, fetch_npcs())
       |> assign(:instances, InstanceManager.active_instances())
+      |> assign(:gm_zones, base_zones())
+      |> assign(:gm_players, fetch_players())
+      |> assign(:gm_templates, fetch_templates())
+      |> assign(:gm_zone, hd(base_zones()))
+      |> assign(:gm_template, hd(fetch_templates()))
+      |> assign(:gm_player, nil)
       |> assign(:selected_player, nil)
       |> assign(:inventory, [])
       |> assign(:equipped, [])
@@ -70,6 +78,11 @@ defmodule MmoServerWeb.TestDashboardLive do
   defp fetch_npcs do
     Horde.Registry.select(NPCRegistry, [{{{:npc, :"$1"}, :_, :_}, [], [:"$1"]}])
     |> Enum.map(&npc_info/1)
+  end
+
+  defp fetch_templates do
+    MobTemplate.list()
+    |> Enum.map(& &1.id)
   end
 
   defp npc_info(id) do
@@ -188,6 +201,57 @@ defmodule MmoServerWeb.TestDashboardLive do
     {:noreply, socket |> log("Instance #{id} started") |> refresh_state()}
   end
 
+  def handle_event("gm_select", %{"zone" => zone, "template" => template, "player" => player}, socket) do
+    {:noreply,
+     socket
+     |> assign(:gm_zone, zone)
+     |> assign(:gm_template, template)
+     |> assign(:gm_player, player)}
+  end
+
+  # GM tools
+  def handle_event("gm_spawn_npc", %{"zone" => zone, "template" => template}, socket) do
+    Logger.info("[GM] Spawn NPC #{template} in #{zone}")
+    SpawnController.spawn_from_template(zone, template)
+    {:noreply, socket |> log("spawned #{template} in #{zone}") |> refresh_state()}
+  end
+
+  def handle_event("gm_kill_all", %{"zone" => zone}, socket) do
+    Logger.info("[GM] Kill all NPCs in #{zone}")
+    Zone.kill_all_npcs(zone)
+    {:noreply, socket |> log("kill_all #{zone}") |> refresh_state()}
+  end
+
+  def handle_event("gm_force_spawn", %{"zone" => zone}, socket) do
+    Logger.info("[GM] Force spawn wave in #{zone}")
+    SpawnController.force_spawn_wave(zone)
+    {:noreply, socket |> log("force_spawn #{zone}") |> refresh_state()}
+  end
+
+  def handle_event("gm_xp", %{"player" => player}, socket) do
+    Logger.info("[GM] Give XP to #{player}")
+    Player.XP.gain(player, 50)
+    {:noreply, socket |> log("gave 50 xp to #{player}") |> refresh_state()}
+  end
+
+  def handle_event("gm_drop_loot", %{"zone" => zone, "template" => item}, socket) do
+    Logger.info("[GM] Drop loot #{item} in #{zone}")
+    LootSystem.spawn(zone, item)
+    {:noreply, socket |> log("loot #{item} at #{zone}") |> refresh_state()}
+  end
+
+  def handle_event("gm_kill_player", %{"player" => player}, socket) do
+    Logger.info("[GM] Kill player #{player}")
+    Player.stop(player)
+    {:noreply, socket |> log("killed player #{player}") |> refresh_state()}
+  end
+
+  def handle_event("gm_teleport", %{"player" => player, "zone" => zone}, socket) do
+    Logger.info("[GM] Teleport #{player} to #{zone}")
+    Player.teleport(player, zone)
+    {:noreply, socket |> log("teleported #{player} to #{zone}") |> refresh_state()}
+  end
+
   def handle_event("log_test", _params, socket) do
     Logger.info("Test event triggered")
     {:noreply, log(socket, "Test event triggered")}
@@ -245,6 +309,12 @@ defmodule MmoServerWeb.TestDashboardLive do
     |> assign(:players, fetch_players())
     |> assign(:npcs, fetch_npcs())
     |> assign(:instances, InstanceManager.active_instances())
+    |> assign(:gm_players, fetch_players())
+    |> assign(:gm_zones, base_zones())
+    |> assign(:gm_templates, fetch_templates())
+    |> assign_new(:gm_zone, fn -> hd(base_zones()) end)
+    |> assign_new(:gm_template, fn -> hd(fetch_templates()) end)
+    |> assign_new(:gm_player, fn -> nil end)
   end
 
   defp refresh_inventory(socket, player_id) do

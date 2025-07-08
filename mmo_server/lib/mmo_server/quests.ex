@@ -10,6 +10,18 @@ defmodule MmoServer.Quests do
 
   alias MmoServer.Player.Inventory
 
+  @doc """
+  Retrieve the progress for the given player and quest.
+  Returns `nil` if the quest has not been accepted.
+  """
+  @spec get_progress(String.t(), Ecto.UUID.t()) :: %{progress: list(), completed: boolean()} | nil
+  def get_progress(player_id, quest_id) do
+    case Repo.get_by(QuestProgress, player_id: player_id, quest_id: quest_id) do
+      nil -> nil
+      %QuestProgress{} = prog -> Map.take(prog, [:progress, :completed])
+    end
+  end
+
   @spec accept(String.t(), Ecto.UUID.t()) :: {:ok, QuestProgress.t()} | {:error, term()}
   def accept(player_id, quest_id) do
     Repo.transaction(fn ->

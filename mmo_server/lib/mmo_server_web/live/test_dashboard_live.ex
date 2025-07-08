@@ -157,7 +157,7 @@ defmodule MmoServerWeb.TestDashboardLive do
 
   def handle_event("kill", _params, %{assigns: %{selected_player: id}} = socket) when is_binary(id) do
     Logger.debug("Kill event for #{id}")
-    Player.stop(id)
+    Player.kill(id)
     {:noreply, socket}
   end
 
@@ -246,7 +246,7 @@ defmodule MmoServerWeb.TestDashboardLive do
 
   def handle_event("gm_kill_player", %{"player" => player}, socket) do
     Logger.debug("[GM] Kill player #{player}")
-    Player.stop(player)
+    Player.kill(player)
     {:noreply, socket |> log("killed player #{player}") |> refresh_state()}
   end
 

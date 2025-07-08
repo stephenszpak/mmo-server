@@ -87,7 +87,7 @@ defmodule MmoServer.Zone.SpawnController do
       npc = %{id: id, zone_id: state.zone_id, template_id: rule.template, pos: random_pos(rule.pos_range)}
       NPCSupervisor.start_npc(state.npc_sup, npc)
       Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{state.zone_id}", {:npc_spawned, id})
-      Logger.info("Spawned #{id} from template #{rule.template}")
+      Logger.debug("Spawned #{id} from template #{rule.template}")
     end)
 
     %{state | last_spawn: Map.put(state.last_spawn, rule.template, timestamp)}

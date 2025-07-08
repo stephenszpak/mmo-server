@@ -78,6 +78,21 @@ defmodule MmoServer.Player do
     end
   end
 
+  @doc """
+  Immediately kills the running player process and marks the player as dead in
+  the database.
+  """
+  @spec kill(term()) :: :ok
+  def kill(player_id) do
+    case Horde.Registry.lookup(PlayerRegistry, player_id) do
+      [{pid, _}] ->
+        GenServer.cast(pid, :kill)
+        :ok
+      [] ->
+        :ok
+    end
+  end
+
   @spec get_status(term()) :: :alive | :dead | term()
   def get_status(player_id) do
     GenServer.call({:via, Horde.Registry, {PlayerRegistry, player_id}}, :get_status)
@@ -197,6 +212,13 @@ defmodule MmoServer.Player do
       persist_state(state)
       {:noreply, state}
     end
+  end
+
+  @impl true
+  def handle_cast(:kill, state) do
+    new_state = %{state | hp: 0, status: :dead}
+    persist_state(new_state)
+    {:stop, :normal, new_state}
   end
 
   @impl true

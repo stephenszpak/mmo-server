@@ -5,7 +5,9 @@ defmodule MmoServer.Player.XP do
   require Logger
   alias MmoServer.{Repo, PlayerStats}
 
-  @doc """Return current xp stats for a player"""
+  @doc """
+  Return current xp stats for a player
+  """
   def get(player_id) do
     case Repo.get(PlayerStats, player_id) do
       nil -> %{xp: 0, level: 1, next_level_xp: 100}
@@ -13,7 +15,9 @@ defmodule MmoServer.Player.XP do
     end
   end
 
-  @doc """Gain XP for a player and handle level up"""
+  @doc """
+  Gain XP for a player and handle level up
+  """
   def gain(player_id, amount) when is_integer(amount) and amount > 0 do
     Repo.transaction(fn ->
       stats = Repo.get(PlayerStats, player_id) || %PlayerStats{player_id: player_id}
@@ -41,7 +45,9 @@ defmodule MmoServer.Player.XP do
     end)
   end
 
-  @doc """Force level up for a player"""
+  @doc """
+  Force level up for a player
+  """
   def level_up(player_id) do
     Repo.transaction(fn ->
       stats = Repo.get(PlayerStats, player_id) || %PlayerStats{player_id: player_id}

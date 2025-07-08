@@ -69,7 +69,7 @@ defmodule MmoServer.WorldState do
 
     %Record{key: key, value: value, inserted_at: now, updated_at: now}
     |> Repo.insert(
-      on_conflict: [set: [value: ^value, updated_at: ^now]],
+      on_conflict: [set: [value: value, updated_at: now]],
       conflict_target: :key
     )
 

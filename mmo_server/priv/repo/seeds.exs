@@ -1,4 +1,5 @@
 alias MmoServer.{Repo, MobTemplate}
+alias MmoServer.{Quest}
 
 for template <- [
   %{id: "wolf", name: "Wolf", hp: 30, damage: 15, xp_reward: 20, aggressive: true, loot_table: [
@@ -11,5 +12,14 @@ for template <- [
 ] do
   %MobTemplate{}
   |> MobTemplate.changeset(template)
+  |> Repo.insert!(on_conflict: :replace_all, conflict_target: :id)
+end
+
+for quest <- [
+  %{id: MmoServer.Quests.wolf_kill_id(), title: "Cull the Wolves", description: "Kill 3 wolves", objectives: [ %{type: "kill", target: "wolf", count: 3} ], rewards: [ %{ "type" => "xp", "amount" => 100} ]},
+  %{id: MmoServer.Quests.pelt_collect_id(), title: "Gather Pelts", description: "Collect 2 wolf pelts", objectives: [ %{type: "collect", target: "wolf_pelt", count: 2} ], rewards: [ %{ "item" => "wolf_cape"} ]}
+] do
+  %Quest{}
+  |> Quest.changeset(quest)
   |> Repo.insert!(on_conflict: :replace_all, conflict_target: :id)
 end

@@ -8,10 +8,13 @@ defmodule MmoServer.Seeds do
     Repo,
     PlayerPersistence,
     PlayerStats,
+    Class,
+    Skill,
     LootDrop,
     MobTemplate,
     Quest
   }
+  import Ecto.Query
 
   @zones ["elwynn", "durotar", "zone1"]
   @default_players ["thrall", "jaina", "arthas"]
@@ -22,6 +25,7 @@ defmodule MmoServer.Seeds do
   """
   def run do
     ensure_zones()
+    seed_classes()
     seed_players()
     seed_loot_drops()
     seed_mob_templates()
@@ -32,6 +36,39 @@ defmodule MmoServer.Seeds do
     for zone <- @zones do
       :ok = MmoServer.ZoneManager.ensure_zone_started(zone)
     end
+  end
+
+  defp seed_classes do
+    path = Path.join(:code.priv_dir(:mmo_server), "class_skills_with_lore.json")
+    {:ok, json} = File.read(path)
+    {:ok, data} = Jason.decode(json)
+
+    for %{"name" => name, "role" => role, "lore" => lore, "skills" => skills} <- data do
+      id = slugify(name)
+
+      %Class{}
+      |> Class.changeset(%{id: id, name: name, role: role, lore: lore})
+      |> Repo.insert!(on_conflict: :replace_all, conflict_target: :id)
+
+      for skill <- skills do
+        %Skill{}
+        |> Skill.changeset(%{
+          class_id: id,
+          name: skill["name"],
+          description: skill["description"],
+          cooldown: skill["cooldown_seconds"],
+          type: Map.get(skill, "type", "utility")
+        })
+        |> Repo.insert!(on_conflict: :replace_all, conflict_target: [:class_id, :name])
+      end
+    end
+  end
+
+  defp slugify(name) do
+    name
+    |> String.downcase()
+    |> String.replace(~r/[^a-z0-9]+/, "_")
+    |> String.trim("_")
   end
 
   defp seed_players do
@@ -49,6 +86,7 @@ defmodule MmoServer.Seeds do
   end
 
   defp create_player(player_id, zone) do
+    class_id = Repo.one(from c in Class, select: c.id, order_by: fragment("RANDOM()"), limit: 1)
     attrs = %{
       id: player_id,
       zone_id: zone,
@@ -56,7 +94,8 @@ defmodule MmoServer.Seeds do
       y: :rand.uniform() * 100,
       z: 0.0,
       hp: 100,
-      status: "alive"
+      status: "alive",
+      player_class: class_id
     }
 
     %PlayerPersistence{}

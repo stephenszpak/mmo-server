@@ -15,7 +15,14 @@ defmodule MmoServer.SkillMetadata do
     end
   end
 
-  @skills load_file(@json_path)
+  @skills case File.read(@json_path) do
+            {:ok, json} ->
+              case Jason.decode(json) do
+                {:ok, data} -> data
+                _ -> []
+              end
+            _ -> []
+          end
 
   @doc "Return all skills across every class as a flat list"
   def get_all_skills do

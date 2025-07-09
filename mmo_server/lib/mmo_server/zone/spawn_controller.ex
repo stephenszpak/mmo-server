@@ -145,4 +145,33 @@ defmodule MmoServer.Zone.SpawnController do
       last -> now - last >= state.tick_ms
     end
   end
+
+  @doc """
+  Spawn a single NPC from the given template in the specified zone.
+  This bypasses normal spawn rules and is primarily used by GM tools.
+  """
+  @spec spawn_from_template(String.t(), String.t()) :: :ok | {:error, term()}
+  def spawn_from_template(zone_id, template) do
+    with [{zone_pid, _}] <- Horde.Registry.lookup(PlayerRegistry, {:zone, zone_id}),
+         %{npc_sup: npc_sup} <- :sys.get_state(zone_pid) do
+      id = "#{template}_#{System.unique_integer([:positive])}"
+      npc = %{id: id, zone_id: zone_id, template_id: template, pos: {0, 0}}
+      NPCSupervisor.start_npc(npc_sup, npc)
+      Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{zone_id}", {:npc_spawned, id})
+      :ok
+    else
+      _ -> {:error, :zone_not_found}
+    end
+  end
+
+  @doc """
+  Immediately trigger a spawn wave evaluation in the given zone.
+  """
+  @spec force_spawn_wave(String.t()) :: :ok | {:error, term()}
+  def force_spawn_wave(zone_id) do
+    case Horde.Registry.lookup(PlayerRegistry, {:spawn_controller, zone_id}) do
+      [{pid, _}] -> send(pid, :tick); :ok
+      _ -> {:error, :not_found}
+    end
+  end
 end

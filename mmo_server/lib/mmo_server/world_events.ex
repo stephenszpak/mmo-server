@@ -3,13 +3,12 @@ defmodule MmoServer.WorldEvents do
   Dispatches world-level events to players and zones.
   """
 
-  alias MmoServer.{PubSub, ZoneMap, BossMetadata, ZoneManager}
+  alias MmoServer.{PubSub, BossMetadata, ZoneManager}
   alias MmoServer.Zone.NPCSupervisor
 
-  @spec spawn_world_boss(String.t() | nil) :: :ok
-  def spawn_world_boss(name \\ nil) do
+  @spec spawn_world_boss(String.t() | nil, String.t()) :: :ok
+  def spawn_world_boss(name \\ nil, zone_id \\ "elwynn") do
     boss = if name, do: BossMetadata.get_boss(name), else: BossMetadata.random_boss()
-    zone_id = "elwynn"
     ZoneManager.ensure_zone_started(zone_id)
 
     [{zone_pid, _}] = Horde.Registry.lookup(PlayerRegistry, {:zone, zone_id})

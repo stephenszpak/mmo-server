@@ -75,7 +75,7 @@ defmodule MmoServer.Quests do
   to know the quest id.
   """
   @spec record_event(String.t(), map()) :: :ok
-  def record_event(player_id, %{type: type, target: target} = event) do
+  def record_event(player_id, %{type: _type, target: _target} = event) do
     from(q in QuestProgress,
       where: q.player_id == ^player_id and q.completed == false,
       select: q.quest_id

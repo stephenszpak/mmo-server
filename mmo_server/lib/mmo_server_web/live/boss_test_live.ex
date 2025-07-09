@@ -2,7 +2,7 @@ defmodule MmoServerWeb.BossTestLive do
   use Phoenix.LiveView, layout: false
 
   require Logger
-  alias MmoServer.{Player, SkillMetadata}
+  alias MmoServer.{Player, SkillMetadata, WorldEvents}
 
   @impl true
   def mount(_params, _session, socket) do
@@ -109,6 +109,12 @@ defmodule MmoServerWeb.BossTestLive do
     Logger.debug("#{p} uses #{skill} on #{b}")
     Player.cast_skill_on_boss(p, b, skill)
     {:noreply, log(socket, "#{p} used #{skill} on #{b}") |> refresh_state()}
+  end
+
+  def handle_event("spawn_boss", _params, socket) do
+    Logger.debug("spawn boss event")
+    WorldEvents.spawn_world_boss()
+    {:noreply, log(socket, "boss spawned") |> refresh_state()}
   end
 
   def handle_event(_event, _params, socket), do: {:noreply, socket}

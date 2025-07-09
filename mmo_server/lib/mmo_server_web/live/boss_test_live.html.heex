@@ -15,6 +15,9 @@
 <body>
 <div class="layout">
   <div class="card">
+    <.link navigate="/test" class="btn">Home</.link>
+  </div>
+  <div class="card">
     <h2 class="font-semibold">Players</h2>
     <form phx-change="select_player" class="mt-2">
       <select name="player" class="border p-1">
@@ -40,6 +43,9 @@
 
   <div class="card">
     <h2 class="font-semibold">Bosses</h2>
+    <div class="mt-1">
+      <button phx-click="spawn_boss" class="btn">Spawn Boss</button>
+    </div>
     <%= for boss <- @bosses do %>
       <div class="mt-2">
         <div class="font-semibold"><%= boss.boss_name || boss.id %></div>

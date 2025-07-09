@@ -21,7 +21,8 @@ defmodule MmoServer.Player do
     :hp,
     :mana,
     :status,
-    :player_class,
+    :class,
+    :selected_target_id,
     :cooldowns,
     :conn_pid,
     :sandbox_owner,
@@ -64,6 +65,16 @@ defmodule MmoServer.Player do
   @spec teleport(term(), String.t()) :: :ok
   def teleport(player_id, zone_id) do
     GenServer.cast({:via, Horde.Registry, {PlayerRegistry, player_id}}, {:teleport, zone_id})
+  end
+
+  @doc "Set the player's current target for tab targeting"
+  def set_target(player_id, target_id) do
+    GenServer.cast({:via, Horde.Registry, {PlayerRegistry, player_id}}, {:set_target, target_id})
+  end
+
+  @doc "Cast a skill on the currently selected target"
+  def cast_skill(player_id, skill_name) do
+    GenServer.call({:via, Horde.Registry, {PlayerRegistry, player_id}}, {:cast_skill, skill_name})
   end
 
   @doc "Set the player's class"
@@ -209,7 +220,8 @@ defmodule MmoServer.Player do
         hp: 100,
         mana: 100,
         status: :alive,
-        player_class: nil,
+        class: nil,
+        selected_target_id: nil,
         cooldowns: %{},
         conn_pid: nil,
         sandbox_owner: owner_pid,
@@ -223,7 +235,7 @@ defmodule MmoServer.Player do
           | pos: {persisted.x, persisted.y, persisted.z},
             hp: persisted.hp,
             status: String.to_atom(persisted.status),
-            player_class: persisted.player_class
+            class: persisted.player_class
         }
       else
         base_state
@@ -332,8 +344,13 @@ defmodule MmoServer.Player do
   end
 
   @impl true
+  def handle_cast({:set_target, target_id}, state) do
+    {:noreply, %{state | selected_target_id: target_id}}
+  end
+
+  @impl true
   def handle_cast({:set_class, class_id}, state) do
-    new_state = %{state | player_class: class_id}
+    new_state = %{state | class: class_id}
     persist_state(new_state)
     {:noreply, new_state}
   end
@@ -421,9 +438,21 @@ defmodule MmoServer.Player do
     end
   end
 
+  def handle_call({:cast_skill, skill_name}, _from, state) do
+    if Map.has_key?(state.cooldowns, skill_name) do
+      {:reply, {:error, :cooldown}, state}
+    else
+      with {:ok, damage} <- resolve_skill(state, skill_name) do
+        {:reply, {:ok, damage}, %{state | cooldowns: Map.put(state.cooldowns, skill_name, true)}}
+      else
+        {:error, reason} -> {:reply, {:error, reason}, state}
+      end
+    end
+  end
+
   @impl true
   def handle_call({:set_class, class_id}, _from, state) do
-    new_state = %{state | player_class: class_id}
+    new_state = %{state | class: class_id}
     persist_state(new_state)
     {:reply, :ok, new_state}
   end
@@ -453,7 +482,7 @@ defmodule MmoServer.Player do
       z: z,
       hp: state.hp,
       status: Atom.to_string(state.status),
-      player_class: state.player_class
+      player_class: state.class
     }
 
     Logger.debug("Persisting player #{state.id} in zone #{state.zone_id}")
@@ -477,4 +506,29 @@ defmodule MmoServer.Player do
 
     :ok
   end
+
+  defp resolve_skill(%{class: class, selected_target_id: nil}, _skill), do: {:error, :no_target}
+
+  defp resolve_skill(%{class: class, selected_target_id: target} = state, skill_name) do
+    with %{} = skill <- MmoServer.ClassSkills.get_skill(class, skill_name) do
+      damage = calculate_damage(state, skill)
+      apply_damage(target, damage, state.id)
+      cd = Map.get(skill, "cooldown_seconds", 1)
+      Process.send_after(self(), {:cooldown_ready, skill_name}, cd * 1000)
+      Phoenix.PubSub.broadcast(MmoServer.PubSub, "player:#{state.id}", {:skill_used, state.id, skill_name, cd})
+      Phoenix.PubSub.broadcast(MmoServer.PubSub, "combat:log", {:skill_hit, state.id, skill_name, target, damage})
+      {:ok, damage}
+    else
+      _ -> {:error, :unknown_skill}
+    end
+  end
+
+  defp calculate_damage(_state, skill) do
+    base = Map.get(skill, "base_damage", 0)
+    factor = Map.get(skill, "scaling_factor", 0)
+    base + round(10 * factor)
+  end
+
+  defp apply_damage({:npc, id}, amount, attacker), do: MmoServer.NPC.damage(id, amount, attacker)
+  defp apply_damage(id, amount, _attacker) when is_binary(id), do: MmoServer.Player.damage(id, amount)
 end

@@ -357,9 +357,8 @@ defmodule MmoServerWeb.TestDashboardLive do
     {:noreply, socket |> log("player #{id} moved to #{inspect(pos)}") |> refresh_state()}
   end
 
-  def handle_info({:npc_moved, id, pos} = msg, socket) do
-    Logger.debug("LiveView Event: #{inspect(msg)}")
-    {:noreply, socket |> log("npc #{id} moved to #{inspect(pos)}") |> refresh_state()}
+  def handle_info({:npc_moved, _id, _pos}, socket) do
+    {:noreply, refresh_state(socket)}
   end
 
   def handle_info({:zone_event, event} = msg, socket) do

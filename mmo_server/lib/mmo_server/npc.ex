@@ -255,9 +255,17 @@ defmodule MmoServer.NPC do
     if ready == [] do
       state
     else
-      skill = Enum.random(ready)
-      name = Map.get(skill, :name) || Map.get(skill, "name")
-      cd = Map.get(skill, :cooldown) || Map.get(skill, "cooldown") || 1
+      name =
+        ready
+        |> Enum.random()
+        |> case do
+          %{} = s -> Map.get(s, :name) || Map.get(s, "name")
+          other -> other
+        end
+
+      skill = MmoServer.SkillMetadata.get_skill_by_name(name)
+      cd = Map.get(skill || %{}, "cooldown_seconds", 1)
+
       MmoServer.NpcSkillSystem.use_skill(state.id, name, state.last_attacker)
       Process.send_after(self(), {:cooldown_ready, name}, cd * 1000)
       %{state | cooldowns: Map.put(state.cooldowns, name, true)}

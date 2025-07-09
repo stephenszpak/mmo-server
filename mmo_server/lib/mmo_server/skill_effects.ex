@@ -6,7 +6,18 @@ defmodule MmoServer.SkillEffects do
   alias MmoServer.{CombatEngine, DebuffSystem, Targeting}
 
   @spec apply_effect(term(), term(), map()) :: :ok
-  def apply_effect(user_id, target_id, %{"type" => "direct"} = skill) do
+  def apply_effect(user_id, target_id, skill) when is_map(skill) do
+    case infer_type(skill) do
+      :debuff -> apply_debuff(user_id, target_id, skill)
+      :aoe -> apply_aoe(user_id, target_id, skill)
+      :condition -> apply_condition(user_id, target_id, skill)
+      _ -> apply_direct(user_id, target_id, skill)
+    end
+  end
+
+  def apply_effect(_user, _target, _), do: :ok
+
+  defp apply_direct(user_id, target_id, skill) do
     damage = Map.get(skill, "damage", 5)
     CombatEngine.damage(target_id, damage, user_id)
 
@@ -20,8 +31,9 @@ defmodule MmoServer.SkillEffects do
     :ok
   end
 
-  def apply_effect(user_id, target_id, %{"type" => "debuff"} = skill) do
-    DebuffSystem.apply_debuff(target_id, Map.get(skill, "debuff", %{}))
+  defp apply_debuff(user_id, target_id, skill) do
+    effect = %{type: skill["status_effect"], duration: 2}
+    DebuffSystem.apply_debuff(target_id, effect)
 
     Phoenix.PubSub.broadcast(MmoServer.PubSub, "combat:log", {
       :skill_used,
@@ -33,8 +45,8 @@ defmodule MmoServer.SkillEffects do
     :ok
   end
 
-  def apply_effect(user_id, target_id, %{"type" => "aoe"} = skill) do
-    radius = Map.get(skill, "radius", 1)
+  defp apply_aoe(user_id, target_id, skill) do
+    radius = Map.get(skill, "radius", 3)
     zone = zone_of(target_id)
     {x, y} = pos2d(target_id)
 
@@ -61,16 +73,15 @@ defmodule MmoServer.SkillEffects do
     :ok
   end
 
-  def apply_effect(user_id, target_id, %{"type" => "condition"} = skill) do
-    if evaluate_condition(user_id, target_id, Map.get(skill, "condition")) do
-      inner = Map.put(skill, "type", Map.get(skill, "on_true", "direct"))
-      apply_effect(user_id, target_id, inner)
+  defp apply_condition(user_id, target_id, skill) do
+    cond = Map.get(skill, "condition", "self.hp < 50")
+
+    if evaluate_condition(user_id, target_id, cond) do
+      apply_direct(user_id, target_id, skill)
     else
       :ok
     end
   end
-
-  def apply_effect(_user, _target, _), do: :ok
 
   defp evaluate_condition(player_id, target_id, expr) when is_binary(expr) do
     cond do
@@ -87,6 +98,19 @@ defmodule MmoServer.SkillEffects do
   end
 
   defp evaluate_condition(_, _, _), do: true
+
+  defp infer_type(skill) do
+    cond do
+      Map.has_key?(skill, "condition") or String.contains?(skill["name"] || "", "Counter") ->
+        :condition
+      skill["status_effect"] not in [nil, ""] ->
+        :debuff
+      String.match?(skill["name"] || "", ~r/(Aura|Storm|Wave)/) ->
+        :aoe
+      true ->
+        :direct
+    end
+  end
 
   defp hp_of(id) when is_binary(id), do: MmoServer.Player.get_hp(id)
   defp hp_of({:npc, id}), do: MmoServer.NPC.get_hp(id)

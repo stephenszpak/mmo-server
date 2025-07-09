@@ -1,0 +1,10 @@
+[
+  {
+    "id": "slapstick_monk",
+    "skills": [
+      {"name": "Banana Peel Toss", "cooldown": 1, "type": "aoe", "radius": 10, "damage": 5},
+      {"name": "Rubber Chicken Barrage", "cooldown": 1, "type": "debuff", "debuff": {"type": "burn", "duration": 2}},
+      {"name": "Pratfall Counter", "cooldown": 1, "type": "condition", "condition": "self.hp < 50", "damage": 5}
+    ]
+  }
+]

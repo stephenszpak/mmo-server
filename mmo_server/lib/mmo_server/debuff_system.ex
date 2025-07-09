@@ -69,7 +69,10 @@ defmodule MmoServer.DebuffSystem do
     CombatEngine.damage(entity, amount)
   end
 
-  defp apply_effect(_entity, _debuff), do: :ok
+  defp apply_effect(_entity, %{type: "slow"}), do: :ok
+  defp apply_effect(_entity, %{type: "stun"}), do: :ok
+  defp apply_effect(_entity, %{type: "silence"}), do: :ok
+  defp apply_effect(_entity, _), do: :ok
 
   defp normalize(%{type: type, duration: dur} = debuff) do
     %{type: to_string(type), duration: dur, damage: Map.get(debuff, :damage, 1)}

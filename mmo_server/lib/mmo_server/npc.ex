@@ -121,7 +121,16 @@ defmodule MmoServer.NPC do
           MmoServer.Quests.record_event(attacker, %{type: "kill", target: state.template.id})
         end
 
-        MmoServer.LootSystem.drop_for_npc(state)
+        if state.type == :boss do
+          loot = MmoServer.BossMetadata.roll_loot(state.boss_name)
+          Phoenix.PubSub.broadcast(
+            MmoServer.PubSub,
+            "zone:#{state.zone_id}",
+            {:boss_loot, state.id, loot}
+          )
+        else
+          MmoServer.LootSystem.drop_for_npc(state)
+        end
 
         Process.send_after(self(), :respawn, 10_000)
         {:noreply, %{state | status: :dead}}

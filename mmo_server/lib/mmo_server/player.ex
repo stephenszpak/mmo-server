@@ -218,6 +218,7 @@ defmodule MmoServer.Player do
 
     Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:#{state.zone_id}")
     MmoServer.Zone.join(state.zone_id, state.id)
+    MmoServer.Zone.player_moved(state.zone_id, state.id, state.pos)
     Logger.debug("Player #{state.id} started in zone #{state.zone_id}")
     persist_state(state)
     {:ok, state}

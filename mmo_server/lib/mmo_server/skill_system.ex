@@ -35,7 +35,8 @@ defmodule MmoServer.SkillSystem do
           case skill.type do
             "melee" -> CombatEngine.start_combat(player_id, target_id)
             "ranged" -> CombatEngine.start_combat(player_id, target_id)
-            _ -> :ok
+            # Default to a basic attack for unknown/utility skills
+            _ -> CombatEngine.start_combat(player_id, target_id)
           end
       end
     end

@@ -18,7 +18,8 @@ defmodule MmoServer.NPC do
     hp: 100,
     status: :alive,
     tick_ms: @tick_ms,
-    last_attacker: nil
+    last_attacker: nil,
+    cooldowns: %{}
   ]
 
   @type t :: %__MODULE__{
@@ -30,7 +31,8 @@ defmodule MmoServer.NPC do
           pos: {number(), number()},
           hp: non_neg_integer(),
           status: :alive | :dead,
-          tick_ms: non_neg_integer()
+          tick_ms: non_neg_integer(),
+          cooldowns: map()
         }
 
   @spec start_link(map()) :: GenServer.on_start()
@@ -62,7 +64,8 @@ defmodule MmoServer.NPC do
       behavior: behavior,
       pos: Map.get(args, :pos, {0, 0}),
       hp: template.hp,
-      tick_ms: Map.get(args, :tick_ms, @tick_ms)
+      tick_ms: Map.get(args, :tick_ms, @tick_ms),
+      cooldowns: %{}
     }
 
     seed_random(state.id)
@@ -133,19 +136,28 @@ defmodule MmoServer.NPC do
     new_state =
       case state.behavior do
         :guard ->
-          maybe_aggro(state)
+          state
+          |> maybe_aggro()
+          |> maybe_use_skill()
 
         :aggressive ->
           state
           |> move_towards_player()
           |> maybe_aggro()
+          |> maybe_use_skill()
 
         _ ->
-          move_random(state)
+          state
+          |> move_random()
+          |> maybe_use_skill()
       end
 
     schedule_tick(state.tick_ms)
     {:noreply, new_state}
+  end
+
+  def handle_info({:cooldown_ready, skill_name}, state) do
+    {:noreply, %{state | cooldowns: Map.delete(state.cooldowns, skill_name)}}
   end
 
   @impl true
@@ -195,11 +207,10 @@ defmodule MmoServer.NPC do
     case closest do
       {player_id, _pos, _dist} ->
         MmoServer.CombatEngine.start_combat({:npc, state.id}, player_id)
+        %{state | last_attacker: player_id}
       _ ->
-        :ok
+        state
     end
-
-    state
   end
 
   defp move_towards_player(state) do
@@ -222,6 +233,28 @@ defmodule MmoServer.NPC do
 
       _ ->
         move_random(state)
+    end
+  end
+
+  defp maybe_use_skill(%{last_attacker: nil} = state), do: state
+
+  defp maybe_use_skill(state) do
+    skills = state.template.skills || []
+    ready =
+      Enum.filter(skills, fn skill ->
+        name = Map.get(skill, :name) || Map.get(skill, "name")
+        not Map.has_key?(state.cooldowns, name)
+      end)
+
+    if ready == [] do
+      state
+    else
+      skill = Enum.random(ready)
+      name = Map.get(skill, :name) || Map.get(skill, "name")
+      cd = Map.get(skill, :cooldown) || Map.get(skill, "cooldown") || 1
+      MmoServer.NpcSkillSystem.use_skill(state.id, name, state.last_attacker)
+      Process.send_after(self(), {:cooldown_ready, name}, cd * 1000)
+      %{state | cooldowns: Map.put(state.cooldowns, name, true)}
     end
   end
 

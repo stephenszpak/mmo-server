@@ -23,6 +23,7 @@ defmodule MmoServerWeb.TestDashboardLive do
       |> assign(:players, fetch_players())
       |> assign(:zones, base_zones())
       |> assign(:npcs, fetch_npcs())
+      |> assign(:bosses, fetch_bosses())
       |> assign(:instances, InstanceManager.active_instances())
       |> assign(:gm_zones, base_zones())
       |> assign(:gm_players, fetch_players())
@@ -86,6 +87,22 @@ defmodule MmoServerWeb.TestDashboardLive do
     |> Enum.map(&npc_info/1)
   end
 
+  defp fetch_bosses do
+    fetch_npcs()
+    |> Enum.filter(&(&1.type == :boss))
+    |> Enum.map(fn npc ->
+      Map.put(npc, :abilities, get_boss_abilities(npc))
+    end)
+  end
+
+  defp get_boss_abilities(%{boss_name: name}) when is_binary(name) do
+    case MmoServer.BossMetadata.get_boss(name) do
+      nil -> []
+      boss -> boss["abilities"] || []
+    end
+  end
+  defp get_boss_abilities(_), do: []
+
   defp fetch_templates do
     MobTemplate.list()
     |> Enum.map(& &1.id)
@@ -97,16 +114,16 @@ defmodule MmoServerWeb.TestDashboardLive do
         if Process.alive?(pid) do
           try do
             s = :sys.get_state(pid)
-            %{id: id, zone: s.zone_id, type: s.type, hp: s.hp}
+            %{id: id, zone: s.zone_id, type: s.type, hp: s.hp, status: s.status, boss_name: s.boss_name}
           catch
             _, _ -> %{id: id, zone: nil, type: nil, hp: nil}
           end
         else
-          %{id: id, zone: nil, type: nil, hp: nil}
+          %{id: id, zone: nil, type: nil, hp: nil, status: nil, boss_name: nil}
         end
 
       _ ->
-        %{id: id, zone: nil, type: nil, hp: nil}
+        %{id: id, zone: nil, type: nil, hp: nil, status: nil, boss_name: nil}
     end
   end
 
@@ -390,6 +407,7 @@ defmodule MmoServerWeb.TestDashboardLive do
     socket
     |> assign(:players, fetch_players())
     |> assign(:npcs, fetch_npcs())
+    |> assign(:bosses, fetch_bosses())
     |> assign(:instances, InstanceManager.active_instances())
     |> assign(:gm_players, fetch_players())
     |> assign(:gm_zones, base_zones())

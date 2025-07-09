@@ -185,4 +185,16 @@ defmodule MmoServer.NPCSimulationTest do
     :timer.sleep(200)
     assert Process.alive?(pid)
   end
+
+  test "npc uses skills with cooldown", %{zone_id: zone_id} do
+    Phoenix.PubSub.subscribe(MmoServer.PubSub, "combat:log")
+    attacker = unique_string("attacker")
+    start_shared(Player, %{player_id: attacker, zone_id: zone_id})
+
+    {x, y} = NPC.get_position("wolf_1")
+    Player.move(attacker, {x, y, 0})
+
+    assert_receive {:npc_used_skill, "wolf_1", _skill}, 5_000
+    refute_receive {:npc_used_skill, "wolf_1", _}, 4_000
+  end
 end

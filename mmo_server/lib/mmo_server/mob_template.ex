@@ -15,6 +15,7 @@ defmodule MmoServer.MobTemplate do
     field :xp_reward, :integer
     field :aggressive, :boolean, default: false
     field :loot_table, {:array, :map}
+    field :skills, {:array, :map}, default: []
     timestamps()
   end
 
@@ -23,7 +24,7 @@ defmodule MmoServer.MobTemplate do
   @doc false
   def changeset(struct, attrs) do
     struct
-    |> cast(attrs, [:id, :name, :hp, :damage, :xp_reward, :aggressive, :loot_table])
+    |> cast(attrs, [:id, :name, :hp, :damage, :xp_reward, :aggressive, :loot_table, :skills])
     |> validate_required([:id, :name, :hp, :damage, :xp_reward, :aggressive, :loot_table])
   end
 

@@ -130,13 +130,25 @@ defmodule MmoServer.Seeds do
 
   defp seed_mob_templates do
     for template <- [
-          %{id: "wolf", name: "Wolf", hp: 30, damage: 15, xp_reward: 20, aggressive: true, loot_table: [
-            %{item: "wolf_pelt", chance: 1.0, quality: "common"}
-          ]},
-          %{id: "goblin_scout", name: "Goblin Scout", hp: 20, damage: 10, xp_reward: 10, aggressive: false, loot_table: []},
-          %{id: "dungeon_boss", name: "Dungeon Boss", hp: 100, damage: 25, xp_reward: 250, aggressive: true, loot_table: [
-            %{item: "legendary_sword", chance: 0.05, quality: "rare"}
-          ]}
+          %{id: "wolf", name: "Wolf", hp: 30, damage: 15, xp_reward: 20, aggressive: true,
+            loot_table: [
+              %{item: "wolf_pelt", chance: 1.0, quality: "common"}
+            ],
+            skills: [
+              %{name: "Howl", cooldown: 10, type: "buff"},
+              %{name: "Claw Slash", cooldown: 5, type: "melee"}
+            ]},
+          %{id: "goblin_scout", name: "Goblin Scout", hp: 20, damage: 10, xp_reward: 10, aggressive: false, loot_table: [],
+            skills: [
+              %{name: "Arrow Shot", cooldown: 6, type: "ranged"}
+            ]},
+          %{id: "dungeon_boss", name: "Dungeon Boss", hp: 100, damage: 25, xp_reward: 250, aggressive: true,
+            loot_table: [
+              %{item: "legendary_sword", chance: 0.05, quality: "rare"}
+            ],
+            skills: [
+              %{name: "Earthquake", cooldown: 15, type: "aoe"}
+            ]}
         ] do
       %MobTemplate{}
       |> MobTemplate.changeset(template)

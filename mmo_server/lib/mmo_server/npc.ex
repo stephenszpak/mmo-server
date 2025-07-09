@@ -177,14 +177,19 @@ defmodule MmoServer.NPC do
         true -> 3
       end
 
-    if new_phase > state.phase do
-      msg = "Phase #{new_phase}! #{state.boss_name} grows furious!"
-      Phoenix.PubSub.broadcast(
-        MmoServer.PubSub,
-        "zone:#{state.zone_id}",
-        {:boss_phase, state.id, new_phase, msg}
-      )
-    end
+    {state, _phase_changed} =
+      if new_phase > state.phase do
+        msg = "Phase #{new_phase}! #{state.boss_name} grows furious!"
+        Phoenix.PubSub.broadcast(
+          MmoServer.PubSub,
+          "zone:#{state.zone_id}",
+          {:boss_phase, state.id, new_phase, msg}
+        )
+
+        {%{state | ability_index: 0}, true}
+      else
+        {state, false}
+      end
 
     abilities_for_phase =
       state.abilities

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="csrf-token" content={Plug.CSRFProtection.get_csrf_token()} />
+  <style>
+    body {font-family: system-ui, sans-serif; margin: 0; padding: 0; background: #f3f4f6;}
+    .layout {display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; padding: 1rem;}
+    .card {background: #fff; border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 1rem;}
+    .btn {padding: 0.25rem 0.5rem; border: 1px solid #d1d5db; border-radius: 0.25rem; background: #e5e7eb; cursor: pointer;}
+    .btn:disabled {opacity: 0.5; cursor: not-allowed;}
+    #logs {background: #1f2937; color: #f9fafb; border-radius: 0.5rem; padding: 1rem; height: 200px; overflow-y: auto;}
+  </style>
+</head>
+<body>
+<div class="layout">
+  <div class="card">
+    <h2 class="font-semibold">Players</h2>
+    <form phx-change="select_player" class="mt-2">
+      <select name="player" class="border p-1">
+        <%= for p <- @players do %>
+          <option value={p.id} selected={p.id == @selected_player}><%= p.id %> (<%= p.zone %>)</option>
+        <% end %>
+      </select>
+    </form>
+
+    <form phx-submit="use_skill" class="mt-2 space-x-2">
+      <select name="skill" class="border p-1">
+        <%= for s <- @available_skills do %>
+          <option value={s["name"]}><%= s["name"] %></option>
+        <% end %>
+      </select>
+      <button type="submit" class="btn" disabled={is_nil(@selected_player) or is_nil(@selected_boss)}>Use Skill</button>
+    </form>
+
+    <div class="mt-2">
+      <button phx-click="attack_boss" class="btn" disabled={is_nil(@selected_player) or is_nil(@selected_boss)}>Attack Boss</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="font-semibold">Bosses</h2>
+    <%= for boss <- @bosses do %>
+      <div class="mt-2">
+        <div class="font-semibold"><%= boss.boss_name || boss.id %></div>
+        <div class="text-sm">Zone: <%= boss.zone %> HP: <%= boss.hp %> Status: <%= boss.status %><%= if boss.phase, do: " Phase: #{boss.phase}" %></div>
+        <button phx-click="select_boss" phx-value-id={boss.id} class="btn mt-1">Target</button>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="card">
+    <h2 class="font-semibold">Log</h2>
+    <div id="logs">
+      <%= for msg <- @logs do %>
+        <div><%= msg %></div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<script defer phx-track-static type="text/javascript" src="/js/phoenix.min.js"></script>
+<script defer phx-track-static type="text/javascript" src="/js/phoenix_live_view.min.js"></script>
+<script defer type="text/javascript" src="/assets/app.js"></script>
+</body>
+</html>
+

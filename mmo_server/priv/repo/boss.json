@@ -1,0 +1,65 @@
+[
+  {
+    "name": "Chef Regretulus, the Five-Star Fleshsmith",
+    "description": "Once a top-rated galactic TV chef, Regretulus now resides on Floor 7's kitchen-themed dungeon wing, forever cursed to refine meat-based horror into culinary chaos. Wears a blood-stained apron and wields a flamethrower spatula.",
+    "abilities": [
+      {
+        "name": "Sous Vide Sear",
+        "description": "Targets a random player with a jet of superheated mist, applying Burning Flesh (DoT) that intensifies near boiling cauldrons.",
+        "type": direct_damage
+      },
+      {
+        "name": "Exploding Charcuterie",
+        "description": "Tosses a meat-and-dynamite platter that explodes in an AOE, leaving greasy hazards on the floor.",
+        "type": aoe
+      },
+      {
+        "name": "Taste of Regret",
+        "description": "Consumes a nearby corpse or minion to heal and emit a fear-inducing belch that reduces player defense for 10 seconds.",
+        "type": utility
+      }
+    ]
+  },
+  {
+    "name": "Professor Grey Matter, the Uselessly Overqualified Brain",
+    "description": "A floating, mutated alien brain in a VR headset attached to a failing drone platform. Rants constantly about his unappreciated credentials while launching psychic assaults. Found in Floor 8\u2019s techno-library.",
+    "abilities": [
+      {
+        "name": "Thesis Beam",
+        "description": "Fires a concentrated logic laser that deals psychic damage and silences any player who\u2019s recently used an ability.",
+        "type": crowd_control
+      },
+      {
+        "name": "Overanalyze",
+        "description": "Targets the player with the most buffs, confusing them for 6 seconds while they 'debate themselves.'",
+        "type": direct_condtional
+      },
+      {
+        "name": "Bibliocaust",
+        "description": "Summons a rain of flaming encyclopedias from the ceiling, creating a chaotic AOE hazard zone.",
+        "type": aoe
+      }
+    ]
+  },
+  {
+    "name": "Chucklegrin, the Final Clown",
+    "description": "The last surviving warrior of the Laughing Court, Chucklegrin fuses necromancy with carnival aesthetics. A truly awful jester, he juggles skulls and shouts puns that cause actual bleeding.",
+    "abilities": [
+      {
+        "name": "Dead Man's Punchline",
+        "description": "Fires off a joke so bad it deals psychic damage and stuns anyone who fails a laugh check.",
+        "type": crowd_control
+      },
+      {
+        "name": "Balloon Animal Horror",
+        "description": "Summons a twisted balloon beast that hunts a random player until popped (or fed candy).",
+        "type": crowd_control
+      },
+      {
+        "name": "Paint the Tent Red",
+        "description": "Spins violently in place, flinging knives, confetti, and body parts in a deadly circular AOE.",
+        "type": aoe
+      }
+    ]
+  }
+]

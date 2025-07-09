@@ -6,16 +6,19 @@ defmodule MmoServer.SkillMetadata do
 
   @json_path Path.join([:code.priv_dir(:mmo_server), "repo", "class_details.json"])
 
-  defp load_file(path) do
-    with {:ok, json} <- File.read(path),
-         {:ok, data} <- Jason.decode(json) do
-      data
-    else
+  @skills (
+    case File.read(@json_path) do
+      {:ok, json} -> Jason.decode!(json)
+      _ -> []
+    end
+  )
+
+  def load_file(path) do
+    case File.read(path) do
+      {:ok, json} -> Jason.decode!(json)
       _ -> []
     end
   end
-
-  @skills load_file(@json_path)
 
   @doc "Return all skills across every class as a flat list"
   def get_all_skills do
@@ -23,7 +26,7 @@ defmodule MmoServer.SkillMetadata do
     |> Enum.flat_map(fn class -> Map.get(class, "skills", []) end)
   end
 
-  @doc "Return the skills for the given class. Accepts the display name or slug." 
+  @doc "Return the skills for the given class. Accepts the display name or slug."
   def get_class_skills(class_name) do
     slug = slugify(class_name)
 
@@ -44,7 +47,8 @@ defmodule MmoServer.SkillMetadata do
   @doc false
   # Reloads skills from disk at runtime. Useful for development.
   def reload do
-    Application.put_env(:mmo_server, __MODULE__, load_file(@json_path))
+    path = Path.expand("../../priv/repo/class_details.json", __DIR__)
+    Application.put_env(:mmo_server, __MODULE__, load_file(path))
   end
 
   defp skills do

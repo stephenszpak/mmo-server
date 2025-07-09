@@ -194,6 +194,8 @@ defmodule MmoServer.NPCSimulationTest do
     {x, y} = NPC.get_position("wolf_1")
     Player.move(attacker, {x, y, 0})
 
+    MmoServer.CombatEngine.start_combat(attacker, {:npc, "wolf_1"})
+
     assert_receive {:npc_used_skill, "wolf_1", _skill}, 5_000
     refute_receive {:npc_used_skill, "wolf_1", _}, 4_000
   end

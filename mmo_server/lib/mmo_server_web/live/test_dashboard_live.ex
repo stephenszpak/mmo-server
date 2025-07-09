@@ -2,7 +2,7 @@ defmodule MmoServerWeb.TestDashboardLive do
   use Phoenix.LiveView, layout: false
 
   require Logger
-  alias MmoServer.{Player, WorldEvents, InstanceManager, ZoneMap, MobTemplate, LootSystem, WorldState}
+  alias MmoServer.{Player, WorldEvents, InstanceManager, ZoneMap, MobTemplate, LootSystem, WorldState, SkillSystem}
   alias MmoServer.Zone.SpawnController
   alias MmoServer.Zone
   alias MmoServer.Player.Inventory
@@ -14,6 +14,7 @@ defmodule MmoServerWeb.TestDashboardLive do
     if connected?(socket) do
       Phoenix.PubSub.subscribe(MmoServer.PubSub, "world:clock")
       Phoenix.PubSub.subscribe(MmoServer.PubSub, "world:state")
+      Phoenix.PubSub.subscribe(MmoServer.PubSub, "combat:log")
       subscribe_all_zones()
     end
 
@@ -32,6 +33,9 @@ defmodule MmoServerWeb.TestDashboardLive do
       |> assign(:selected_player, nil)
       |> assign(:inventory, [])
       |> assign(:equipped, [])
+      |> assign(:class, nil)
+      |> assign(:skills, [])
+      |> assign(:cooldowns, %{})
       |> assign(:world_state, WorldState.all())
       |> assign(:live_connected, connected?(socket))
       |> assign(:last_log, System.system_time(:millisecond))
@@ -106,27 +110,52 @@ defmodule MmoServerWeb.TestDashboardLive do
     end
   end
 
-  defp log(socket, msg) do
-    now = System.system_time(:millisecond)
-    last = socket.assigns[:last_log] || 0
+  defp fetch_cooldowns(id) do
+    case Horde.Registry.lookup(PlayerRegistry, id) do
+      [{pid, _}] ->
+        if Process.alive?(pid) do
+          try do
+            Map.get(:sys.get_state(pid), :cooldowns, %{})
+          catch
+            _, _ -> %{}
+          end
+        else
+          %{}
+        end
 
-    if now - last >= 15_000 do
-      socket
-      |> assign(:logs, ([msg | socket.assigns.logs] |> Enum.take(50)))
-      |> assign(:last_log, now)
-    else
-      socket
+      _ ->
+        %{}
     end
+  end
+
+  defp log(socket, msg) do
+    socket
+    |> assign(:logs, ([msg | socket.assigns.logs] |> Enum.take(50)))
+    |> assign(:last_log, System.system_time(:millisecond))
   end
 
   # Player selection
   @impl true
   def handle_event("select_player", %{"player" => id}, socket) do
     Logger.debug("Select player: #{inspect(id)}")
+    if socket.assigns.selected_player && connected?(socket) do
+      Phoenix.PubSub.unsubscribe(MmoServer.PubSub, "player:#{socket.assigns.selected_player}")
+    end
+
+    if connected?(socket) do
+      Phoenix.PubSub.subscribe(MmoServer.PubSub, "player:#{id}")
+    end
+
+    class = Player.get_class(id)
+    skills = if class, do: class.skills, else: []
+
     {:noreply,
      socket
      |> assign(:selected_player, id)
-     |> refresh_inventory(id)}
+     |> assign(:class, class)
+     |> assign(:skills, skills)
+     |> refresh_inventory(id)
+     |> refresh_cooldowns(id)}
   end
 
   # Player movement
@@ -175,6 +204,17 @@ defmodule MmoServerWeb.TestDashboardLive do
     Logger.debug("Unequip slot #{slot} for #{player_id}")
     Inventory.unequip(player_id, slot)
     {:noreply, refresh_inventory(socket, player_id)}
+  end
+
+  def handle_event(
+        "use_skill",
+        %{"skill" => skill_name, "target_id" => target_id},
+        %{assigns: %{selected_player: player_id}} = socket
+      )
+      when is_binary(player_id) do
+    Logger.debug("Use skill #{skill_name} by #{player_id} on #{target_id}")
+    SkillSystem.use_skill(player_id, skill_name, target_id)
+    {:noreply, socket |> refresh_cooldowns(player_id) |> log("#{player_id} used #{skill_name}")}
   end
 
   # World events
@@ -321,6 +361,18 @@ defmodule MmoServerWeb.TestDashboardLive do
     {:noreply, socket |> log("instance_shutdown #{id}") |> refresh_state()}
   end
 
+  def handle_info({:skill_used, player_id, skill, _cd}, %{assigns: %{selected_player: player_id}} = socket) do
+    {:noreply, socket |> log("#{player_id} used #{skill}") |> refresh_cooldowns(player_id)}
+  end
+
+  def handle_info({:cooldown_ready, player_id, skill}, %{assigns: %{selected_player: player_id}} = socket) do
+    {:noreply, socket |> log("#{skill} ready") |> refresh_cooldowns(player_id)}
+  end
+
+  def handle_info({:combat_log, msg}, socket) do
+    {:noreply, log(socket, msg)}
+  end
+
   def handle_info({:world_state_changed, key, value}, socket) do
     {:noreply, assign(socket, :world_state, Map.put(socket.assigns.world_state, key, value))}
   end
@@ -352,6 +404,10 @@ defmodule MmoServerWeb.TestDashboardLive do
     socket
     |> assign(:inventory, Inventory.list(player_id))
     |> assign(:equipped, Inventory.get_equipped(player_id))
+  end
+
+  defp refresh_cooldowns(socket, player_id) do
+    assign(socket, :cooldowns, fetch_cooldowns(player_id))
   end
 
   defp quality_color("epic"), do: "text-purple-700"

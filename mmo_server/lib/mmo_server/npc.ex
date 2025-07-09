@@ -14,6 +14,9 @@ defmodule MmoServer.NPC do
     :type,
     :template,
     :behavior,
+    :boss_name,
+    abilities: [],
+    ability_index: 0,
     pos: {0, 0},
     hp: 100,
     status: :alive,
@@ -32,7 +35,10 @@ defmodule MmoServer.NPC do
           hp: non_neg_integer(),
           status: :alive | :dead,
           tick_ms: non_neg_integer(),
-          cooldowns: map()
+          cooldowns: map(),
+          boss_name: String.t() | nil,
+          abilities: list(),
+          ability_index: non_neg_integer()
         }
 
   @spec start_link(map()) :: GenServer.on_start()
@@ -54,15 +60,31 @@ defmodule MmoServer.NPC do
   def init(args) do
     template = MobTemplate.get!(args.template_id)
 
+    type = Map.get(args, :type, String.to_atom(template.id))
+
     behavior =
       Map.get(args, :behavior) || if(template.aggressive, do: :aggressive, else: :patrol)
+
+    boss_name = Map.get(args, :boss_name)
+    abilities =
+      if type == :boss and boss_name do
+        case MmoServer.BossMetadata.get_boss(boss_name) do
+          nil -> []
+          boss -> Map.get(boss, "abilities", [])
+        end
+      else
+        []
+      end
 
     state = %__MODULE__{
       id: args.id,
       zone_id: args.zone_id,
-      type: String.to_atom(template.id),
+      type: type,
       template: template,
       behavior: behavior,
+      boss_name: boss_name,
+      abilities: abilities,
+      ability_index: 0,
       pos: Map.get(args, :pos, {0, 0}),
       hp: template.hp,
       tick_ms: Map.get(args, :tick_ms, @tick_ms),
@@ -131,6 +153,29 @@ defmodule MmoServer.NPC do
   def handle_info(:tick, %{status: :dead} = state) do
     schedule_tick(state.tick_ms)
     {:noreply, state}
+  end
+
+  def handle_info(:tick, %{type: :boss} = state) do
+    ability = Enum.at(state.abilities, state.ability_index)
+
+    if ability do
+      Phoenix.PubSub.broadcast(
+        MmoServer.PubSub,
+        "combat:log",
+        {:boss_ability, state.id, ability["name"], ability["description"], ability["type"]}
+      )
+
+      players = Map.keys(MmoServer.Zone.get_position(state.zone_id))
+
+      if players != [] do
+        target = Enum.random(players)
+        MmoServer.Player.damage(target, 10)
+      end
+    end
+
+    next = rem(state.ability_index + 1, max(length(state.abilities), 1))
+    schedule_tick(state.tick_ms)
+    {:noreply, %{state | ability_index: next}}
   end
 
   def handle_info(:tick, state) do

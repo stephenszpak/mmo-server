@@ -125,6 +125,21 @@
   </div>
 
   <div class="card">
+    <h2 class="font-semibold">Bosses</h2>
+    <%= for boss <- @bosses do %>
+      <div class="mt-2">
+        <div class="font-semibold"><%= boss.boss_name %> - <%= boss.zone %></div>
+        <div class="text-sm">HP: <%= boss.hp %> Status: <%= boss.status %></div>
+        <ul class="list-disc ml-4">
+          <%= for ab <- boss.abilities do %>
+            <li title={ab["description"]}><%= ab["name"] %> (<%= ab["type"] %>)</li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="card">
     <h2 class="font-semibold">World Events</h2>
     <div class="space-x-2 mt-2">
       <button phx-click="world_boss" class="btn">Spawn World Boss</button>

@@ -36,6 +36,7 @@ defmodule MmoServerWeb.TestDashboardLive do
       |> assign(:equipped, [])
       |> assign(:class, nil)
       |> assign(:skills, [])
+      |> assign(:selected_target, nil)
       |> assign(:cooldowns, %{})
       |> assign(:world_state, WorldState.all())
       |> assign(:live_connected, connected?(socket))

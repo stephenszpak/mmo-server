@@ -65,15 +65,17 @@ defmodule MmoServer.Player do
     GenServer.cast({:via, Horde.Registry, {PlayerRegistry, player_id}}, {:teleport, zone_id})
   end
 
-  @doc "Set the player's class" 
+  @doc "Set the player's class"
   def set_class(player_id, class_id) do
     case Horde.Registry.lookup(PlayerRegistry, player_id) do
       [{pid, _}] ->
-        GenServer.cast(pid, {:set_class, class_id})
+        GenServer.call(pid, {:set_class, class_id})
       [] ->
         alias MmoServer.{Repo, PlayerPersistence}
         with %PlayerPersistence{} = rec <- Repo.get(PlayerPersistence, player_id) do
-          rec |> PlayerPersistence.changeset(%{player_class: class_id}) |> Repo.update()
+          rec
+          |> PlayerPersistence.changeset(%{player_class: class_id})
+          |> Repo.update()
         end
         :ok
     end
@@ -403,6 +405,13 @@ defmodule MmoServer.Player do
       new_state = %{state | cooldowns: Map.put(state.cooldowns, skill.name, true)}
       {:reply, :ok, new_state}
     end
+  end
+
+  @impl true
+  def handle_call({:set_class, class_id}, _from, state) do
+    new_state = %{state | player_class: class_id}
+    persist_state(new_state)
+    {:reply, :ok, new_state}
   end
 
   @impl true

@@ -15,7 +15,7 @@ defmodule MmoServer.BossTickBehaviorTest do
     player = unique_string("p")
     start_shared(MmoServer.Player, %{player_id: player, zone_id: zone})
 
-    MmoServer.WorldEvents.spawn_world_boss("Chef Regretulus, the Five-Star Fleshsmith")
+    MmoServer.WorldEvents.spawn_world_boss("Chef Regretulus, the Five-Star Fleshsmith", zone)
 
     assert_receive {:boss_spawned, _name}, 500
     hp = MmoServer.Player.get_hp(player)

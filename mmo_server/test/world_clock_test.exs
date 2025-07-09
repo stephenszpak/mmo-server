@@ -18,7 +18,7 @@ defmodule MmoServer.WorldClockTest do
     start_shared(MmoServer.Zone, "elwynn")
     Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:elwynn")
 
-    assert_receive {:spawn_world_boss, "elwynn"}, 400
+    assert_receive {:boss_spawned, _id, _name}, 400
   end
 
   test "clock restarts if killed" do

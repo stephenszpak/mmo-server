@@ -123,7 +123,7 @@ defmodule MmoServer.CombatEngine do
     do_damage(target, @damage, attacker)
   end
 
-  defp do_damage(id, amount, attacker) when is_binary(id) do
+  defp do_damage(id, amount, _attacker) when is_binary(id) do
     MmoServer.Player.damage(id, amount)
   end
 

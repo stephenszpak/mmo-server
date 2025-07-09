@@ -42,6 +42,33 @@ defmodule MmoServer.LootSystem do
     :ok
   end
 
+  @doc """
+  Spawn a loot drop for the given item in the specified zone.
+  Used by GM tools for testing purposes.
+  """
+  @spec spawn(String.t(), String.t()) :: :ok | {:error, term()}
+  def spawn(zone, item) do
+    drop = %LootDrop{}
+           |> LootDrop.changeset(%{
+             npc_id: nil,
+             item: item,
+             zone_id: zone,
+             x: 0.0,
+             y: 0.0,
+             z: 0.0,
+             quality: "common",
+             picked_up: false
+           })
+           |> Repo.insert()
+
+    case drop do
+      {:ok, record} ->
+        Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{zone}", {:loot_dropped, record})
+        :ok
+      other -> other
+    end
+  end
+
   @spec pickup(String.t(), Ecto.UUID.t()) :: {:ok, LootDrop.t()} | {:error, term()}
   def pickup(player_id, loot_id) do
     Repo.transaction(fn ->

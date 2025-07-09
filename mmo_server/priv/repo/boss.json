@@ -1,169 +1,178 @@
 [
-  {
-    "name": "Chef Regretulus, the Five-Star Fleshsmith",
-    "description": "Once a top-rated galactic TV chef, Regretulus now resides on Floor 7's kitchen-themed dungeon wing, forever cursed to refine meat-based horror into culinary chaos. Wears a blood-stained apron and wields a flamethrower spatula.",
-    "abilities": [
-      {
-        "name": "Sous Vide Sear",
-        "description": "Applies Burning Flesh (DoT) near boiling cauldrons."
-      },
-      {
-        "name": "Exploding Charcuterie",
-        "description": "Exploding meat platter leaves greasy hazards."
-      },
-      {
-        "name": "Taste of Regret",
-        "description": "Consumes a corpse to heal and debuff nearby players."
-      }
-    ],
-    "boss_type": "dungeon",
-    "loot": {
-      "epic": [
-        {
-          "name": "Flamethrower Spatula",
-          "quality": "epic",
-          "type": "weapon"
-        },
-        {
-          "name": "Apron of Acid Reduction",
-          "quality": "epic",
-          "type": "armor"
-        },
-        {
-          "name": "Recipe of the Damned",
-          "quality": "epic",
-          "type": "trinket"
-        }
+   {
+      "name":"Chef Regretulus, the Five-Star Fleshsmith",
+      "description":"Once a top-rated galactic TV chef, Regretulus now resides on Floor 7's kitchen-themed dungeon wing, forever cursed to refine meat-based horror into culinary chaos. Wears a blood-stained apron and wields a flamethrower spatula.",
+      "abilities":[
+         {
+            "name":"Sous Vide Sear",
+            "description":"Targets a random player with a jet of superheated mist, applying Burning Flesh (DoT) that intensifies near boiling cauldrons.",
+            "type":"direct_damage"
+         },
+         {
+            "name":"Exploding Charcuterie",
+            "description":"Tosses a meat-and-dynamite platter that explodes in an AOE, leaving greasy hazards on the floor.",
+            "type":"aoe"
+         },
+         {
+            "name":"Taste of Regret",
+            "description":"Consumes a nearby corpse or minion to heal and emit a fear-inducing belch that reduces player defense for 10 seconds.",
+            "type":"utility"
+         }
       ],
-      "rare": [
-        {
-          "name": "Bookbinder's Bracers",
-          "quality": "rare",
-          "type": "random"
-        },
-        {
-          "name": "Sticky Tonic Flask",
-          "quality": "rare",
-          "type": "random"
-        }
-      ],
-      "gold_range": {
-        "min": 301,
-        "max": 887
+      "boss_type":"dungeon",
+      "loot":{
+         "epic":[
+            {
+               "name":"Flamethrower Spatula",
+               "quality":"epic",
+               "type":"weapon"
+            },
+            {
+               "name":"Apron of Acid Reduction",
+               "quality":"epic",
+               "type":"armor"
+            },
+            {
+               "name":"Recipe of the Damned",
+               "quality":"epic",
+               "type":"trinket"
+            }
+         ],
+         "rare":[
+            {
+               "name":"Bookbinder's Bracers",
+               "quality":"rare",
+               "type":"random"
+            },
+            {
+               "name":"Sticky Tonic Flask",
+               "quality":"rare",
+               "type":"random"
+            }
+         ],
+         "gold_range":{
+            "min":301,
+            "max":887
+         }
       }
-    }
-  },
-  {
-    "name": "Professor Grey Matter, the Uselessly Overqualified Brain",
-    "description": "A floating, mutated alien brain in a VR headset attached to a failing drone platform. Rants constantly about his unappreciated credentials while launching psychic assaults.",
-    "abilities": [
-      {
-        "name": "Thesis Beam",
-        "description": "Deals psychic damage and silences recent ability users."
-      },
-      {
-        "name": "Overanalyze",
-        "description": "Confuses the most buffed player for 6 seconds."
-      },
-      {
-        "name": "Bibliocaust",
-        "description": "Flaming encyclopedias fall in chaotic AOE."
-      }
-    ],
-    "boss_type": "dungeon",
-    "loot": {
-      "epic": [
-        {
-          "name": "Thesis Laser Amplifier",
-          "quality": "epic",
-          "type": "weapon"
-        },
-        {
-          "name": "Cranial Band of Logic",
-          "quality": "epic",
-          "type": "headgear"
-        },
-        {
-          "name": "Quantum Buffering Core",
-          "quality": "epic",
-          "type": "trinket"
-        }
+   },
+   {
+      "name":"Professor Grey Matter, the Uselessly Overqualified Brain",
+      "description":"A floating, mutated alien brain in a VR headset attached to a failing drone platform. Rants constantly about his unappreciated credentials while launching psychic assaults. Found in Floor 8\u2019s techno-library.",
+      "abilities":[
+         {
+            "name":"Thesis Beam",
+            "description":"Fires a concentrated logic laser that deals psychic damage and silences any player who\u2019s recently used an ability.",
+            "type":"crowd_control"
+         },
+         {
+            "name":"Overanalyze",
+            "description":"Targets the player with the most buffs, confusing them for 6 seconds while they 'debate themselves.'",
+            "type":"direct_condtional"
+         },
+         {
+            "name":"Bibliocaust",
+            "description":"Summons a rain of flaming encyclopedias from the ceiling, creating a chaotic AOE hazard zone.",
+            "type":"aoe"
+         }
       ],
-      "rare": [
-        {
-          "name": "Mental Ward Pendant",
-          "quality": "rare",
-          "type": "random"
-        },
-        {
-          "name": "Bookbinder's Bracers",
-          "quality": "rare",
-          "type": "random"
-        }
-      ],
-      "gold_range": {
-        "min": 297,
-        "max": 730
+      "boss_type":"dungeon",
+      "loot":{
+         "epic":[
+            {
+               "name":"Thesis Laser Amplifier",
+               "quality":"epic",
+               "type":"weapon"
+            },
+            {
+               "name":"Cranial Band of Logic",
+               "quality":"epic",
+               "type":"headgear"
+            },
+            {
+               "name":"Quantum Buffering Core",
+               "quality":"epic",
+               "type":"trinket"
+            }
+         ],
+         "rare":[
+            {
+               "name":"Mental Ward Pendant",
+               "quality":"rare",
+               "type":"random"
+            },
+            {
+               "name":"Bookbinder's Bracers",
+               "quality":"rare",
+               "type":"random"
+            }
+         ],
+         "gold_range":{
+            "min":297,
+            "max":730
+         }
       }
-    }
-  },
-  {
-    "name": "Chucklegrin, the Final Clown",
-    "description": "The last surviving warrior of the Laughing Court, Chucklegrin fuses necromancy with carnival aesthetics. He juggles skulls and shouts puns that cause actual bleeding.",
-    "abilities": [
-      {
-        "name": "Dead Man\u2019s Punchline",
-        "description": "Stuns players who fail to resist a horrible pun."
-      },
-      {
-        "name": "Balloon Animal Horror",
-        "description": "Summons balloon beast to chase a random player."
-      },
-      {
-        "name": "Paint the Tent Red",
-        "description": "Spins and flings knives and gore in circular AOE."
-      }
-    ],
-    "boss_type": "world",
-    "loot": {
-      "epic": [
-        {
-          "name": "Knife-Slinging Jester Gloves",
-          "quality": "epic",
-          "type": "gloves"
-        },
-        {
-          "name": "Balloon Beast Charm",
-          "quality": "epic",
-          "type": "trinket"
-        },
-        {
-          "name": "Laugh Track Amplifier",
-          "quality": "epic",
-          "type": "accessory"
-        }
+   },
+   {
+      "name":"Chucklegrin, the Final Clown",
+      "description":"The last surviving warrior of the Laughing Court, Chucklegrin fuses necromancy with carnival aesthetics. A truly awful jester, he juggles skulls and shouts puns that cause actual bleeding.",
+      "abilities":[
+         {
+            "name":"Dead Man's Punchline",
+            "description":"Fires off a joke so bad it deals psychic damage and stuns anyone who fails a laugh check.",
+            "type":"crowd_control"
+         },
+         {
+            "name":"Balloon Animal Horror",
+            "description":"Summons a twisted balloon beast that hunts a random player until popped (or fed candy).",
+            "type":"crowd_control"
+         },
+         {
+            "name":"Paint the Tent Red",
+            "description":"Spins violently in place, flinging knives, confetti, and body parts in a deadly circular AOE.",
+            "type":"aoe"
+         }
       ],
-      "rare": [
-        {
-          "name": "Bookbinder's Bracers",
-          "quality": "rare",
-          "type": "random"
-        },
-        {
-          "name": "Cursed Cookie Box",
-          "quality": "rare",
-          "type": "random"
-        },
-        {
-          "name": "Grease-Stained Gauntlets",
-          "quality": "rare",
-          "type": "random"
-        }
-      ],
-      "gold_range": {
-        "min": 343,
-        "max": 983
+      "boss_type":"world",
+      "loot":{
+         "epic":[
+            {
+               "name":"Knife-Slinging Jester Gloves",
+               "quality":"epic",
+               "type":"gloves"
+            },
+            {
+               "name":"Balloon Beast Charm",
+               "quality":"epic",
+               "type":"trinket"
+            },
+            {
+               "name":"Laugh Track Amplifier",
+               "quality":"epic",
+               "type":"accessory"
+            }
+         ],
+         "rare":[
+            {
+               "name":"Bookbinder's Bracers",
+               "quality":"rare",
+               "type":"random"
+            },
+            {
+               "name":"Cursed Cookie Box",
+               "quality":"rare",
+               "type":"random"
+            },
+            {
+               "name":"Grease-Stained Gauntlets",
+               "quality":"rare",
+               "type":"random"
+            }
+         ],
+         "gold_range":{
+            "min":343,
+            "max":983
+         }
       }
-    }
-  }
+   }
 ]

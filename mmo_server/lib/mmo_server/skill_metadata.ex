@@ -6,6 +6,15 @@ defmodule MmoServer.SkillMetadata do
 
   @json_path Path.join([:code.priv_dir(:mmo_server), "repo", "class_details.json"])
 
+  defp load_file(path) do
+    with {:ok, json} <- File.read(path),
+         {:ok, data} <- Jason.decode(json) do
+      data
+    else
+      _ -> []
+    end
+  end
+
   @skills load_file(@json_path)
 
   @doc "Return all skills across every class as a flat list"
@@ -40,15 +49,6 @@ defmodule MmoServer.SkillMetadata do
 
   defp skills do
     Application.get_env(:mmo_server, __MODULE__, @skills)
-  end
-
-  defp load_file(path) do
-    with {:ok, json} <- File.read(path),
-         {:ok, data} <- Jason.decode(json) do
-      data
-    else
-      _ -> []
-    end
   end
 
   defp slugify(name) do

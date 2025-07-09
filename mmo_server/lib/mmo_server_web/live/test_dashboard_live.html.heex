@@ -92,6 +92,22 @@
   </div>
 
   <div class="card">
+    <h2 class="font-semibold">Target</h2>
+    <div class="text-sm">Current: <%= inspect(@selected_target) %></div>
+    <form phx-change="set_target" class="mt-2">
+      <select name="target" class="border p-1">
+        <option value="">none</option>
+        <%= for p <- @players do %>
+          <option value={p.id}><%= p.id %> (player)</option>
+        <% end %>
+        <%= for n <- @npcs do %>
+          <option value={"npc:" <> n.id}><%= n.id %> (npc)</option>
+        <% end %>
+      </select>
+    </form>
+  </div>
+
+  <div class="card">
     <h2 class="font-semibold">Skills</h2>
     <%= if @class do %>
       <h3 class="font-medium"><%= @class.name %></h3>
@@ -102,9 +118,8 @@
             <%= if Map.has_key?(@cooldowns, skill.name) do %>
               (<%= skill.cooldown %>s cd)
             <% end %>
-            <form phx-submit="use_skill" class="inline ml-2">
+            <form phx-submit="cast_skill" class="inline ml-2">
               <input type="hidden" name="skill" value={skill.name} />
-              <input type="hidden" name="target_id" value="wolf_1" />
               <button type="submit" class="btn" disabled={Map.has_key?(@cooldowns, skill.name)}>Use</button>
             </form>
           </li>

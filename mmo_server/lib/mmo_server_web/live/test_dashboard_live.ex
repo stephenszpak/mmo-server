@@ -145,6 +145,24 @@ defmodule MmoServerWeb.TestDashboardLive do
     end
   end
 
+  defp fetch_target(id) do
+    case Horde.Registry.lookup(PlayerRegistry, id) do
+      [{pid, _}] ->
+        if Process.alive?(pid) do
+          try do
+            Map.get(:sys.get_state(pid), :selected_target_id)
+          catch
+            _, _ -> nil
+          end
+        else
+          nil
+        end
+
+      _ ->
+        nil
+    end
+  end
+
   defp log(socket, msg) do
     socket
     |> assign(:logs, ([msg | socket.assigns.logs] |> Enum.take(50)))
@@ -164,13 +182,15 @@ defmodule MmoServerWeb.TestDashboardLive do
     end
 
     class = Player.get_class(id)
-    skills = if class, do: class.skills, else: []
+    skills = if class, do: MmoServer.ClassSkills.get_skills_for_class(class.name), else: []
+    target = fetch_target(id)
 
     {:noreply,
      socket
      |> assign(:selected_player, id)
      |> assign(:class, class)
      |> assign(:skills, skills)
+     |> assign(:selected_target, target)
      |> refresh_inventory(id)
      |> refresh_cooldowns(id)}
   end
@@ -209,6 +229,18 @@ defmodule MmoServerWeb.TestDashboardLive do
     {:noreply, socket}
   end
 
+  def handle_event("set_target", %{"target" => target}, %{assigns: %{selected_player: id}} = socket) when is_binary(id) do
+    t =
+      case target do
+        "" -> nil
+        "npc:" <> npc -> {:npc, npc}
+        other -> other
+      end
+
+    Player.set_target(id, t)
+    {:noreply, assign(socket, :selected_target, t)}
+  end
+
   def handle_event("equip", %{"item_id" => item_id}, %{assigns: %{selected_player: player_id}} = socket)
       when is_binary(player_id) do
     Logger.debug("Equip item #{item_id} for #{player_id}")
@@ -224,13 +256,13 @@ defmodule MmoServerWeb.TestDashboardLive do
   end
 
   def handle_event(
-        "use_skill",
-        %{"skill" => skill_name, "target_id" => target_id},
+        "cast_skill",
+        %{"skill" => skill_name},
         %{assigns: %{selected_player: player_id}} = socket
       )
       when is_binary(player_id) do
-    Logger.debug("Use skill #{skill_name} by #{player_id} on #{target_id}")
-    SkillSystem.use_skill(player_id, skill_name, target_id)
+    Logger.debug("Cast skill #{skill_name} by #{player_id}")
+    Player.cast_skill(player_id, skill_name)
     {:noreply, socket |> refresh_cooldowns(player_id) |> log("#{player_id} used #{skill_name}")}
   end
 

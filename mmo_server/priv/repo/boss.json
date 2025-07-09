@@ -6,17 +6,20 @@
          {
             "name":"Sous Vide Sear",
             "description":"Targets a random player with a jet of superheated mist, applying Burning Flesh (DoT) that intensifies near boiling cauldrons.",
-            "type":"direct_damage"
+            "type":"direct_damage",
+            "phase":1
          },
          {
             "name":"Exploding Charcuterie",
             "description":"Tosses a meat-and-dynamite platter that explodes in an AOE, leaving greasy hazards on the floor.",
-            "type":"aoe"
+            "type":"aoe",
+            "phase":2
          },
          {
             "name":"Taste of Regret",
             "description":"Consumes a nearby corpse or minion to heal and emit a fear-inducing belch that reduces player defense for 10 seconds.",
-            "type":"utility"
+            "type":"utility",
+            "phase":3
          }
       ],
       "boss_type":"dungeon",
@@ -63,17 +66,20 @@
          {
             "name":"Thesis Beam",
             "description":"Fires a concentrated logic laser that deals psychic damage and silences any player who\u2019s recently used an ability.",
-            "type":"crowd_control"
+            "type":"crowd_control",
+            "phase":1
          },
          {
             "name":"Overanalyze",
             "description":"Targets the player with the most buffs, confusing them for 6 seconds while they 'debate themselves.'",
-            "type":"direct_condtional"
+            "type":"direct_condtional",
+            "phase":2
          },
          {
             "name":"Bibliocaust",
             "description":"Summons a rain of flaming encyclopedias from the ceiling, creating a chaotic AOE hazard zone.",
-            "type":"aoe"
+            "type":"aoe",
+            "phase":3
          }
       ],
       "boss_type":"dungeon",
@@ -120,17 +126,20 @@
          {
             "name":"Dead Man's Punchline",
             "description":"Fires off a joke so bad it deals psychic damage and stuns anyone who fails a laugh check.",
-            "type":"crowd_control"
+            "type":"crowd_control",
+            "phase":1
          },
          {
             "name":"Balloon Animal Horror",
             "description":"Summons a twisted balloon beast that hunts a random player until popped (or fed candy).",
-            "type":"crowd_control"
+            "type":"crowd_control",
+            "phase":2
          },
          {
             "name":"Paint the Tent Red",
             "description":"Spins violently in place, flinging knives, confetti, and body parts in a deadly circular AOE.",
-            "type":"aoe"
+            "type":"aoe",
+            "phase":3
          }
       ],
       "boss_type":"world",

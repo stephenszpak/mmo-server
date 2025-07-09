@@ -15,6 +15,7 @@ defmodule MmoServer.NPC do
     :template,
     :behavior,
     :boss_name,
+    phase: 1,
     abilities: [],
     ability_index: 0,
     pos: {0, 0},
@@ -37,6 +38,7 @@ defmodule MmoServer.NPC do
           tick_ms: non_neg_integer(),
           cooldowns: map(),
           boss_name: String.t() | nil,
+          phase: pos_integer(),
           abilities: list(),
           ability_index: non_neg_integer()
         }
@@ -85,6 +87,7 @@ defmodule MmoServer.NPC do
       boss_name: boss_name,
       abilities: abilities,
       ability_index: 0,
+      phase: 1,
       pos: Map.get(args, :pos, {0, 0}),
       hp: template.hp,
       tick_ms: Map.get(args, :tick_ms, @tick_ms),
@@ -144,7 +147,7 @@ defmodule MmoServer.NPC do
 
   @impl true
   def handle_info(:respawn, state) do
-    new_state = %{state | hp: state.template.hp, status: :alive, last_attacker: nil}
+    new_state = %{state | hp: state.template.hp, status: :alive, last_attacker: nil, phase: 1}
 
     Phoenix.PubSub.broadcast(
       MmoServer.PubSub,
@@ -165,7 +168,33 @@ defmodule MmoServer.NPC do
   end
 
   def handle_info(:tick, %{type: :boss} = state) do
-    ability = Enum.at(state.abilities, state.ability_index)
+    ratio = state.hp / state.template.hp
+
+    new_phase =
+      cond do
+        ratio > 0.66 -> 1
+        ratio > 0.33 -> 2
+        true -> 3
+      end
+
+    if new_phase > state.phase do
+      msg = "Phase #{new_phase}! #{state.boss_name} grows furious!"
+      Phoenix.PubSub.broadcast(
+        MmoServer.PubSub,
+        "zone:#{state.zone_id}",
+        {:boss_phase, state.id, new_phase, msg}
+      )
+    end
+
+    abilities_for_phase =
+      state.abilities
+      |> Enum.filter(fn ab -> Map.get(ab, "phase", 1) <= new_phase end)
+      |> case do
+        [] -> state.abilities
+        list -> list
+      end
+
+    ability = Enum.at(abilities_for_phase, state.ability_index)
 
     if ability do
       Phoenix.PubSub.broadcast(
@@ -182,9 +211,9 @@ defmodule MmoServer.NPC do
       end
     end
 
-    next = rem(state.ability_index + 1, max(length(state.abilities), 1))
+    next = rem(state.ability_index + 1, max(length(abilities_for_phase), 1))
     schedule_tick(state.tick_ms)
-    {:noreply, %{state | ability_index: next}}
+    {:noreply, %{state | ability_index: next, phase: new_phase}}
   end
 
   def handle_info(:tick, state) do

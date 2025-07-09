@@ -9,13 +9,27 @@ defmodule MmoServer.Skill do
     field :description, :string
     field :cooldown, :integer
     field :type, :string
+    field :effect_type, :string
+    field :radius, :integer
+    field :debuff, :map
+    field :condition, :string
     timestamps()
   end
 
   @doc false
   def changeset(struct, attrs) do
     struct
-    |> cast(attrs, [:class_id, :name, :description, :cooldown, :type])
+    |> cast(attrs, [
+      :class_id,
+      :name,
+      :description,
+      :cooldown,
+      :type,
+      :effect_type,
+      :radius,
+      :debuff,
+      :condition
+    ])
     |> validate_required([:class_id, :name, :description, :cooldown, :type])
   end
 end

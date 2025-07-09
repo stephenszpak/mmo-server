@@ -14,6 +14,7 @@ defmodule MmoServer.Application do
       MmoServerWeb.Presence,
       MmoServer.Protocol.UdpServer,
       MmoServer.CombatEngine,
+      MmoServer.DebuffSystem,
       MmoServer.WorldClock,
       {Horde.Registry, [name: PlayerRegistry, keys: :unique]},
       {Horde.Registry, [name: NPCRegistry, keys: :unique]},

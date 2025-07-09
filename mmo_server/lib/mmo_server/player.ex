@@ -50,6 +50,11 @@ defmodule MmoServer.Player do
     GenServer.cast({:via, Horde.Registry, {PlayerRegistry, player_id}}, {:damage, amount})
   end
 
+  @spec get_hp(term()) :: non_neg_integer()
+  def get_hp(player_id) do
+    GenServer.call({:via, Horde.Registry, {PlayerRegistry, player_id}}, :get_hp)
+  end
+
   @spec respawn(term()) :: :ok
   def respawn(player_id) do
     GenServer.cast({:via, Horde.Registry, {PlayerRegistry, player_id}}, :respawn)
@@ -381,6 +386,11 @@ defmodule MmoServer.Player do
   @impl true
   def handle_call(:get_zone_id, _from, state) do
     {:reply, state.zone_id, state}
+  end
+
+  @impl true
+  def handle_call(:get_hp, _from, state) do
+    {:reply, state.hp, state}
   end
 
   @impl true

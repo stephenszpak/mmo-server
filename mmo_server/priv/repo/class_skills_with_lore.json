@@ -5,53 +5,113 @@
     "skills": [
       {
         "name": "Scrap Shield Bash",
-        "description": "A signature ability used by the Trash Knight, 'Scrap Shield Bash' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 5
+        "description": "Generates a protective aura that absorbs damage and retaliates.",
+        "cooldown_seconds": 5,
+        "base_damage": 69,
+        "scaling_stat": "strength",
+        "scaling_factor": 0.43,
+        "crit_chance": 0.12,
+        "crit_multiplier": 1.72,
+        "damage_type": "chaos"
       },
       {
         "name": "Rusted Slam",
-        "description": "A signature ability used by the Trash Knight, 'Rusted Slam' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 12
+        "description": "Temporarily boosts damage output based on recent kills.",
+        "cooldown_seconds": 12,
+        "base_damage": 77,
+        "scaling_stat": "strength",
+        "scaling_factor": 0.37,
+        "crit_chance": 0.24,
+        "crit_multiplier": 1.59,
+        "damage_type": "physical"
       },
       {
         "name": "Deflect with Debris",
-        "description": "A signature ability used by the Trash Knight, 'Deflect with Debris' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 12
+        "description": "Slams a griddle onto the ground, cooking enemies in its radius.",
+        "cooldown_seconds": 12,
+        "base_damage": 100,
+        "scaling_stat": "strength",
+        "scaling_factor": 0.32,
+        "crit_chance": 0.19,
+        "crit_multiplier": 1.76,
+        "damage_type": "physical"
       },
       {
         "name": "Shrapnel Storm",
-        "description": "A signature ability used by the Trash Knight, 'Shrapnel Storm' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 8
+        "description": "Slams a griddle onto the ground, cooking enemies in its radius.",
+        "cooldown_seconds": 8,
+        "base_damage": 78,
+        "scaling_stat": "strength",
+        "scaling_factor": 0.39,
+        "crit_chance": 0.22,
+        "crit_multiplier": 1.63,
+        "damage_type": "poison"
       },
       {
         "name": "Armor of Shame",
-        "description": "A signature ability used by the Trash Knight, 'Armor of Shame' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 20
+        "description": "Applies a chaotic damage-over-time effect that worsens over time.",
+        "cooldown_seconds": 20,
+        "base_damage": 97,
+        "scaling_stat": "constitution",
+        "scaling_factor": 0.33,
+        "crit_chance": 0.22,
+        "crit_multiplier": 1.52,
+        "damage_type": "fire"
       },
       {
         "name": "Bottle Smash",
-        "description": "A signature ability used by the Trash Knight, 'Bottle Smash' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 12
+        "description": "Lets out a war cry that buffs nearby allies’ speed and power.",
+        "cooldown_seconds": 12,
+        "base_damage": 74,
+        "scaling_stat": "constitution",
+        "scaling_factor": 0.51,
+        "crit_chance": 0.14,
+        "crit_multiplier": 1.62,
+        "damage_type": "psychic"
       },
       {
         "name": "Junk Magnet",
-        "description": "A signature ability used by the Trash Knight, 'Junk Magnet' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 5
+        "description": "Slides across the battlefield, knocking enemies aside.",
+        "cooldown_seconds": 5,
+        "base_damage": 88,
+        "scaling_stat": "strength",
+        "scaling_factor": 0.52,
+        "crit_chance": 0.25,
+        "crit_multiplier": 1.7,
+        "damage_type": "chaos"
       },
       {
         "name": "Duct Tape Repair",
-        "description": "A signature ability used by the Trash Knight, 'Duct Tape Repair' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 15
+        "description": "Slips through enemy lines in a blur, striking each foe once.",
+        "cooldown_seconds": 15,
+        "base_damage": 111,
+        "scaling_stat": "constitution",
+        "scaling_factor": 0.35,
+        "crit_chance": 0.24,
+        "crit_multiplier": 1.5,
+        "damage_type": "fire"
       },
       {
         "name": "Contaminate Aura",
-        "description": "A signature ability used by the Trash Knight, 'Contaminate Aura' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 12
+        "description": "Strikes with a spectral rose that charms or stuns the target.",
+        "cooldown_seconds": 12,
+        "base_damage": 75,
+        "scaling_stat": "constitution",
+        "scaling_factor": 0.63,
+        "crit_chance": 0.22,
+        "crit_multiplier": 1.73,
+        "damage_type": "psychic"
       },
       {
         "name": "Dumpster Dive",
-        "description": "A signature ability used by the Trash Knight, 'Dumpster Dive' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 15
+        "description": "Unleashes a psychic pulse that knocks back and silences targets.",
+        "cooldown_seconds": 15,
+        "base_damage": 82,
+        "scaling_stat": "constitution",
+        "scaling_factor": 0.31,
+        "crit_chance": 0.18,
+        "crit_multiplier": 1.68,
+        "damage_type": "poison"
       }
     ],
     "lore": "A junkyard juggernaut fueled by shame and scrap. The Trash Knight survives not by finesse but by flinging whatever debris sticks to their rusted plate. They're a walking landfill of pain and pride."
@@ -62,53 +122,113 @@
     "skills": [
       {
         "name": "Mop Sweep Slash",
-        "description": "A signature ability used by the Augmented Janitor, 'Mop Sweep Slash' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 15
+        "description": "Marks the target to take increased damage from all sources.",
+        "cooldown_seconds": 15,
+        "base_damage": 116,
+        "scaling_stat": "constitution",
+        "scaling_factor": 0.63,
+        "crit_chance": 0.12,
+        "crit_multiplier": 1.59,
+        "damage_type": "fire"
       },
       {
         "name": "Detergent Grenade",
-        "description": "A signature ability used by the Augmented Janitor, 'Detergent Grenade' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 15
+        "description": "Spins in a dance of blades, dealing damage to all surrounding enemies.",
+        "cooldown_seconds": 15,
+        "base_damage": 119,
+        "scaling_stat": "constitution",
+        "scaling_factor": 0.38,
+        "crit_chance": 0.13,
+        "crit_multiplier": 1.89,
+        "damage_type": "poison"
       },
       {
         "name": "Slippery Trail",
-        "description": "A signature ability used by the Augmented Janitor, 'Slippery Trail' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 20
+        "description": "Tosses a pet treat that causes allies to regain health over time.",
+        "cooldown_seconds": 20,
+        "base_damage": 88,
+        "scaling_stat": "constitution",
+        "scaling_factor": 0.43,
+        "crit_chance": 0.23,
+        "crit_multiplier": 1.57,
+        "damage_type": "chaos"
       },
       {
         "name": "Recycle Toss",
-        "description": "A signature ability used by the Augmented Janitor, 'Recycle Toss' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 8
+        "description": "Generates a protective aura that absorbs damage and retaliates.",
+        "cooldown_seconds": 8,
+        "base_damage": 96,
+        "scaling_stat": "constitution",
+        "scaling_factor": 0.61,
+        "crit_chance": 0.15,
+        "crit_multiplier": 1.55,
+        "damage_type": "magic"
       },
       {
         "name": "Biohazard Shield",
-        "description": "A signature ability used by the Augmented Janitor, 'Biohazard Shield' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 20
+        "description": "Drags enemies into melee range for a devastating follow-up.",
+        "cooldown_seconds": 20,
+        "base_damage": 72,
+        "scaling_stat": "strength",
+        "scaling_factor": 0.34,
+        "crit_chance": 0.11,
+        "crit_multiplier": 1.97,
+        "damage_type": "fire"
       },
       {
         "name": "Cleanse Debuff",
-        "description": "A signature ability used by the Augmented Janitor, 'Cleanse Debuff' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 8
+        "description": "Temporarily boosts damage output based on recent kills.",
+        "cooldown_seconds": 8,
+        "base_damage": 103,
+        "scaling_stat": "constitution",
+        "scaling_factor": 0.64,
+        "crit_chance": 0.17,
+        "crit_multiplier": 1.97,
+        "damage_type": "psychic"
       },
       {
         "name": "Hazmat Mode",
-        "description": "A signature ability used by the Augmented Janitor, 'Hazmat Mode' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 8
+        "description": "Poisons enemies in a wide radius with rancid culinary technique.",
+        "cooldown_seconds": 8,
+        "base_damage": 110,
+        "scaling_stat": "constitution",
+        "scaling_factor": 0.58,
+        "crit_chance": 0.14,
+        "crit_multiplier": 1.62,
+        "damage_type": "psychic"
       },
       {
         "name": "Floor Buffer Charge",
-        "description": "A signature ability used by the Augmented Janitor, 'Floor Buffer Charge' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 10
+        "description": "Launches an audit beam that debuffs enemy defense.",
+        "cooldown_seconds": 10,
+        "base_damage": 105,
+        "scaling_stat": "strength",
+        "scaling_factor": 0.56,
+        "crit_chance": 0.16,
+        "crit_multiplier": 1.9,
+        "damage_type": "psychic"
       },
       {
         "name": "Utility Belt",
-        "description": "A signature ability used by the Augmented Janitor, 'Utility Belt' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 10
+        "description": "Calls forth a spectral weapon that attacks independently for a short time.",
+        "cooldown_seconds": 10,
+        "base_damage": 81,
+        "scaling_stat": "strength",
+        "scaling_factor": 0.59,
+        "crit_chance": 0.16,
+        "crit_multiplier": 1.65,
+        "damage_type": "psychic"
       },
       {
         "name": "Sanitize Everything!",
-        "description": "A signature ability used by the Augmented Janitor, 'Sanitize Everything!' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 10
+        "description": "Stuns the target with surprising force and flair.",
+        "cooldown_seconds": 10,
+        "base_damage": 67,
+        "scaling_stat": "strength",
+        "scaling_factor": 0.47,
+        "crit_chance": 0.13,
+        "crit_multiplier": 1.71,
+        "damage_type": "psychic"
       }
     ],
     "lore": "A humble cleaner-turned-enforcer equipped with mop-based mayhem and a government-issue hazmat upgrade. What they lack in charm, they compensate for in chemical warfare and sanitation-based vengeance."
@@ -119,53 +239,113 @@
     "skills": [
       {
         "name": "Fan Slash",
-        "description": "A signature ability used by the Masquerade Duelist, 'Fan Slash' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 12
+        "description": "Spins in a dance of blades, dealing damage to all surrounding enemies.",
+        "cooldown_seconds": 12,
+        "base_damage": 104,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.36,
+        "crit_chance": 0.17,
+        "crit_multiplier": 1.94,
+        "damage_type": "magic"
       },
       {
         "name": "Disarm with Flair",
-        "description": "A signature ability used by the Masquerade Duelist, 'Disarm with Flair' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 12
+        "description": "Forms a shield of junk that reduces damage for a few seconds.",
+        "cooldown_seconds": 12,
+        "base_damage": 88,
+        "scaling_stat": "strength",
+        "scaling_factor": 0.64,
+        "crit_chance": 0.13,
+        "crit_multiplier": 1.69,
+        "damage_type": "magic"
       },
       {
         "name": "Mirror Dodge",
-        "description": "A signature ability used by the Masquerade Duelist, 'Mirror Dodge' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 5
+        "description": "Calls forth a spectral weapon that attacks independently for a short time.",
+        "cooldown_seconds": 5,
+        "base_damage": 69,
+        "scaling_stat": "strength",
+        "scaling_factor": 0.68,
+        "crit_chance": 0.18,
+        "crit_multiplier": 1.57,
+        "damage_type": "physical"
       },
       {
         "name": "Shadow Waltz",
-        "description": "A signature ability used by the Masquerade Duelist, 'Shadow Waltz' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 8
+        "description": "Distracts foes with a summoned illusion, drawing aggro.",
+        "cooldown_seconds": 8,
+        "base_damage": 80,
+        "scaling_stat": "strength",
+        "scaling_factor": 0.61,
+        "crit_chance": 0.2,
+        "crit_multiplier": 1.87,
+        "damage_type": "fire"
       },
       {
         "name": "Rose Toss",
-        "description": "A signature ability used by the Masquerade Duelist, 'Rose Toss' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 15
+        "description": "Slides across the battlefield, knocking enemies aside.",
+        "cooldown_seconds": 15,
+        "base_damage": 101,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.59,
+        "crit_chance": 0.18,
+        "crit_multiplier": 1.77,
+        "damage_type": "magic"
       },
       {
         "name": "Masquerade Mask",
-        "description": "A signature ability used by the Masquerade Duelist, 'Masquerade Mask' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 15
+        "description": "Unleashes a psychic pulse that knocks back and silences targets.",
+        "cooldown_seconds": 15,
+        "base_damage": 98,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.39,
+        "crit_chance": 0.22,
+        "crit_multiplier": 1.65,
+        "damage_type": "physical"
       },
       {
         "name": "Elegant Execution",
-        "description": "A signature ability used by the Masquerade Duelist, 'Elegant Execution' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 20
+        "description": "Spreads a paperstorm that blinds and disorients enemies.",
+        "cooldown_seconds": 20,
+        "base_damage": 86,
+        "scaling_stat": "strength",
+        "scaling_factor": 0.54,
+        "crit_chance": 0.14,
+        "crit_multiplier": 1.92,
+        "damage_type": "magic"
       },
       {
         "name": "Parry & Pose",
-        "description": "A signature ability used by the Masquerade Duelist, 'Parry & Pose' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 5
+        "description": "Applies a chaotic damage-over-time effect that worsens over time.",
+        "cooldown_seconds": 5,
+        "base_damage": 76,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.43,
+        "crit_chance": 0.14,
+        "crit_multiplier": 1.97,
+        "damage_type": "chaos"
       },
       {
         "name": "Final Bow",
-        "description": "A signature ability used by the Masquerade Duelist, 'Final Bow' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 10
+        "description": "Conjures a burst of arcane laughter that paralyzes nearby enemies.",
+        "cooldown_seconds": 10,
+        "base_damage": 82,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.57,
+        "crit_chance": 0.1,
+        "crit_multiplier": 1.7,
+        "damage_type": "magic"
       },
       {
         "name": "En Garde!",
-        "description": "A signature ability used by the Masquerade Duelist, 'En Garde!' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 20
+        "description": "Applies a chaotic damage-over-time effect that worsens over time.",
+        "cooldown_seconds": 20,
+        "base_damage": 80,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.64,
+        "crit_chance": 0.17,
+        "crit_multiplier": 1.69,
+        "damage_type": "chaos"
       }
     ],
     "lore": "Behind every strike is a flourish, and behind every flourish—an edge. The Masquerade Duelist spins, slices, and parries through foes with style, grace, and a hint of passive-aggressive spite."
@@ -176,53 +356,113 @@
     "skills": [
       {
         "name": "Toxic Taste Test",
-        "description": "A signature ability used by the Plague Chef, 'Toxic Taste Test' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 15
+        "description": "Launches the user into the air before crashing down in an explosive slam.",
+        "cooldown_seconds": 15,
+        "base_damage": 110,
+        "scaling_stat": "strength",
+        "scaling_factor": 0.52,
+        "crit_chance": 0.15,
+        "crit_multiplier": 1.91,
+        "damage_type": "psychic"
       },
       {
         "name": "Boil Over",
-        "description": "A signature ability used by the Plague Chef, 'Boil Over' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 10
+        "description": "Launches the user into the air before crashing down in an explosive slam.",
+        "cooldown_seconds": 10,
+        "base_damage": 99,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.32,
+        "crit_chance": 0.21,
+        "crit_multiplier": 1.8,
+        "damage_type": "magic"
       },
       {
         "name": "Smoke Infusion",
-        "description": "A signature ability used by the Plague Chef, 'Smoke Infusion' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 10
+        "description": "Stuns the target with surprising force and flair.",
+        "cooldown_seconds": 10,
+        "base_damage": 106,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.45,
+        "crit_chance": 0.19,
+        "crit_multiplier": 1.88,
+        "damage_type": "chaos"
       },
       {
         "name": "Knife Juggle",
-        "description": "A signature ability used by the Plague Chef, 'Knife Juggle' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 8
+        "description": "Slips through enemy lines in a blur, striking each foe once.",
+        "cooldown_seconds": 8,
+        "base_damage": 119,
+        "scaling_stat": "strength",
+        "scaling_factor": 0.62,
+        "crit_chance": 0.15,
+        "crit_multiplier": 1.55,
+        "damage_type": "chaos"
       },
       {
         "name": "Mystery Meatball",
-        "description": "A signature ability used by the Plague Chef, 'Mystery Meatball' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 10
+        "description": "Generates a protective aura that absorbs damage and retaliates.",
+        "cooldown_seconds": 10,
+        "base_damage": 82,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.41,
+        "crit_chance": 0.12,
+        "crit_multiplier": 1.73,
+        "damage_type": "psychic"
       },
       {
         "name": "Exploding Spice Mix",
-        "description": "A signature ability used by the Plague Chef, 'Exploding Spice Mix' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 20
+        "description": "Builds up raw energy and releases it in a piercing beam.",
+        "cooldown_seconds": 20,
+        "base_damage": 97,
+        "scaling_stat": "strength",
+        "scaling_factor": 0.64,
+        "crit_chance": 0.11,
+        "crit_multiplier": 1.91,
+        "damage_type": "chaos"
       },
       {
         "name": "Kitchen Sink Slam",
-        "description": "A signature ability used by the Plague Chef, 'Kitchen Sink Slam' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 12
+        "description": "Slips through enemy lines in a blur, striking each foe once.",
+        "cooldown_seconds": 12,
+        "base_damage": 113,
+        "scaling_stat": "strength",
+        "scaling_factor": 0.61,
+        "crit_chance": 0.2,
+        "crit_multiplier": 1.75,
+        "damage_type": "magic"
       },
       {
         "name": "Flamb\u00e9 Kick",
-        "description": "A signature ability used by the Plague Chef, 'Flamb\u00e9 Kick' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 10
+        "description": "Lets out a war cry that buffs nearby allies’ speed and power.",
+        "cooldown_seconds": 10,
+        "base_damage": 69,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.69,
+        "crit_chance": 0.1,
+        "crit_multiplier": 1.79,
+        "damage_type": "poison"
       },
       {
         "name": "Contagion Glaze",
-        "description": "A signature ability used by the Plague Chef, 'Contagion Glaze' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 5
+        "description": "Tosses a pet treat that causes allies to regain health over time.",
+        "cooldown_seconds": 5,
+        "base_damage": 71,
+        "scaling_stat": "strength",
+        "scaling_factor": 0.68,
+        "crit_chance": 0.12,
+        "crit_multiplier": 1.63,
+        "damage_type": "fire"
       },
       {
         "name": "Soul Reduction Sauce",
-        "description": "A signature ability used by the Plague Chef, 'Soul Reduction Sauce' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 20
+        "description": "Marks the target to take increased damage from all sources.",
+        "cooldown_seconds": 20,
+        "base_damage": 60,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.4,
+        "crit_chance": 0.22,
+        "crit_multiplier": 1.71,
+        "damage_type": "chaos"
       }
     ],
     "lore": "Recipes scribbled in blood and garnished with madness. The Plague Chef cooks up chemical catastrophes in cast-iron chaos, serving infectious flavor and fiery footwork in equal measure."
@@ -233,53 +473,113 @@
     "skills": [
       {
         "name": "Meat Hook Lariat",
-        "description": "A signature ability used by the Meat-Powered Brawler, 'Meat Hook Lariat' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 8
+        "description": "Ignites foes in a wide cone, leaving lingering fire damage.",
+        "cooldown_seconds": 8,
+        "base_damage": 117,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.48,
+        "crit_chance": 0.12,
+        "crit_multiplier": 1.75,
+        "damage_type": "chaos"
       },
       {
         "name": "Tenderize",
-        "description": "A signature ability used by the Meat-Powered Brawler, 'Tenderize' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 8
+        "description": "Drops a toxic pie that explodes after a short delay.",
+        "cooldown_seconds": 8,
+        "base_damage": 106,
+        "scaling_stat": "strength",
+        "scaling_factor": 0.47,
+        "crit_chance": 0.23,
+        "crit_multiplier": 1.82,
+        "damage_type": "magic"
       },
       {
         "name": "Carnage Chew",
-        "description": "A signature ability used by the Meat-Powered Brawler, 'Carnage Chew' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 20
+        "description": "Strikes with a spectral rose that charms or stuns the target.",
+        "cooldown_seconds": 20,
+        "base_damage": 97,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.51,
+        "crit_chance": 0.11,
+        "crit_multiplier": 1.55,
+        "damage_type": "physical"
       },
       {
         "name": "Protein Rage",
-        "description": "A signature ability used by the Meat-Powered Brawler, 'Protein Rage' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 8
+        "description": "Ignites foes in a wide cone, leaving lingering fire damage.",
+        "cooldown_seconds": 8,
+        "base_damage": 116,
+        "scaling_stat": "strength",
+        "scaling_factor": 0.34,
+        "crit_chance": 0.2,
+        "crit_multiplier": 1.79,
+        "damage_type": "chaos"
       },
       {
         "name": "Grill Slam",
-        "description": "A signature ability used by the Meat-Powered Brawler, 'Grill Slam' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 20
+        "description": "Releases a healing pulse that scales with nearby chaos.",
+        "cooldown_seconds": 20,
+        "base_damage": 62,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.35,
+        "crit_chance": 0.12,
+        "crit_multiplier": 1.57,
+        "damage_type": "psychic"
       },
       {
         "name": "Blood Marinate",
-        "description": "A signature ability used by the Meat-Powered Brawler, 'Blood Marinate' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 12
+        "description": "Causes enemies to hallucinate and attack their allies briefly.",
+        "cooldown_seconds": 12,
+        "base_damage": 61,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.69,
+        "crit_chance": 0.14,
+        "crit_multiplier": 1.65,
+        "damage_type": "fire"
       },
       {
         "name": "Spine Snapper",
-        "description": "A signature ability used by the Meat-Powered Brawler, 'Spine Snapper' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 15
+        "description": "Causes enemies to hallucinate and attack their allies briefly.",
+        "cooldown_seconds": 15,
+        "base_damage": 60,
+        "scaling_stat": "strength",
+        "scaling_factor": 0.42,
+        "crit_chance": 0.13,
+        "crit_multiplier": 1.56,
+        "damage_type": "psychic"
       },
       {
         "name": "Cholesterol Surge",
-        "description": "A signature ability used by the Meat-Powered Brawler, 'Cholesterol Surge' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 12
+        "description": "Lets out a war cry that buffs nearby allies’ speed and power.",
+        "cooldown_seconds": 12,
+        "base_damage": 100,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.56,
+        "crit_chance": 0.13,
+        "crit_multiplier": 1.53,
+        "damage_type": "psychic"
       },
       {
         "name": "Butcher\u2019s Ballet",
-        "description": "A signature ability used by the Meat-Powered Brawler, 'Butcher\u2019s Ballet' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 5
+        "description": "Slams a griddle onto the ground, cooking enemies in its radius.",
+        "cooldown_seconds": 5,
+        "base_damage": 77,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.6,
+        "crit_chance": 0.14,
+        "crit_multiplier": 1.69,
+        "damage_type": "physical"
       },
       {
         "name": "Meat Meteor",
-        "description": "A signature ability used by the Meat-Powered Brawler, 'Meat Meteor' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 20
+        "description": "Creates a zone of confusion that distorts movement and aim.",
+        "cooldown_seconds": 20,
+        "base_damage": 111,
+        "scaling_stat": "strength",
+        "scaling_factor": 0.34,
+        "crit_chance": 0.14,
+        "crit_multiplier": 1.75,
+        "damage_type": "physical"
       }
     ],
     "lore": "A brute-force melee fighter who powers up through raw consumption, grotesque combos, and cannibalistic vigor. Think Gordon Ramsay meets Bane."
@@ -290,53 +590,113 @@
     "skills": [
       {
         "name": "Unboxing Beam",
-        "description": "A signature ability used by the Void Vlogger, 'Unboxing Beam' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 15
+        "description": "Drags enemies into melee range for a devastating follow-up.",
+        "cooldown_seconds": 15,
+        "base_damage": 69,
+        "scaling_stat": "intellect",
+        "scaling_factor": 0.38,
+        "crit_chance": 0.16,
+        "crit_multiplier": 1.68,
+        "damage_type": "poison"
       },
       {
         "name": "Cosmic Filter",
-        "description": "A signature ability used by the Void Vlogger, 'Cosmic Filter' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 10
+        "description": "Drops a toxic pie that explodes after a short delay.",
+        "cooldown_seconds": 10,
+        "base_damage": 98,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.65,
+        "crit_chance": 0.25,
+        "crit_multiplier": 1.98,
+        "damage_type": "chaos"
       },
       {
         "name": "Influence Gravity",
-        "description": "A signature ability used by the Void Vlogger, 'Influence Gravity' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 15
+        "description": "Conjures a burst of arcane laughter that paralyzes nearby enemies.",
+        "cooldown_seconds": 15,
+        "base_damage": 82,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.43,
+        "crit_chance": 0.15,
+        "crit_multiplier": 1.98,
+        "damage_type": "magic"
       },
       {
         "name": "Void Merge",
-        "description": "A signature ability used by the Void Vlogger, 'Void Merge' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 20
+        "description": "Marks the target to take increased damage from all sources.",
+        "cooldown_seconds": 20,
+        "base_damage": 72,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.65,
+        "crit_chance": 0.17,
+        "crit_multiplier": 1.89,
+        "damage_type": "fire"
       },
       {
         "name": "Existential Rant",
-        "description": "A signature ability used by the Void Vlogger, 'Existential Rant' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 10
+        "description": "Poisons enemies in a wide radius with rancid culinary technique.",
+        "cooldown_seconds": 10,
+        "base_damage": 104,
+        "scaling_stat": "intellect",
+        "scaling_factor": 0.41,
+        "crit_chance": 0.14,
+        "crit_multiplier": 1.8,
+        "damage_type": "psychic"
       },
       {
         "name": "Reality Clickbait",
-        "description": "A signature ability used by the Void Vlogger, 'Reality Clickbait' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 20
+        "description": "Releases a healing pulse that scales with nearby chaos.",
+        "cooldown_seconds": 20,
+        "base_damage": 74,
+        "scaling_stat": "intellect",
+        "scaling_factor": 0.58,
+        "crit_chance": 0.11,
+        "crit_multiplier": 1.74,
+        "damage_type": "magic"
       },
       {
         "name": "Subscriber Spike",
-        "description": "A signature ability used by the Void Vlogger, 'Subscriber Spike' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 12
+        "description": "Unleashes a psychic pulse that knocks back and silences targets.",
+        "cooldown_seconds": 12,
+        "base_damage": 77,
+        "scaling_stat": "intellect",
+        "scaling_factor": 0.44,
+        "crit_chance": 0.1,
+        "crit_multiplier": 1.68,
+        "damage_type": "fire"
       },
       {
         "name": "Algorithm Manipulate",
-        "description": "A signature ability used by the Void Vlogger, 'Algorithm Manipulate' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 12
+        "description": "Marks the target to take increased damage from all sources.",
+        "cooldown_seconds": 12,
+        "base_damage": 77,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.49,
+        "crit_chance": 0.11,
+        "crit_multiplier": 1.89,
+        "damage_type": "psychic"
       },
       {
         "name": "Haul of Horrors",
-        "description": "A signature ability used by the Void Vlogger, 'Haul of Horrors' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 15
+        "description": "Launches an audit beam that debuffs enemy defense.",
+        "cooldown_seconds": 15,
+        "base_damage": 100,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.43,
+        "crit_chance": 0.11,
+        "crit_multiplier": 1.87,
+        "damage_type": "fire"
       },
       {
         "name": "Echo Chamber",
-        "description": "A signature ability used by the Void Vlogger, 'Echo Chamber' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 5
+        "description": "Creates a zone of confusion that distorts movement and aim.",
+        "cooldown_seconds": 5,
+        "base_damage": 64,
+        "scaling_stat": "intellect",
+        "scaling_factor": 0.35,
+        "crit_chance": 0.24,
+        "crit_multiplier": 2.0,
+        "damage_type": "magic"
       }
     ],
     "lore": "They vlog, therefore they are. The Void Vlogger blends black holes with beauty filters, broadcasting devastation in 4K. They manipulate time, gravity, and likes with equal recklessness."
@@ -347,53 +707,113 @@
     "skills": [
       {
         "name": "Hijack Observer",
-        "description": "A signature ability used by the Drone Hacker, 'Hijack Observer' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 5
+        "description": "Conjures a burst of arcane laughter that paralyzes nearby enemies.",
+        "cooldown_seconds": 5,
+        "base_damage": 71,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.54,
+        "crit_chance": 0.18,
+        "crit_multiplier": 1.84,
+        "damage_type": "poison"
       },
       {
         "name": "Trap Override",
-        "description": "A signature ability used by the Drone Hacker, 'Trap Override' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 5
+        "description": "Poisons enemies in a wide radius with rancid culinary technique.",
+        "cooldown_seconds": 5,
+        "base_damage": 100,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.66,
+        "crit_chance": 0.22,
+        "crit_multiplier": 1.91,
+        "damage_type": "magic"
       },
       {
         "name": "Surveillance Sweep",
-        "description": "A signature ability used by the Drone Hacker, 'Surveillance Sweep' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 20
+        "description": "Ignites foes in a wide cone, leaving lingering fire damage.",
+        "cooldown_seconds": 20,
+        "base_damage": 114,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.62,
+        "crit_chance": 0.17,
+        "crit_multiplier": 1.77,
+        "damage_type": "physical"
       },
       {
         "name": "Hack Environment",
-        "description": "A signature ability used by the Drone Hacker, 'Hack Environment' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 5
+        "description": "Releases a healing pulse that scales with nearby chaos.",
+        "cooldown_seconds": 5,
+        "base_damage": 74,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.68,
+        "crit_chance": 0.23,
+        "crit_multiplier": 1.59,
+        "damage_type": "magic"
       },
       {
         "name": "EMP Pulse",
-        "description": "A signature ability used by the Drone Hacker, 'EMP Pulse' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 12
+        "description": "Launches an audit beam that debuffs enemy defense.",
+        "cooldown_seconds": 12,
+        "base_damage": 63,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.3,
+        "crit_chance": 0.18,
+        "crit_multiplier": 1.63,
+        "damage_type": "fire"
       },
       {
         "name": "Repurpose Drone",
-        "description": "A signature ability used by the Drone Hacker, 'Repurpose Drone' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 15
+        "description": "Spins in a dance of blades, dealing damage to all surrounding enemies.",
+        "cooldown_seconds": 15,
+        "base_damage": 68,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.35,
+        "crit_chance": 0.15,
+        "crit_multiplier": 1.88,
+        "damage_type": "poison"
       },
       {
         "name": "Firewall Cloak",
-        "description": "A signature ability used by the Drone Hacker, 'Firewall Cloak' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 5
+        "description": "Summons a holographic decoy to soak up enemy attention.",
+        "cooldown_seconds": 5,
+        "base_damage": 93,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.33,
+        "crit_chance": 0.12,
+        "crit_multiplier": 1.98,
+        "damage_type": "poison"
       },
       {
         "name": "Bug Feed",
-        "description": "A signature ability used by the Drone Hacker, 'Bug Feed' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 15
+        "description": "Spreads a paperstorm that blinds and disorients enemies.",
+        "cooldown_seconds": 15,
+        "base_damage": 101,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.49,
+        "crit_chance": 0.2,
+        "crit_multiplier": 1.83,
+        "damage_type": "poison"
       },
       {
         "name": "Overload Node",
-        "description": "A signature ability used by the Drone Hacker, 'Overload Node' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 12
+        "description": "Creates a zone of confusion that distorts movement and aim.",
+        "cooldown_seconds": 12,
+        "base_damage": 62,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.59,
+        "crit_chance": 0.17,
+        "crit_multiplier": 1.58,
+        "damage_type": "chaos"
       },
       {
         "name": "Stream Intercept",
-        "description": "A signature ability used by the Drone Hacker, 'Stream Intercept' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 5
+        "description": "Tosses a pet treat that causes allies to regain health over time.",
+        "cooldown_seconds": 5,
+        "base_damage": 83,
+        "scaling_stat": "intellect",
+        "scaling_factor": 0.66,
+        "crit_chance": 0.19,
+        "crit_multiplier": 1.89,
+        "damage_type": "psychic"
       }
     ],
     "lore": "A digital rogue armed with access codes, EMP bursts, and a knack for turning the environment into a weapon. The Drone Hacker is your worst cyberpunk nightmare, delivered via patch notes."
@@ -404,53 +824,113 @@
     "skills": [
       {
         "name": "Summon Balloon Golem",
-        "description": "A signature ability used by the Necrogiggle, 'Summon Balloon Golem' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 8
+        "description": "Summons a holographic decoy to soak up enemy attention.",
+        "cooldown_seconds": 8,
+        "base_damage": 120,
+        "scaling_stat": "intellect",
+        "scaling_factor": 0.68,
+        "crit_chance": 0.13,
+        "crit_multiplier": 1.88,
+        "damage_type": "fire"
       },
       {
         "name": "Exploding Gift",
-        "description": "A signature ability used by the Necrogiggle, 'Exploding Gift' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 12
+        "description": "Builds up raw energy and releases it in a piercing beam.",
+        "cooldown_seconds": 12,
+        "base_damage": 75,
+        "scaling_stat": "intellect",
+        "scaling_factor": 0.41,
+        "crit_chance": 0.14,
+        "crit_multiplier": 1.74,
+        "damage_type": "poison"
       },
       {
         "name": "Arcane Giggles",
-        "description": "A signature ability used by the Necrogiggle, 'Arcane Giggles' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 20
+        "description": "Launches the user into the air before crashing down in an explosive slam.",
+        "cooldown_seconds": 20,
+        "base_damage": 72,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.47,
+        "crit_chance": 0.25,
+        "crit_multiplier": 1.88,
+        "damage_type": "physical"
       },
       {
         "name": "Juggle Fireballs",
-        "description": "A signature ability used by the Necrogiggle, 'Juggle Fireballs' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 10
+        "description": "Ignites foes in a wide cone, leaving lingering fire damage.",
+        "cooldown_seconds": 10,
+        "base_damage": 93,
+        "scaling_stat": "intellect",
+        "scaling_factor": 0.37,
+        "crit_chance": 0.18,
+        "crit_multiplier": 1.57,
+        "damage_type": "physical"
       },
       {
         "name": "Confetti Blast",
-        "description": "A signature ability used by the Necrogiggle, 'Confetti Blast' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 20
+        "description": "Spreads a paperstorm that blinds and disorients enemies.",
+        "cooldown_seconds": 20,
+        "base_damage": 87,
+        "scaling_stat": "intellect",
+        "scaling_factor": 0.62,
+        "crit_chance": 0.15,
+        "crit_multiplier": 1.75,
+        "damage_type": "psychic"
       },
       {
         "name": "Crippling Chuckle",
-        "description": "A signature ability used by the Necrogiggle, 'Crippling Chuckle' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 5
+        "description": "Distracts foes with a summoned illusion, drawing aggro.",
+        "cooldown_seconds": 5,
+        "base_damage": 80,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.61,
+        "crit_chance": 0.25,
+        "crit_multiplier": 1.8,
+        "damage_type": "psychic"
       },
       {
         "name": "Prismatic Pie",
-        "description": "A signature ability used by the Necrogiggle, 'Prismatic Pie' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 8
+        "description": "Forms a shield of junk that reduces damage for a few seconds.",
+        "cooldown_seconds": 8,
+        "base_damage": 79,
+        "scaling_stat": "intellect",
+        "scaling_factor": 0.41,
+        "crit_chance": 0.15,
+        "crit_multiplier": 1.61,
+        "damage_type": "magic"
       },
       {
         "name": "Pantomime Shield",
-        "description": "A signature ability used by the Necrogiggle, 'Pantomime Shield' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 5
+        "description": "Summons an unpredictable minion with volatile behavior.",
+        "cooldown_seconds": 5,
+        "base_damage": 120,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.48,
+        "crit_chance": 0.11,
+        "crit_multiplier": 1.54,
+        "damage_type": "physical"
       },
       {
         "name": "Squeaky Shoes of Speed",
-        "description": "A signature ability used by the Necrogiggle, 'Squeaky Shoes of Speed' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 15
+        "description": "Causes enemies to hallucinate and attack their allies briefly.",
+        "cooldown_seconds": 15,
+        "base_damage": 110,
+        "scaling_stat": "dexterity",
+        "scaling_factor": 0.46,
+        "crit_chance": 0.22,
+        "crit_multiplier": 1.53,
+        "damage_type": "poison"
       },
       {
         "name": "Big Top Portal",
-        "description": "A signature ability used by the Necrogiggle, 'Big Top Portal' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 8
+        "description": "Strikes with a spectral rose that charms or stuns the target.",
+        "cooldown_seconds": 8,
+        "base_damage": 64,
+        "scaling_stat": "intellect",
+        "scaling_factor": 0.53,
+        "crit_chance": 0.11,
+        "crit_multiplier": 1.62,
+        "damage_type": "psychic"
       }
     ],
     "lore": "A nightmare clown who brings balloon animals to un-life. The Necrogiggle juggles necromancy, chaos, and slapstick horror in a carnival of corpse-raising comedy."
@@ -461,53 +941,113 @@
     "skills": [
       {
         "name": "Summon Follower",
-        "description": "A signature ability used by the Pet Influencer, 'Summon Follower' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 15
+        "description": "Slips through enemy lines in a blur, striking each foe once.",
+        "cooldown_seconds": 15,
+        "base_damage": 88,
+        "scaling_stat": "wisdom",
+        "scaling_factor": 0.51,
+        "crit_chance": 0.19,
+        "crit_multiplier": 1.93,
+        "damage_type": "magic"
       },
       {
         "name": "Hashtag Heal",
-        "description": "A signature ability used by the Pet Influencer, 'Hashtag Heal' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 20
+        "description": "Summons a holographic decoy to soak up enemy attention.",
+        "cooldown_seconds": 20,
+        "base_damage": 61,
+        "scaling_stat": "spirit",
+        "scaling_factor": 0.59,
+        "crit_chance": 0.18,
+        "crit_multiplier": 1.66,
+        "damage_type": "chaos"
       },
       {
         "name": "Crowdfunded Buff",
-        "description": "A signature ability used by the Pet Influencer, 'Crowdfunded Buff' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 5
+        "description": "Stuns the target with surprising force and flair.",
+        "cooldown_seconds": 5,
+        "base_damage": 104,
+        "scaling_stat": "spirit",
+        "scaling_factor": 0.68,
+        "crit_chance": 0.11,
+        "crit_multiplier": 1.79,
+        "damage_type": "fire"
       },
       {
         "name": "Emotional Support Alpaca",
-        "description": "A signature ability used by the Pet Influencer, 'Emotional Support Alpaca' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 8
+        "description": "Tosses a pet treat that causes allies to regain health over time.",
+        "cooldown_seconds": 8,
+        "base_damage": 93,
+        "scaling_stat": "wisdom",
+        "scaling_factor": 0.6,
+        "crit_chance": 0.21,
+        "crit_multiplier": 1.84,
+        "damage_type": "psychic"
       },
       {
         "name": "Filter Frenzy",
-        "description": "A signature ability used by the Pet Influencer, 'Filter Frenzy' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 8
+        "description": "Slides across the battlefield, knocking enemies aside.",
+        "cooldown_seconds": 8,
+        "base_damage": 88,
+        "scaling_stat": "wisdom",
+        "scaling_factor": 0.59,
+        "crit_chance": 0.24,
+        "crit_multiplier": 1.85,
+        "damage_type": "psychic"
       },
       {
         "name": "Viral Distraction",
-        "description": "A signature ability used by the Pet Influencer, 'Viral Distraction' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 15
+        "description": "Slides across the battlefield, knocking enemies aside.",
+        "cooldown_seconds": 15,
+        "base_damage": 100,
+        "scaling_stat": "wisdom",
+        "scaling_factor": 0.52,
+        "crit_chance": 0.2,
+        "crit_multiplier": 1.67,
+        "damage_type": "physical"
       },
       {
         "name": "Pet Selfie Stun",
-        "description": "A signature ability used by the Pet Influencer, 'Pet Selfie Stun' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 10
+        "description": "Forms a shield of junk that reduces damage for a few seconds.",
+        "cooldown_seconds": 10,
+        "base_damage": 91,
+        "scaling_stat": "wisdom",
+        "scaling_factor": 0.36,
+        "crit_chance": 0.12,
+        "crit_multiplier": 1.94,
+        "damage_type": "poison"
       },
       {
         "name": "Paw-sitive Vibes",
-        "description": "A signature ability used by the Pet Influencer, 'Paw-sitive Vibes' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 5
+        "description": "Builds up raw energy and releases it in a piercing beam.",
+        "cooldown_seconds": 5,
+        "base_damage": 108,
+        "scaling_stat": "wisdom",
+        "scaling_factor": 0.69,
+        "crit_chance": 0.13,
+        "crit_multiplier": 1.97,
+        "damage_type": "psychic"
       },
       {
         "name": "Snack Toss",
-        "description": "A signature ability used by the Pet Influencer, 'Snack Toss' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 10
+        "description": "Generates a protective aura that absorbs damage and retaliates.",
+        "cooldown_seconds": 10,
+        "base_damage": 83,
+        "scaling_stat": "wisdom",
+        "scaling_factor": 0.31,
+        "crit_chance": 0.14,
+        "crit_multiplier": 1.97,
+        "damage_type": "magic"
       },
       {
         "name": "LiveStream Ultimatum",
-        "description": "A signature ability used by the Pet Influencer, 'LiveStream Ultimatum' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 15
+        "description": "Spins in a dance of blades, dealing damage to all surrounding enemies.",
+        "cooldown_seconds": 15,
+        "base_damage": 104,
+        "scaling_stat": "wisdom",
+        "scaling_factor": 0.58,
+        "crit_chance": 0.15,
+        "crit_multiplier": 1.76,
+        "damage_type": "chaos"
       }
     ],
     "lore": "Adored by the masses, feared by their haters. The Pet Influencer inspires, heals, and blinds with cuteness—while their sentient followers do the heavy lifting. Sponsored by your tears."
@@ -518,53 +1058,113 @@
     "skills": [
       {
         "name": "Form 38-C",
-        "description": "A signature ability used by the Buzzkill Bureaucrat, 'Form 38-C' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 8
+        "description": "Drags enemies into melee range for a devastating follow-up.",
+        "cooldown_seconds": 8,
+        "base_damage": 109,
+        "scaling_stat": "wisdom",
+        "scaling_factor": 0.46,
+        "crit_chance": 0.21,
+        "crit_multiplier": 1.66,
+        "damage_type": "fire"
       },
       {
         "name": "Audit Strike",
-        "description": "A signature ability used by the Buzzkill Bureaucrat, 'Audit Strike' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 12
+        "description": "Distracts foes with a summoned illusion, drawing aggro.",
+        "cooldown_seconds": 12,
+        "base_damage": 96,
+        "scaling_stat": "spirit",
+        "scaling_factor": 0.47,
+        "crit_chance": 0.13,
+        "crit_multiplier": 1.81,
+        "damage_type": "psychic"
       },
       {
         "name": "Paperstorm",
-        "description": "A signature ability used by the Buzzkill Bureaucrat, 'Paperstorm' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 5
+        "description": "Strikes with a spectral rose that charms or stuns the target.",
+        "cooldown_seconds": 5,
+        "base_damage": 67,
+        "scaling_stat": "spirit",
+        "scaling_factor": 0.34,
+        "crit_chance": 0.16,
+        "crit_multiplier": 1.8,
+        "damage_type": "physical"
       },
       {
         "name": "Regulation Aura",
-        "description": "A signature ability used by the Buzzkill Bureaucrat, 'Regulation Aura' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 20
+        "description": "Summons a holographic decoy to soak up enemy attention.",
+        "cooldown_seconds": 20,
+        "base_damage": 89,
+        "scaling_stat": "spirit",
+        "scaling_factor": 0.39,
+        "crit_chance": 0.18,
+        "crit_multiplier": 1.53,
+        "damage_type": "psychic"
       },
       {
         "name": "TPS Report Burn",
-        "description": "A signature ability used by the Buzzkill Bureaucrat, 'TPS Report Burn' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 8
+        "description": "Releases a healing pulse that scales with nearby chaos.",
+        "cooldown_seconds": 8,
+        "base_damage": 90,
+        "scaling_stat": "wisdom",
+        "scaling_factor": 0.46,
+        "crit_chance": 0.13,
+        "crit_multiplier": 1.9,
+        "damage_type": "magic"
       },
       {
         "name": "Ink Poisoning",
-        "description": "A signature ability used by the Buzzkill Bureaucrat, 'Ink Poisoning' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 8
+        "description": "Unleashes a psychic pulse that knocks back and silences targets.",
+        "cooldown_seconds": 8,
+        "base_damage": 62,
+        "scaling_stat": "wisdom",
+        "scaling_factor": 0.5,
+        "crit_chance": 0.21,
+        "crit_multiplier": 1.63,
+        "damage_type": "fire"
       },
       {
         "name": "Pencil Poke",
-        "description": "A signature ability used by the Buzzkill Bureaucrat, 'Pencil Poke' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 15
+        "description": "Creates a zone of confusion that distorts movement and aim.",
+        "cooldown_seconds": 15,
+        "base_damage": 114,
+        "scaling_stat": "wisdom",
+        "scaling_factor": 0.31,
+        "crit_chance": 0.11,
+        "crit_multiplier": 1.78,
+        "damage_type": "psychic"
       },
       {
         "name": "Overtime Rage",
-        "description": "A signature ability used by the Buzzkill Bureaucrat, 'Overtime Rage' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 8
+        "description": "Calls forth a spectral weapon that attacks independently for a short time.",
+        "cooldown_seconds": 8,
+        "base_damage": 109,
+        "scaling_stat": "spirit",
+        "scaling_factor": 0.59,
+        "crit_chance": 0.18,
+        "crit_multiplier": 1.57,
+        "damage_type": "magic"
       },
       {
         "name": "Notarize Reality",
-        "description": "A signature ability used by the Buzzkill Bureaucrat, 'Notarize Reality' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 10
+        "description": "Applies a chaotic damage-over-time effect that worsens over time.",
+        "cooldown_seconds": 10,
+        "base_damage": 66,
+        "scaling_stat": "wisdom",
+        "scaling_factor": 0.44,
+        "crit_chance": 0.25,
+        "crit_multiplier": 1.83,
+        "damage_type": "psychic"
       },
       {
         "name": "Taxation Beam",
-        "description": "A signature ability used by the Buzzkill Bureaucrat, 'Taxation Beam' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 15
+        "description": "Summons an unpredictable minion with volatile behavior.",
+        "cooldown_seconds": 15,
+        "base_damage": 77,
+        "scaling_stat": "wisdom",
+        "scaling_factor": 0.62,
+        "crit_chance": 0.14,
+        "crit_multiplier": 1.94,
+        "damage_type": "physical"
       }
     ],
     "lore": "Office supplies are weapons, and order is sacred. The Buzzkill Bureaucrat overwhelms enemies with red tape, paperstorms, and tax audits—nothing slows combat like corporate compliance."
@@ -575,53 +1175,113 @@
     "skills": [
       {
         "name": "Banana Peel Toss",
-        "description": "A signature ability used by the Slapstick Monk, 'Banana Peel Toss' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 5
+        "description": "Slams a griddle onto the ground, cooking enemies in its radius.",
+        "cooldown_seconds": 5,
+        "base_damage": 68,
+        "scaling_stat": "spirit",
+        "scaling_factor": 0.59,
+        "crit_chance": 0.19,
+        "crit_multiplier": 1.85,
+        "damage_type": "fire"
       },
       {
         "name": "Rubber Chicken Barrage",
-        "description": "A signature ability used by the Slapstick Monk, 'Rubber Chicken Barrage' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 12
+        "description": "Drops a toxic pie that explodes after a short delay.",
+        "cooldown_seconds": 12,
+        "base_damage": 74,
+        "scaling_stat": "wisdom",
+        "scaling_factor": 0.69,
+        "crit_chance": 0.2,
+        "crit_multiplier": 1.78,
+        "damage_type": "psychic"
       },
       {
         "name": "Pratfall Counter",
-        "description": "A signature ability used by the Slapstick Monk, 'Pratfall Counter' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 15
+        "description": "Lets out a war cry that buffs nearby allies’ speed and power.",
+        "cooldown_seconds": 15,
+        "base_damage": 92,
+        "scaling_stat": "wisdom",
+        "scaling_factor": 0.53,
+        "crit_chance": 0.14,
+        "crit_multiplier": 1.86,
+        "damage_type": "fire"
       },
       {
         "name": "Whoopee Wave",
-        "description": "A signature ability used by the Slapstick Monk, 'Whoopee Wave' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 8
+        "description": "Temporarily boosts damage output based on recent kills.",
+        "cooldown_seconds": 8,
+        "base_damage": 65,
+        "scaling_stat": "wisdom",
+        "scaling_factor": 0.37,
+        "crit_chance": 0.2,
+        "crit_multiplier": 1.55,
+        "damage_type": "poison"
       },
       {
         "name": "Pie in the Face",
-        "description": "A signature ability used by the Slapstick Monk, 'Pie in the Face' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 12
+        "description": "Poisons enemies in a wide radius with rancid culinary technique.",
+        "cooldown_seconds": 12,
+        "base_damage": 65,
+        "scaling_stat": "spirit",
+        "scaling_factor": 0.41,
+        "crit_chance": 0.16,
+        "crit_multiplier": 1.86,
+        "damage_type": "poison"
       },
       {
         "name": "Slippery Step",
-        "description": "A signature ability used by the Slapstick Monk, 'Slippery Step' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 10
+        "description": "Launches the user into the air before crashing down in an explosive slam.",
+        "cooldown_seconds": 10,
+        "base_damage": 90,
+        "scaling_stat": "spirit",
+        "scaling_factor": 0.63,
+        "crit_chance": 0.13,
+        "crit_multiplier": 1.96,
+        "damage_type": "chaos"
       },
       {
         "name": "Laugh Track Aura",
-        "description": "A signature ability used by the Slapstick Monk, 'Laugh Track Aura' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 8
+        "description": "Summons an unpredictable minion with volatile behavior.",
+        "cooldown_seconds": 8,
+        "base_damage": 89,
+        "scaling_stat": "spirit",
+        "scaling_factor": 0.63,
+        "crit_chance": 0.21,
+        "crit_multiplier": 1.77,
+        "damage_type": "psychic"
       },
       {
         "name": "Comedic Timing",
-        "description": "A signature ability used by the Slapstick Monk, 'Comedic Timing' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 12
+        "description": "Drops a toxic pie that explodes after a short delay.",
+        "cooldown_seconds": 12,
+        "base_damage": 120,
+        "scaling_stat": "spirit",
+        "scaling_factor": 0.41,
+        "crit_chance": 0.2,
+        "crit_multiplier": 1.97,
+        "damage_type": "poison"
       },
       {
         "name": "Anvil Drop",
-        "description": "A signature ability used by the Slapstick Monk, 'Anvil Drop' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 15
+        "description": "Builds up raw energy and releases it in a piercing beam.",
+        "cooldown_seconds": 15,
+        "base_damage": 67,
+        "scaling_stat": "wisdom",
+        "scaling_factor": 0.51,
+        "crit_chance": 0.11,
+        "crit_multiplier": 1.85,
+        "damage_type": "physical"
       },
       {
         "name": "Clown Clone",
-        "description": "A signature ability used by the Slapstick Monk, 'Clown Clone' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
-        "cooldown_seconds": 20
+        "description": "Summons an unpredictable minion with volatile behavior.",
+        "cooldown_seconds": 20,
+        "base_damage": 101,
+        "scaling_stat": "spirit",
+        "scaling_factor": 0.33,
+        "crit_chance": 0.11,
+        "crit_multiplier": 1.95,
+        "damage_type": "fire"
       }
     ],
     "lore": "Enlightenment through embarrassment. The Slapstick Monk blends martial mastery with comedy chaos, tripping, flipping, and flinging themselves to victory in a holy farce of destruction."

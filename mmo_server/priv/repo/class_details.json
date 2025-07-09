@@ -1,0 +1,464 @@
+[
+  {
+    "name": "Trash Knight",
+    "role": "tank",
+    "skills": [
+      {
+        "name": "Scrap Shield Bash",
+        "description": "A signature ability used by the Trash Knight, 'Scrap Shield Bash' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 5,
+        "status_effect": "confuse",
+        "animation": "slam"
+      },
+      {
+        "name": "Dumpster Dive",
+        "description": "A signature ability used by the Trash Knight, 'Dumpster Dive' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 20,
+        "status_effect": "bleed",
+        "animation": "cast"
+      },
+      {
+        "name": "Shrapnel Storm",
+        "description": "A signature ability used by the Trash Knight, 'Shrapnel Storm' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 15,
+        "status_effect": "cripple",
+        "animation": "swing"
+      },
+      {
+        "name": "Duct Tape Repair",
+        "description": "A signature ability used by the Trash Knight, 'Duct Tape Repair' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 8,
+        "status_effect": "slow",
+        "animation": "leap"
+      },
+      {
+        "name": "Contaminate Aura",
+        "description": "A signature ability used by the Trash Knight, 'Contaminate Aura' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 5,
+        "status_effect": "root",
+        "animation": "jab"
+      }
+    ],
+    "lore": "The Trash Knight emerged from the chaotic dungeons as a testament to strange evolution, blending survival instinct with ridiculous flair. Few understand them, but all respect their power."
+  },
+  {
+    "name": "Augmented Janitor",
+    "role": "tank",
+    "skills": [
+      {
+        "name": "Mop Sweep Slash",
+        "description": "A signature ability used by the Augmented Janitor, 'Mop Sweep Slash' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 12,
+        "status_effect": "weaken",
+        "animation": "explode"
+      },
+      {
+        "name": "Sanitize Everything!",
+        "description": "A signature ability used by the Augmented Janitor, 'Sanitize Everything!' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 8,
+        "status_effect": "weaken",
+        "animation": "spin"
+      },
+      {
+        "name": "Utility Belt",
+        "description": "A signature ability used by the Augmented Janitor, 'Utility Belt' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 15,
+        "status_effect": "slow",
+        "animation": "guard"
+      },
+      {
+        "name": "Floor Buffer Charge",
+        "description": "A signature ability used by the Augmented Janitor, 'Floor Buffer Charge' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 10,
+        "status_effect": "cripple",
+        "animation": "swing"
+      },
+      {
+        "name": "Biohazard Shield",
+        "description": "A signature ability used by the Augmented Janitor, 'Biohazard Shield' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 5,
+        "status_effect": "stun",
+        "animation": "swing"
+      }
+    ],
+    "lore": "The Augmented Janitor emerged from the chaotic dungeons as a testament to strange evolution, blending survival instinct with ridiculous flair. Few understand them, but all respect their power."
+  },
+  {
+    "name": "Masquerade Duelist",
+    "role": "melee_dps",
+    "skills": [
+      {
+        "name": "Fan Slash",
+        "description": "A signature ability used by the Masquerade Duelist, 'Fan Slash' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 15,
+        "status_effect": "root",
+        "animation": "jab"
+      },
+      {
+        "name": "En Garde!",
+        "description": "A signature ability used by the Masquerade Duelist, 'En Garde!' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 5,
+        "status_effect": "root",
+        "animation": "cast"
+      },
+      {
+        "name": "Final Bow",
+        "description": "A signature ability used by the Masquerade Duelist, 'Final Bow' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 10,
+        "status_effect": "armor_break",
+        "animation": "channel"
+      },
+      {
+        "name": "Parry & Pose",
+        "description": "A signature ability used by the Masquerade Duelist, 'Parry & Pose' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 20,
+        "status_effect": "burn",
+        "animation": "cast"
+      },
+      {
+        "name": "Elegant Execution",
+        "description": "A signature ability used by the Masquerade Duelist, 'Elegant Execution' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 20,
+        "status_effect": "silence",
+        "animation": "swing"
+      }
+    ],
+    "lore": "The Masquerade Duelist emerged from the chaotic dungeons as a testament to strange evolution, blending survival instinct with ridiculous flair. Few understand them, but all respect their power."
+  },
+  {
+    "name": "Plague Chef",
+    "role": "melee_dps",
+    "skills": [
+      {
+        "name": "Flamb\u00e9 Kick",
+        "description": "A signature ability used by the Plague Chef, 'Flamb\u00e9 Kick' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 5,
+        "status_effect": "slow",
+        "animation": "cast"
+      },
+      {
+        "name": "Soul Reduction Sauce",
+        "description": "A signature ability used by the Plague Chef, 'Soul Reduction Sauce' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 20,
+        "status_effect": null,
+        "animation": "dash"
+      },
+      {
+        "name": "Contagion Glaze",
+        "description": "A signature ability used by the Plague Chef, 'Contagion Glaze' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 8,
+        "status_effect": "bleed",
+        "animation": "slam"
+      },
+      {
+        "name": "Exploding Spice Mix",
+        "description": "A signature ability used by the Plague Chef, 'Exploding Spice Mix' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 5,
+        "status_effect": "burn",
+        "animation": "twirl"
+      },
+      {
+        "name": "Mystery Meatball",
+        "description": "A signature ability used by the Plague Chef, 'Mystery Meatball' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 15,
+        "status_effect": "silence",
+        "animation": "raise"
+      }
+    ],
+    "lore": "The Plague Chef emerged from the chaotic dungeons as a testament to strange evolution, blending survival instinct with ridiculous flair. Few understand them, but all respect their power."
+  },
+  {
+    "name": "Meat-Powered Brawler",
+    "role": "melee_dps",
+    "skills": [
+      {
+        "name": "Carnage Chew",
+        "description": "A signature ability used by the Meat-Powered Brawler, 'Carnage Chew' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 5,
+        "status_effect": "weaken",
+        "animation": "channel"
+      },
+      {
+        "name": "Grill Slam",
+        "description": "A signature ability used by the Meat-Powered Brawler, 'Grill Slam' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 8,
+        "status_effect": "cripple",
+        "animation": "spin"
+      },
+      {
+        "name": "Meat Meteor",
+        "description": "A signature ability used by the Meat-Powered Brawler, 'Meat Meteor' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 5,
+        "status_effect": "fear",
+        "animation": "cast"
+      },
+      {
+        "name": "Butcher\u2019s Ballet",
+        "description": "A signature ability used by the Meat-Powered Brawler, 'Butcher\u2019s Ballet' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 5,
+        "status_effect": "weaken",
+        "animation": "charge"
+      },
+      {
+        "name": "Cholesterol Surge",
+        "description": "A signature ability used by the Meat-Powered Brawler, 'Cholesterol Surge' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 5,
+        "status_effect": "armor_break",
+        "animation": "cast"
+      }
+    ],
+    "lore": "The Meat-Powered Brawler emerged from the chaotic dungeons as a testament to strange evolution, blending survival instinct with ridiculous flair. Few understand them, but all respect their power."
+  },
+  {
+    "name": "Void Vlogger",
+    "role": "ranged_dps",
+    "skills": [
+      {
+        "name": "Subscriber Spike",
+        "description": "A signature ability used by the Void Vlogger, 'Subscriber Spike' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 20,
+        "status_effect": "confuse",
+        "animation": "blast"
+      },
+      {
+        "name": "Echo Chamber",
+        "description": "A signature ability used by the Void Vlogger, 'Echo Chamber' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 20,
+        "status_effect": "cripple",
+        "animation": "hover"
+      },
+      {
+        "name": "Haul of Horrors",
+        "description": "A signature ability used by the Void Vlogger, 'Haul of Horrors' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 20,
+        "status_effect": "slow",
+        "animation": "hover"
+      },
+      {
+        "name": "Algorithm Manipulate",
+        "description": "A signature ability used by the Void Vlogger, 'Algorithm Manipulate' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 10,
+        "status_effect": "root",
+        "animation": "leap"
+      },
+      {
+        "name": "Reality Clickbait",
+        "description": "A signature ability used by the Void Vlogger, 'Reality Clickbait' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 5,
+        "status_effect": "armor_break",
+        "animation": "leap"
+      }
+    ],
+    "lore": "The Void Vlogger emerged from the chaotic dungeons as a testament to strange evolution, blending survival instinct with ridiculous flair. Few understand them, but all respect their power."
+  },
+  {
+    "name": "Drone Hacker",
+    "role": "ranged_dps",
+    "skills": [
+      {
+        "name": "Stream Intercept",
+        "description": "A signature ability used by the Drone Hacker, 'Stream Intercept' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 8,
+        "status_effect": null,
+        "animation": "jab"
+      },
+      {
+        "name": "Overload Node",
+        "description": "A signature ability used by the Drone Hacker, 'Overload Node' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 12,
+        "status_effect": "bleed",
+        "animation": "channel"
+      },
+      {
+        "name": "Bug Feed",
+        "description": "A signature ability used by the Drone Hacker, 'Bug Feed' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 8,
+        "status_effect": "cripple",
+        "animation": "guard"
+      },
+      {
+        "name": "Repurpose Drone",
+        "description": "A signature ability used by the Drone Hacker, 'Repurpose Drone' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 20,
+        "status_effect": "fear",
+        "animation": "hover"
+      },
+      {
+        "name": "Firewall Cloak",
+        "description": "A signature ability used by the Drone Hacker, 'Firewall Cloak' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 12,
+        "status_effect": "burn",
+        "animation": "blast"
+      }
+    ],
+    "lore": "The Drone Hacker emerged from the chaotic dungeons as a testament to strange evolution, blending survival instinct with ridiculous flair. Few understand them, but all respect their power."
+  },
+  {
+    "name": "Necrogiggle",
+    "role": "ranged_dps",
+    "skills": [
+      {
+        "name": "Big Top Portal",
+        "description": "A signature ability used by the Necrogiggle, 'Big Top Portal' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 12,
+        "status_effect": "confuse",
+        "animation": "charge"
+      },
+      {
+        "name": "Squeaky Shoes of Speed",
+        "description": "A signature ability used by the Necrogiggle, 'Squeaky Shoes of Speed' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 5,
+        "status_effect": "weaken",
+        "animation": "channel"
+      },
+      {
+        "name": "Confetti Blast",
+        "description": "A signature ability used by the Necrogiggle, 'Confetti Blast' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 15,
+        "status_effect": "confuse",
+        "animation": "channel"
+      },
+      {
+        "name": "Prismatic Pie",
+        "description": "A signature ability used by the Necrogiggle, 'Prismatic Pie' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 20,
+        "status_effect": "weaken",
+        "animation": "leap"
+      },
+      {
+        "name": "Pantomime Shield",
+        "description": "A signature ability used by the Necrogiggle, 'Pantomime Shield' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 10,
+        "status_effect": "blind",
+        "animation": "cast"
+      }
+    ],
+    "lore": "The Necrogiggle emerged from the chaotic dungeons as a testament to strange evolution, blending survival instinct with ridiculous flair. Few understand them, but all respect their power."
+  },
+  {
+    "name": "Pet Influencer",
+    "role": "healer",
+    "skills": [
+      {
+        "name": "LiveStream Ultimatum",
+        "description": "A signature ability used by the Pet Influencer, 'LiveStream Ultimatum' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 5,
+        "status_effect": "knockback",
+        "animation": "spin"
+      },
+      {
+        "name": "Snack Toss",
+        "description": "A signature ability used by the Pet Influencer, 'Snack Toss' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 15,
+        "status_effect": "burn",
+        "animation": "swing"
+      },
+      {
+        "name": "Paw-sitive Vibes",
+        "description": "A signature ability used by the Pet Influencer, 'Paw-sitive Vibes' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 10,
+        "status_effect": "stun",
+        "animation": "hover"
+      },
+      {
+        "name": "Pet Selfie Stun",
+        "description": "A signature ability used by the Pet Influencer, 'Pet Selfie Stun' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 10,
+        "status_effect": "blind",
+        "animation": "explode"
+      },
+      {
+        "name": "Viral Distraction",
+        "description": "A signature ability used by the Pet Influencer, 'Viral Distraction' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 5,
+        "status_effect": "stun",
+        "animation": "raise"
+      }
+    ],
+    "lore": "The Pet Influencer emerged from the chaotic dungeons as a testament to strange evolution, blending survival instinct with ridiculous flair. Few understand them, but all respect their power."
+  },
+  {
+    "name": "Buzzkill Bureaucrat",
+    "role": "healer",
+    "skills": [
+      {
+        "name": "Ink Poisoning",
+        "description": "A signature ability used by the Buzzkill Bureaucrat, 'Ink Poisoning' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 8,
+        "status_effect": "silence",
+        "animation": "slam"
+      },
+      {
+        "name": "Audit Strike",
+        "description": "A signature ability used by the Buzzkill Bureaucrat, 'Audit Strike' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 5,
+        "status_effect": "poison",
+        "animation": "raise"
+      },
+      {
+        "name": "Paperstorm",
+        "description": "A signature ability used by the Buzzkill Bureaucrat, 'Paperstorm' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 20,
+        "status_effect": "bleed",
+        "animation": "leap"
+      },
+      {
+        "name": "Notarize Reality",
+        "description": "A signature ability used by the Buzzkill Bureaucrat, 'Notarize Reality' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 12,
+        "status_effect": "poison",
+        "animation": "guard"
+      },
+      {
+        "name": "Regulation Aura",
+        "description": "A signature ability used by the Buzzkill Bureaucrat, 'Regulation Aura' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 15,
+        "status_effect": "poison",
+        "animation": "channel"
+      }
+    ],
+    "lore": "The Buzzkill Bureaucrat emerged from the chaotic dungeons as a testament to strange evolution, blending survival instinct with ridiculous flair. Few understand them, but all respect their power."
+  },
+  {
+    "name": "Slapstick Monk",
+    "role": "healer",
+    "skills": [
+      {
+        "name": "Clown Clone",
+        "description": "A signature ability used by the Slapstick Monk, 'Clown Clone' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 20,
+        "status_effect": "slow",
+        "animation": "charge"
+      },
+      {
+        "name": "Anvil Drop",
+        "description": "A signature ability used by the Slapstick Monk, 'Anvil Drop' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 15,
+        "status_effect": "fear",
+        "animation": "blast"
+      },
+      {
+        "name": "Whoopee Wave",
+        "description": "A signature ability used by the Slapstick Monk, 'Whoopee Wave' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 12,
+        "status_effect": "weaken",
+        "animation": "swing"
+      },
+      {
+        "name": "Comedic Timing",
+        "description": "A signature ability used by the Slapstick Monk, 'Comedic Timing' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 12,
+        "status_effect": "stun",
+        "animation": "channel"
+      },
+      {
+        "name": "Laugh Track Aura",
+        "description": "A signature ability used by the Slapstick Monk, 'Laugh Track Aura' disrupts enemies or enhances allies in a thematically absurd yet effective manner.",
+        "cooldown_seconds": 5,
+        "status_effect": null,
+        "animation": "channel"
+      }
+    ],
+    "lore": "The Slapstick Monk emerged from the chaotic dungeons as a testament to strange evolution, blending survival instinct with ridiculous flair. Few understand them, but all respect their power."
+  }
+]

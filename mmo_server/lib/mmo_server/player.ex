@@ -1,6 +1,7 @@
 defmodule MmoServer.Player do
   use GenServer
   require Logger
+  alias MmoServer.{CombatEngine, SkillSystem}
 
   @doc false
   def child_spec(%{player_id: player_id} = args) do
@@ -170,6 +171,18 @@ defmodule MmoServer.Player do
   @spec get_zone_id(term()) :: String.t()
   def get_zone_id(player_id) do
     GenServer.call({:via, Horde.Registry, {PlayerRegistry, player_id}}, :get_zone_id)
+  end
+
+  @doc "Attack a boss NPC for a small amount of damage"
+  @spec attack_boss(term(), term()) :: :ok
+  def attack_boss(player_id, boss_id) do
+    CombatEngine.damage({:npc, boss_id}, 10, player_id)
+  end
+
+  @doc "Cast a skill on the given boss"
+  @spec cast_skill_on_boss(term(), term(), String.t()) :: :ok | {:error, term()}
+  def cast_skill_on_boss(player_id, boss_id, skill_name) do
+    SkillSystem.use_skill(player_id, skill_name, {:npc, boss_id})
   end
 
   @impl true

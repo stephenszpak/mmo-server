@@ -21,6 +21,7 @@ defmodule MmoServerWeb.Router do
   scope "/", MmoServerWeb do
     pipe_through :browser
 
+    live "/boss-test", BossTestLive
     live "/test", TestDashboardLive
   end
 end

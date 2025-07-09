@@ -47,6 +47,7 @@ defmodule MmoServer.NPC do
   def get_status(id), do: GenServer.call(via(id), :get_status)
   def get_position(id), do: GenServer.call(via(id), :get_position)
   def get_zone_id(id), do: GenServer.call(via(id), :get_zone_id)
+  def get_hp(id), do: GenServer.call(via(id), :get_hp)
 
   ## Server callbacks
   @impl true
@@ -171,6 +172,11 @@ defmodule MmoServer.NPC do
 
   def handle_call(:get_zone_id, _from, state) do
     {:reply, state.zone_id, state}
+  end
+
+  @impl true
+  def handle_call(:get_hp, _from, state) do
+    {:reply, state.hp, state}
   end
 
   defp schedule_tick(ms), do: Process.send_after(self(), :tick, ms)

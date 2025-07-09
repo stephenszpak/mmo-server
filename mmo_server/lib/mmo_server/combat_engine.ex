@@ -22,6 +22,16 @@ defmodule MmoServer.CombatEngine do
     GenServer.cast(__MODULE__, {:start_combat, attacker_id, target_id})
   end
 
+  @spec damage(term(), non_neg_integer(), term() | nil) :: :ok
+  def damage(target_id, amount, attacker_id \\ nil) do
+    GenServer.cast(__MODULE__, {:damage, target_id, amount, attacker_id})
+  end
+
+  @spec apply_debuff(term(), map()) :: :ok
+  def apply_debuff(target_id, debuff) do
+    GenServer.cast(__MODULE__, {:apply_debuff, target_id, debuff})
+  end
+
   ## Server callbacks
 
   @impl true
@@ -33,6 +43,18 @@ defmodule MmoServer.CombatEngine do
   @impl true
   def handle_cast({:start_combat, attacker, target}, set) do
     {:noreply, MapSet.put(set, {attacker, target})}
+  end
+
+  @impl true
+  def handle_cast({:damage, target, amount, attacker}, set) do
+    do_damage(target, amount, attacker)
+    {:noreply, set}
+  end
+
+  @impl true
+  def handle_cast({:apply_debuff, target, debuff}, set) do
+    MmoServer.DebuffSystem.apply_debuff(target, debuff)
+    {:noreply, set}
   end
 
   @impl true
@@ -98,10 +120,14 @@ defmodule MmoServer.CombatEngine do
   end
 
   defp deal_damage(attacker, target) do
-    damage(target, attacker)
+    do_damage(target, @damage, attacker)
   end
 
-  defp damage(id, _attacker) when is_binary(id), do: MmoServer.Player.damage(id, @damage)
+  defp do_damage(id, amount, attacker) when is_binary(id) do
+    MmoServer.Player.damage(id, amount)
+  end
 
-  defp damage({:npc, id}, attacker), do: MmoServer.NPC.damage(id, @damage, attacker)
+  defp do_damage({:npc, id}, amount, attacker) do
+    MmoServer.NPC.damage(id, amount, attacker)
+  end
 end

@@ -113,14 +113,15 @@
       <h3 class="font-medium"><%= @class.name %></h3>
       <ul class="list-disc ml-4">
         <%= for skill <- @skills do %>
+          <% name = Map.get(skill, "name") %>
           <li>
-            <span title={skill.description}><%= skill.name %></span>
-            <%= if Map.has_key?(@cooldowns, skill.name) do %>
-              (<%= skill.cooldown %>s cd)
+            <span title={Map.get(skill, "description")}>{name}</span>
+            <%= if Map.has_key?(@cooldowns, name) do %>
+              (<%= Map.get(skill, "cooldown_seconds", Map.get(skill, "cooldown")) %>s cd)
             <% end %>
             <form phx-submit="cast_skill" class="inline ml-2">
-              <input type="hidden" name="skill" value={skill.name} />
-              <button type="submit" class="btn" disabled={Map.has_key?(@cooldowns, skill.name)}>Use</button>
+              <input type="hidden" name="skill" value={name} />
+              <button type="submit" class="btn" disabled={Map.has_key?(@cooldowns, name)}>Use</button>
             </form>
           </li>
         <% end %>

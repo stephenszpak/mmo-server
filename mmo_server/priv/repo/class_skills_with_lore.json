@@ -54,7 +54,7 @@
         "cooldown_seconds": 15
       }
     ],
-    "lore": "The Trash Knight emerged from the chaotic dungeons as a testament to strange evolution, blending survival instinct with ridiculous flair. Few understand them, but all respect their power."
+    "lore": "A junkyard juggernaut fueled by shame and scrap. The Trash Knight survives not by finesse but by flinging whatever debris sticks to their rusted plate. They're a walking landfill of pain and pride."
   },
   {
     "name": "Augmented Janitor",
@@ -111,7 +111,7 @@
         "cooldown_seconds": 10
       }
     ],
-    "lore": "The Augmented Janitor emerged from the chaotic dungeons as a testament to strange evolution, blending survival instinct with ridiculous flair. Few understand them, but all respect their power."
+    "lore": "A humble cleaner-turned-enforcer equipped with mop-based mayhem and a government-issue hazmat upgrade. What they lack in charm, they compensate for in chemical warfare and sanitation-based vengeance."
   },
   {
     "name": "Masquerade Duelist",
@@ -168,7 +168,7 @@
         "cooldown_seconds": 20
       }
     ],
-    "lore": "The Masquerade Duelist emerged from the chaotic dungeons as a testament to strange evolution, blending survival instinct with ridiculous flair. Few understand them, but all respect their power."
+    "lore": "Behind every strike is a flourish, and behind every flourish—an edge. The Masquerade Duelist spins, slices, and parries through foes with style, grace, and a hint of passive-aggressive spite."
   },
   {
     "name": "Plague Chef",
@@ -225,7 +225,7 @@
         "cooldown_seconds": 20
       }
     ],
-    "lore": "The Plague Chef emerged from the chaotic dungeons as a testament to strange evolution, blending survival instinct with ridiculous flair. Few understand them, but all respect their power."
+    "lore": "Recipes scribbled in blood and garnished with madness. The Plague Chef cooks up chemical catastrophes in cast-iron chaos, serving infectious flavor and fiery footwork in equal measure."
   },
   {
     "name": "Meat-Powered Brawler",
@@ -282,7 +282,7 @@
         "cooldown_seconds": 20
       }
     ],
-    "lore": "The Meat-Powered Brawler emerged from the chaotic dungeons as a testament to strange evolution, blending survival instinct with ridiculous flair. Few understand them, but all respect their power."
+    "lore": "A brute-force melee fighter who powers up through raw consumption, grotesque combos, and cannibalistic vigor. Think Gordon Ramsay meets Bane."
   },
   {
     "name": "Void Vlogger",
@@ -339,7 +339,7 @@
         "cooldown_seconds": 5
       }
     ],
-    "lore": "The Void Vlogger emerged from the chaotic dungeons as a testament to strange evolution, blending survival instinct with ridiculous flair. Few understand them, but all respect their power."
+    "lore": "They vlog, therefore they are. The Void Vlogger blends black holes with beauty filters, broadcasting devastation in 4K. They manipulate time, gravity, and likes with equal recklessness."
   },
   {
     "name": "Drone Hacker",
@@ -396,7 +396,7 @@
         "cooldown_seconds": 5
       }
     ],
-    "lore": "The Drone Hacker emerged from the chaotic dungeons as a testament to strange evolution, blending survival instinct with ridiculous flair. Few understand them, but all respect their power."
+    "lore": "A digital rogue armed with access codes, EMP bursts, and a knack for turning the environment into a weapon. The Drone Hacker is your worst cyberpunk nightmare, delivered via patch notes."
   },
   {
     "name": "Necrogiggle",
@@ -453,7 +453,7 @@
         "cooldown_seconds": 8
       }
     ],
-    "lore": "The Necrogiggle emerged from the chaotic dungeons as a testament to strange evolution, blending survival instinct with ridiculous flair. Few understand them, but all respect their power."
+    "lore": "A nightmare clown who brings balloon animals to un-life. The Necrogiggle juggles necromancy, chaos, and slapstick horror in a carnival of corpse-raising comedy."
   },
   {
     "name": "Pet Influencer",
@@ -510,7 +510,7 @@
         "cooldown_seconds": 15
       }
     ],
-    "lore": "The Pet Influencer emerged from the chaotic dungeons as a testament to strange evolution, blending survival instinct with ridiculous flair. Few understand them, but all respect their power."
+    "lore": "Adored by the masses, feared by their haters. The Pet Influencer inspires, heals, and blinds with cuteness—while their sentient followers do the heavy lifting. Sponsored by your tears."
   },
   {
     "name": "Buzzkill Bureaucrat",
@@ -567,7 +567,7 @@
         "cooldown_seconds": 15
       }
     ],
-    "lore": "The Buzzkill Bureaucrat emerged from the chaotic dungeons as a testament to strange evolution, blending survival instinct with ridiculous flair. Few understand them, but all respect their power."
+    "lore": "Office supplies are weapons, and order is sacred. The Buzzkill Bureaucrat overwhelms enemies with red tape, paperstorms, and tax audits—nothing slows combat like corporate compliance."
   },
   {
     "name": "Slapstick Monk",
@@ -624,6 +624,6 @@
         "cooldown_seconds": 20
       }
     ],
-    "lore": "The Slapstick Monk emerged from the chaotic dungeons as a testament to strange evolution, blending survival instinct with ridiculous flair. Few understand them, but all respect their power."
+    "lore": "Enlightenment through embarrassment. The Slapstick Monk blends martial mastery with comedy chaos, tripping, flipping, and flinging themselves to victory in a holy farce of destruction."
   }
 ]

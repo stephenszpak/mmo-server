@@ -21,4 +21,5 @@ config :mmo_server,
   boss_every: 3,
   storm_chance: 0.0,
   npc_tick_ms: 100,
-  zone_tick_ms: 100
+  zone_tick_ms: 100,
+  debuff_tick_ms: 100

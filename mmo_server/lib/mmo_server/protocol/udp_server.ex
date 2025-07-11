@@ -1,5 +1,6 @@
 defmodule MmoServer.Protocol.UdpServer do
   use GenServer
+  require Logger
 
   @port 4000
 
@@ -23,6 +24,10 @@ defmodule MmoServer.Protocol.UdpServer do
           clamp(dz)
         }
         player_id = Integer.to_string(pid)
+        d0 = :erlang.float_to_binary(elem(delta, 0), decimals: 2)
+        d1 = :erlang.float_to_binary(elem(delta, 1), decimals: 2)
+        d2 = :erlang.float_to_binary(elem(delta, 2), decimals: 2)
+        Logger.info("[UDP] Player #{player_id} moved \u0394(#{d0}, #{d1}, #{d2}) via opcode #{opcode}")
         MmoServer.Player.move(player_id, delta)
       _ ->
         :ok

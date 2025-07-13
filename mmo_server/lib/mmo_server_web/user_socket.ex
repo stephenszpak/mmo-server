@@ -2,7 +2,7 @@ defmodule MmoServerWeb.UserSocket do
   use Phoenix.Socket
 
   channel "zone:*", MmoServerWeb.ZoneChannel
-  channel "chat:global", MmoServerWeb.ChatChannel
+  channel "chat:*", MmoServerWeb.ChatChannel
 
   def connect(_params, socket, _connect_info) do
     {:ok, socket}

@@ -15,23 +15,36 @@ defmodule MmoServer.Protocol.UdpServer do
   end
 
   @impl true
-  def handle_info({:udp, _socket, _ip, _port, <<pid::32, opcode::16, dx::float, dy::float, dz::float>>}, state) do
-    case opcode do
-      1 ->
-        delta = {
-          clamp(dx),
-          clamp(dy),
-          clamp(dz)
-        }
-        player_id = Integer.to_string(pid)
-        d0 = :erlang.float_to_binary(elem(delta, 0), decimals: 2)
-        d1 = :erlang.float_to_binary(elem(delta, 1), decimals: 2)
-        d2 = :erlang.float_to_binary(elem(delta, 2), decimals: 2)
-        Logger.info("[UDP] Player #{player_id} moved \u0394(#{d0}, #{d1}, #{d2}) via opcode #{opcode}")
-        MmoServer.Player.move(player_id, delta)
-      _ ->
-        :ok
+  def handle_info({:udp, _socket, _ip, _port, packet}, state) do
+    Logger.debug("Received UDP: #{inspect(packet)}")
+
+    case packet do
+      <<pid::unsigned-big-32, opcode::unsigned-big-16, dx::float-big, dy::float-big, dz::float-big>> ->
+        Logger.debug("Decoded UDP id=#{pid} opcode=#{opcode} \u0394(#{dx}, #{dy}, #{dz})")
+
+        player_id =
+          MmoServer.UnityHash.lookup_player_id(pid) || Integer.to_string(pid)
+
+        case opcode do
+          1 ->
+            delta = {
+              clamp(dx),
+              clamp(dy),
+              clamp(dz)
+            }
+            d0 = :erlang.float_to_binary(elem(delta, 0), decimals: 2)
+            d1 = :erlang.float_to_binary(elem(delta, 1), decimals: 2)
+            d2 = :erlang.float_to_binary(elem(delta, 2), decimals: 2)
+            Logger.info("[UDP] Player #{player_id} moved \u0394(#{d0}, #{d1}, #{d2}) via opcode #{opcode}")
+            MmoServer.Player.move(player_id, delta)
+          _ ->
+            :ok
+        end
+
+      _other ->
+        Logger.warn("Malformed UDP packet: #{inspect(packet)}")
     end
+
     {:noreply, state}
   end
 

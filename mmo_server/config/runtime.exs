@@ -15,6 +15,6 @@ if config_env() == :prod do
       raise "SECRET_KEY_BASE not set."
 
   config :mmo_server, MmoServerWeb.Endpoint,
-    http: [ip: {0, 0, 0, 0}, port: String.to_integer(System.get_env("PORT") || "4000")],
+    http: [ip: {0, 0, 0, 0}, port: String.to_integer(System.get_env("PORT") || "4001")],
     secret_key_base: secret_key_base
 end

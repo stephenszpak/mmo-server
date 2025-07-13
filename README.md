@@ -38,7 +38,7 @@ This repository contains a minimal Phoenix application used for experimenting wi
    mix phx.server
    ```
 
-   The API will be available on `http://localhost:4000`.
+   The API will be available on `http://localhost:4001`.
 
 ## Running Tests
 
@@ -87,7 +87,7 @@ cd mmo_server
 mix phx.server
 ```
 
-Visit `http://localhost:4000/players` to view live player positions.
+Visit `http://localhost:4001/players` to view live player positions.
 
 From `iex -S mix` you can print all positions using:
 

@@ -19,7 +19,7 @@ defmodule MmoServer.Protocol.UdpServer do
     Logger.debug("Received UDP: #{inspect(packet)}")
 
     case packet do
-      <<pid::unsigned-big-32, opcode::unsigned-big-16, dx::float-big, dy::float-big, dz::float-big>> ->
+      <<pid::unsigned-big-32, opcode::unsigned-big-16, dx::float-big-32, dy::float-big-32, dz::float-big-32>> ->
         Logger.debug("Decoded UDP id=#{pid} opcode=#{opcode} \u0394(#{dx}, #{dy}, #{dz})")
 
         player_id =

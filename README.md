@@ -132,7 +132,7 @@ These commands must be executed from the `mmo_server` directory after the server
 ## Real-time Chat
 
 Chat messages are delivered over Phoenix Channels. Clients connect to
-`ws://localhost:4000/socket` and join one or more topics:
+`ws://localhost:4001/socket/websocket` and join one or more topics:
 
 - `"chat:global"` – global chat for everyone
 - `"chat:zone:<zone_id>"` – messages scoped to a zone
@@ -162,7 +162,7 @@ Once the dependency is available you can connect to the running server:
 
 ```elixir
 # Join the channel and send a message (Elixir client example)
-{:ok, socket} = PhoenixClient.Socket.start_link(url: "ws://localhost:4000/socket")
+{:ok, socket} = PhoenixClient.Socket.start_link(url: "ws://localhost:4001/socket/websocket")
 {:ok, _, chan} = PhoenixClient.Channel.join(socket, "chat:global")
 PhoenixClient.Channel.push(chan, "message", %{
   "from" => "player1",
@@ -174,7 +174,7 @@ PhoenixClient.Channel.push(chan, "message", %{
 Unity clients can use similar logic via a WebSocket library:
 
 ```csharp
-var socket = new Websocket("ws://localhost:4000/socket/websocket");
+var socket = new Websocket("ws://localhost:4001/socket/websocket");
 socket.Connect();
 socket.Join("chat:zone:elwynn");
 socket.Push("message", new { from = "player1", to = "chat:zone:elwynn", text = "Hi" });

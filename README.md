@@ -140,6 +140,26 @@ Chat messages are delivered over Phoenix Channels. Clients connect to
 
 ### Example client code
 
+To run the sample below you need the [`phoenix_client`](https://hex.pm/packages/phoenix_client)
+library. The server does not depend on this package, so create a small
+client project and add it as a dependency:
+
+```bash
+mix new chat_client
+cd chat_client
+# mix.exs
+defp deps do
+  [
+    {:phoenix_client, "~> 0.1"}
+  ]
+end
+
+mix deps.get
+iex -S mix
+```
+
+Once the dependency is available you can connect to the running server:
+
 ```elixir
 # Join the channel and send a message (Elixir client example)
 {:ok, socket} = PhoenixClient.Socket.start_link(url: "ws://localhost:4000/socket")

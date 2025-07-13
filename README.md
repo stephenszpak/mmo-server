@@ -128,3 +128,40 @@ MmoServer.Quests.get_progress("player1", MmoServer.Quests.wolf_kill_id())
 ```
 
 These commands must be executed from the `mmo_server` directory after the server has started.
+
+## Real-time Chat
+
+Chat messages are delivered over Phoenix Channels. Clients connect to
+`ws://localhost:4000/socket` and join one or more topics:
+
+- `"chat:global"` – global chat for everyone
+- `"chat:zone:<zone_id>"` – messages scoped to a zone
+- `"chat:whisper:<player_id>"` – private 1:1 chat
+
+### Example client code
+
+```elixir
+# Join the channel and send a message (Elixir client example)
+{:ok, socket} = PhoenixClient.Socket.start_link(url: "ws://localhost:4000/socket")
+{:ok, _, chan} = PhoenixClient.Channel.join(socket, "chat:global")
+PhoenixClient.Channel.push(chan, "message", %{
+  "from" => "player1",
+  "to" => "chat:global",
+  "text" => "Hello!"
+})
+```
+
+Unity clients can use similar logic via a WebSocket library:
+
+```csharp
+var socket = new Websocket("ws://localhost:4000/socket/websocket");
+socket.Connect();
+socket.Join("chat:zone:elwynn");
+socket.Push("message", new { from = "player1", to = "chat:zone:elwynn", text = "Hi" });
+```
+
+You can also broadcast messages without a channel using:
+
+```elixir
+Phoenix.PubSub.broadcast(MmoServer.PubSub, "chat:zone:elwynn", {:chat_msg, "gm", "Server restart soon"})
+```

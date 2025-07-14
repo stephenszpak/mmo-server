@@ -129,6 +129,19 @@ MmoServer.Quests.get_progress("player1", MmoServer.Quests.wolf_kill_id())
 
 These commands must be executed from the `mmo_server` directory after the server has started.
 
+## Running Two Terminals
+
+Start two IEx nodes to simulate different regions or players and connect them together:
+
+```bash
+# Terminal 1 – Backend node 1
+iex --sname node1 -S mix phx.server
+
+# Terminal 2 – Backend node 2 (simulate another region/player)
+iex --sname node2 -S mix
+Node.connect(:"node1@localhost")
+```
+
 ## Real-time Chat
 
 Chat messages are delivered over Phoenix Channels. Clients connect to

@@ -244,6 +244,23 @@ defmodule MmoServer.Player do
     Phoenix.PubSub.subscribe(MmoServer.PubSub, "zone:#{state.zone_id}")
     MmoServer.Zone.join(state.zone_id, state.id)
     MmoServer.Zone.player_moved(state.zone_id, state.id, state.pos)
+
+    Phoenix.PubSub.broadcast(
+      MmoServer.PubSub,
+      "zone:#{state.zone_id}",
+      %{
+        event: "player_joined",
+        payload: %{
+          id: state.id,
+          position: %{
+            x: elem(state.pos, 0),
+            y: elem(state.pos, 1),
+            z: elem(state.pos, 2)
+          }
+        }
+      }
+    )
+
     Logger.debug("Player #{state.id} started in zone #{state.zone_id}")
     persist_state(state)
     {:ok, state}
@@ -265,6 +282,11 @@ defmodule MmoServer.Player do
     if new_zone != state.zone_id do
       MmoServer.Zone.leave(state.zone_id, state.id)
       Phoenix.PubSub.unsubscribe(MmoServer.PubSub, "zone:#{state.zone_id}")
+      Phoenix.PubSub.broadcast(
+        MmoServer.PubSub,
+        "zone:#{state.zone_id}",
+        %{event: "player_left", payload: %{id: state.id}}
+      )
       new_state = %{state | pos: new_pos, zone_id: new_zone}
       persist_state(new_state)
 
@@ -279,6 +301,17 @@ defmodule MmoServer.Player do
       MmoServer.Zone.player_moved(state.zone_id, state.id, new_pos)
       Logger.info("Player #{state.id} moved to #{inspect(new_pos)}")
       new_state = %{state | pos: new_pos}
+      Phoenix.PubSub.broadcast(
+        MmoServer.PubSub,
+        "zone:#{state.zone_id}",
+        %{
+          event: "player_moved",
+          payload: %{
+            id: state.id,
+            delta: %{x: dx, y: dy, z: dz}
+          }
+        }
+      )
       persist_state(new_state)
       :telemetry.execute([
         :mmo_server,
@@ -297,6 +330,11 @@ defmodule MmoServer.Player do
 
     if new_hp <= 0 and state.status == :alive do
       Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{state.zone_id}", {:death, state.id})
+      Phoenix.PubSub.broadcast(
+        MmoServer.PubSub,
+        "zone:#{state.zone_id}",
+        %{event: "player_died", payload: %{id: state.id}}
+      )
       Process.send_after(self(), :respawn, 10_000)
       new_state = %{state | status: :dead}
       persist_state(new_state)
@@ -310,6 +348,11 @@ defmodule MmoServer.Player do
   @impl true
   def handle_cast(:kill, state) do
     new_state = %{state | hp: 0, status: :dead}
+    Phoenix.PubSub.broadcast(
+      MmoServer.PubSub,
+      "zone:#{state.zone_id}",
+      %{event: "player_died", payload: %{id: state.id}}
+    )
     persist_state(new_state)
     {:stop, :normal, new_state}
   end
@@ -326,6 +369,11 @@ defmodule MmoServer.Player do
     if zone_id != state.zone_id do
       MmoServer.Zone.leave(state.zone_id, state.id)
       Phoenix.PubSub.unsubscribe(MmoServer.PubSub, "zone:#{state.zone_id}")
+      Phoenix.PubSub.broadcast(
+        MmoServer.PubSub,
+        "zone:#{state.zone_id}",
+        %{event: "player_left", payload: %{id: state.id}}
+      )
       new_state = %{state | pos: {0, 0, 0}, zone_id: zone_id}
       persist_state(new_state)
 
@@ -467,6 +515,11 @@ defmodule MmoServer.Player do
   def terminate(_reason, state) do
     MmoServer.Zone.leave(state.zone_id, state.id)
     Phoenix.PubSub.unsubscribe(MmoServer.PubSub, "zone:#{state.zone_id}")
+    Phoenix.PubSub.broadcast(
+      MmoServer.PubSub,
+      "zone:#{state.zone_id}",
+      %{event: "player_left", payload: %{id: state.id}}
+    )
     persist_state(state)
     :ok
   end

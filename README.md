@@ -35,10 +35,23 @@ This repository contains a minimal Phoenix application used for experimenting wi
 4. Run the application:
 
    ```bash
-   mix phx.server
-   ```
+mix phx.server
+```
 
    The API will be available on `http://localhost:4001`.
+
+## Running Two Terminals
+
+To experiment with a simple multi-node setup, open two terminal windows in the
+`mmo_server` directory and run:
+
+```bash
+# Terminal 1
+iex --sname node1 -S mix phx.server
+
+# Terminal 2
+MIX_ENV=test iex --sname node2 -S mix
+```
 
 ## Running Tests
 

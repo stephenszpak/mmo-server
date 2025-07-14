@@ -185,3 +185,50 @@ You can also broadcast messages without a channel using:
 ```elixir
 Phoenix.PubSub.broadcast(MmoServer.PubSub, "chat:zone:elwynn", {:chat_msg, "gm", "Server restart soon"})
 ```
+## Player2 Simulation
+
+Run this script in an IEx session to simulate player2 joining zone1 and moving along the X axis:
+
+```elixir
+alias Phoenix.PubSub
+alias MmoServerWeb.Endpoint
+
+player_id = "player2"
+zone_id = "zone1"
+
+# Initial position
+position = %{x: 5.0, y: 0.0, z: 2.0}
+
+# Simulate player joining
+join_event = %{
+  event: "player_joined",
+  payload: %{
+    id: player_id,
+    position: position
+  }
+}
+
+Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{zone_id}", join_event)
+IO.puts("✅ Simulated player2 joining #{zone_id}")
+
+# Simulate movement loop
+spawn(fn ->
+  :timer.sleep(1000)
+
+  for _i <- 1..5 do
+    :timer.sleep(1000)
+
+    delta = %{x: 1.0, y: 0.0, z: 0.0}
+    move_event = %{
+      event: "player_moved",
+      payload: %{
+        id: player_id,
+        delta: delta
+      }
+    }
+
+    Phoenix.PubSub.broadcast(MmoServer.PubSub, "zone:#{zone_id}", move_event)
+    IO.puts("🚶 player2 moved +1 on X axis")
+  end
+end)
+```

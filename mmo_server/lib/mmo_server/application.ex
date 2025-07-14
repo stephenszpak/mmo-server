@@ -12,7 +12,10 @@ defmodule MmoServer.Application do
       {Phoenix.PubSub, name: MmoServer.PubSub},
       MmoServerWeb.Endpoint,
       MmoServerWeb.Presence,
-      MmoServer.Protocol.UdpServer,
+      # Only start the UDP server in dev or prod. Skipping it in other
+      # environments (like :test) lets us run multiple nodes without
+      # fighting over the same UDP port.
+      if(Mix.env() in [:dev, :prod], do: MmoServer.Protocol.UdpServer),
       MmoServer.CombatEngine,
       MmoServer.DebuffSystem,
       MmoServer.WorldClock,
@@ -21,7 +24,9 @@ defmodule MmoServer.Application do
       {MmoServer.PlayerSupervisor, []},
       {MmoServer.ZoneSupervisor, []},
       {MmoServer.InstanceManager, []}
-    ] ++ maybe_bootstrap()
+    ]
+    |> Enum.filter(& &1)
+    |> Kernel.++(maybe_bootstrap())
 
     opts = [strategy: :one_for_one, name: MmoServer.Supervisor]
     Supervisor.start_link(children, opts)

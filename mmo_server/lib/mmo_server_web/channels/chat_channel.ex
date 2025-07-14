@@ -2,82 +2,64 @@ defmodule MmoServerWeb.ChatChannel do
   @moduledoc """
   Realtime chat channel used by the MMO server.
 
-  Clients can join different topics for global, zone and private
-  (whisper) chat.  Each message pushed through the channel is broadcast
-  to all subscribers of the topic and is also consumable via
-  `Phoenix.PubSub` for systems that do not connect through websockets.
+  Clients join one of the following topics:
+    * `"chat:global"`
+    * `"chat:zone:<zone_id>"`
+    * `"chat:whisper:<player_id>"`
 
-  Expected payload for the `"message"` event:
+  Each `"message"` event expects a payload like:
 
-      %{"text" => text, "from" => player_id, "to" => topic}
+      %{"from" => "player1", "text" => "Hello"}
 
-  The server will enrich the message by adding a timestamp and echoing
-  it back to the sender.
+  The payload is broadcast to all subscribers of the topic.
+  You can manually test broadcasting from `IEx` with:
+
+      Phoenix.PubSub.broadcast(MmoServer.PubSub, "chat:global", {:chat_msg, "gm", "Server restart in 5 minutes"})
   """
 
   use Phoenix.Channel
 
+  require Logger
   alias Phoenix.PubSub
   alias MmoServer.PubSub, as: MMO
 
   @impl true
   def join("chat:global" = topic, _params, socket) do
+    Logger.info("Joined #{topic}")
     PubSub.subscribe(MMO, topic)
     {:ok, socket}
   end
 
   @impl true
   def join("chat:zone:" <> _zone_id = topic, _params, socket) do
+    Logger.info("Joined #{topic}")
     PubSub.subscribe(MMO, topic)
     {:ok, socket}
   end
 
   @impl true
   def join("chat:whisper:" <> _player_id = topic, _params, socket) do
-    # In a real system we would verify that only the sender and
-    # recipient join this topic.  The server simply subscribes the
-    # socket to the whisper topic so that only those connected will see
-    # the messages.
+    Logger.info("Joined #{topic}")
     PubSub.subscribe(MMO, topic)
     {:ok, socket}
   end
 
   @impl true
-  def handle_in("message", %{"text" => text, "from" => from, "to" => to}, socket) do
-    timestamp = DateTime.utc_now() |> DateTime.to_iso8601()
-
-    msg = %{
-      "type" => "chat",
-      "from" => from,
-      "to" => to,
-      "text" => text,
-      "timestamp" => timestamp
-    }
-
-    case socket.topic do
-      "chat:whisper:" <> _id ->
-        broadcast!(socket, "message", msg)
-        push(socket, "message", msg)
-
-      _ ->
-        broadcast!(socket, "message", msg)
-    end
-
+  def handle_in("message", payload = %{"from" => _from, "text" => _text}, socket) do
+    Logger.info("Received #{inspect(payload)} on #{socket.topic}")
+    broadcast!(socket, "message", payload)
     {:noreply, socket}
   end
 
   @impl true
-  def handle_info({:chat_msg, from, text}, socket) do
-    timestamp = DateTime.utc_now() |> DateTime.to_iso8601()
+  def handle_info({:chat_msg, from, text} = msg, socket) do
+    Logger.info("PubSub #{inspect(msg)}")
+    push(socket, "message", %{"from" => from, "text" => text})
+    {:noreply, socket}
+  end
 
-    push(socket, "message", %{
-      "type" => "chat",
-      "from" => from,
-      "to" => socket.topic,
-      "text" => text,
-      "timestamp" => timestamp
-    })
-
+  def handle_info(msg, socket) do
+    Logger.warn("Unhandled message: #{inspect(msg)}")
     {:noreply, socket}
   end
 end

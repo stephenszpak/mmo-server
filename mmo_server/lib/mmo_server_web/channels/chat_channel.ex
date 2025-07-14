@@ -58,6 +58,12 @@ defmodule MmoServerWeb.ChatChannel do
     {:noreply, socket}
   end
 
+  @impl true
+  def handle_out(event, payload, socket) do
+    push(socket, event, payload)
+    {:noreply, socket}
+  end
+
   def handle_info(msg, socket) do
     Logger.warn("Unhandled message: #{inspect(msg)}")
     {:noreply, socket}
